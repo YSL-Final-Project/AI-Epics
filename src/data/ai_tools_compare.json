@@ -1,0 +1,47 @@
+[
+  {
+    "name": "GitHub Copilot",
+    "pricing": "$10/月 (个人) / $19/月 (商业)",
+    "languages": 30,
+    "accuracy": 78,
+    "contextWindow": "8K tokens",
+    "ideSupport": ["VS Code", "JetBrains", "Neovim", "Visual Studio"],
+    "releaseDate": "2022-06"
+  },
+  {
+    "name": "Cursor",
+    "pricing": "$20/月 (Pro) / 免费版可用",
+    "languages": 25,
+    "accuracy": 82,
+    "contextWindow": "整个代码库",
+    "ideSupport": ["Cursor (独立 IDE)"],
+    "releaseDate": "2023-03"
+  },
+  {
+    "name": "Claude Code",
+    "pricing": "按 API 用量计费",
+    "languages": 28,
+    "accuracy": 85,
+    "contextWindow": "200K tokens",
+    "ideSupport": ["终端 CLI", "VS Code", "JetBrains"],
+    "releaseDate": "2024-10"
+  },
+  {
+    "name": "Windsurf",
+    "pricing": "$15/月 (Pro)",
+    "languages": 20,
+    "accuracy": 76,
+    "contextWindow": "代码库级别",
+    "ideSupport": ["Windsurf (独立 IDE)"],
+    "releaseDate": "2024-05"
+  },
+  {
+    "name": "Cody (Sourcegraph)",
+    "pricing": "免费 / $9/月 (Pro)",
+    "languages": 22,
+    "accuracy": 74,
+    "contextWindow": "整个代码库",
+    "ideSupport": ["VS Code", "JetBrains", "Neovim"],
+    "releaseDate": "2023-07"
+  }
+]

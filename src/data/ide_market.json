@@ -1,0 +1,19 @@
+{
+  "marketShare": [
+    {"year": 2019, "vscode": 50, "jetbrains": 28, "vim": 8, "cursor": 0},
+    {"year": 2020, "vscode": 55, "jetbrains": 27, "vim": 7, "cursor": 0},
+    {"year": 2021, "vscode": 60, "jetbrains": 25, "vim": 7, "cursor": 0},
+    {"year": 2022, "vscode": 65, "jetbrains": 23, "vim": 6, "cursor": 0},
+    {"year": 2023, "vscode": 68, "jetbrains": 20, "vim": 5, "cursor": 2},
+    {"year": 2024, "vscode": 62, "jetbrains": 18, "vim": 5, "cursor": 10},
+    {"year": 2025, "vscode": 55, "jetbrains": 17, "vim": 5, "cursor": 18}
+  ],
+  "ecosystem": [
+    {"name": "VS Code", "plugins": 45000, "aiIntegration": 75, "marketShare": 55},
+    {"name": "JetBrains", "plugins": 8500, "aiIntegration": 65, "marketShare": 17},
+    {"name": "Cursor", "plugins": 500, "aiIntegration": 98, "marketShare": 18},
+    {"name": "Vim/Neovim", "plugins": 12000, "aiIntegration": 45, "marketShare": 5},
+    {"name": "Windsurf", "plugins": 200, "aiIntegration": 95, "marketShare": 3},
+    {"name": "Zed", "plugins": 150, "aiIntegration": 80, "marketShare": 2}
+  ]
+}

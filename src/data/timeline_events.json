@@ -1,0 +1,227 @@
+[
+  {
+    "id": 1,
+    "date": "2018-06-01",
+    "title": "GPT-1 发布",
+    "description": "OpenAI 发布首个 GPT 模型，采用 Transformer 架构进行无监督预训练，拥有 1.17 亿参数。虽然当时并未直接应用于编程，但奠定了后续 AI 编程工具的技术基础。",
+    "category": "company",
+    "impactScore": 6,
+    "relatedLinks": [{"label": "OpenAI 博客", "url": "https://openai.com/research/language-unsupervised"}]
+  },
+  {
+    "id": 2,
+    "date": "2019-02-14",
+    "title": "GPT-2 发布引发争议",
+    "description": "OpenAI 发布 15 亿参数的 GPT-2，因担心被滥用而延迟公开完整模型。其强大的文本生成能力让人们首次意识到 AI 在代码生成方面的潜力。",
+    "category": "company",
+    "impactScore": 7,
+    "relatedLinks": [{"label": "GPT-2 论文", "url": "https://openai.com/research/better-language-models"}]
+  },
+  {
+    "id": 3,
+    "date": "2020-06-11",
+    "title": "GPT-3 发布：1750 亿参数",
+    "description": "GPT-3 以 1750 亿参数震撼 AI 界，展现出令人惊叹的少样本学习能力，包括编写代码。开发者开始用 GPT-3 API 进行代码生成实验。",
+    "category": "company",
+    "impactScore": 9,
+    "relatedLinks": [{"label": "GPT-3 论文", "url": "https://arxiv.org/abs/2005.14165"}]
+  },
+  {
+    "id": 4,
+    "date": "2021-06-29",
+    "title": "GitHub Copilot 技术预览版发布",
+    "description": "GitHub 联合 OpenAI 推出 Copilot，基于 OpenAI Codex 模型，作为 VS Code 插件提供实时代码建议。这是首个大规模 AI 编程助手，标志着 AI 辅助编程进入实用阶段。",
+    "category": "tool_release",
+    "impactScore": 10,
+    "relatedLinks": [{"label": "GitHub 公告", "url": "https://github.blog/2021-06-29-introducing-github-copilot-ai-pair-programmer/"}]
+  },
+  {
+    "id": 5,
+    "date": "2021-08-10",
+    "title": "OpenAI Codex 发布",
+    "description": "OpenAI 发布 Codex 模型，能够将自然语言转换为代码，支持超过 12 种编程语言。Codex 是 GPT-3 的后代，专门在 GitHub 公开代码上进行了微调。",
+    "category": "company",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "Codex 论文", "url": "https://arxiv.org/abs/2107.03374"}]
+  },
+  {
+    "id": 6,
+    "date": "2022-03-23",
+    "title": "DeepMind AlphaCode 发表",
+    "description": "DeepMind 发布 AlphaCode，在 Codeforces 编程竞赛中达到约中位数参赛者水平。这展示了 AI 不仅能辅助写代码，还能解决复杂算法问题。",
+    "category": "company",
+    "impactScore": 7,
+    "relatedLinks": [{"label": "Science 论文", "url": "https://www.science.org/doi/10.1126/science.abq1158"}]
+  },
+  {
+    "id": 7,
+    "date": "2022-06-21",
+    "title": "GitHub Copilot 正式商用",
+    "description": "GitHub Copilot 结束技术预览，以每月 $10 的价格正式面向个人开发者开放。上线首年即吸引超过 100 万付费用户，成为增长最快的开发工具之一。",
+    "category": "tool_release",
+    "impactScore": 9,
+    "relatedLinks": [{"label": "定价页面", "url": "https://github.com/features/copilot"}]
+  },
+  {
+    "id": 8,
+    "date": "2022-09-15",
+    "title": "Tabnine 完成 2550 万美元融资",
+    "description": "AI 代码补全工具 Tabnine 完成新一轮融资，估值达到独角兽前水平。这反映了市场对 AI 编程工具赛道的看好。",
+    "category": "company",
+    "impactScore": 5,
+    "relatedLinks": [{"label": "Tabnine 官网", "url": "https://www.tabnine.com/"}]
+  },
+  {
+    "id": 9,
+    "date": "2022-11-30",
+    "title": "ChatGPT 发布：AI 编程民主化",
+    "description": "OpenAI 发布 ChatGPT，5 天内注册用户突破 100 万。大量非专业开发者开始通过对话方式让 AI 帮忙写代码，AI 编程从开发者工具扩展为全民技能。",
+    "category": "company",
+    "impactScore": 10,
+    "relatedLinks": [{"label": "OpenAI 公告", "url": "https://openai.com/blog/chatgpt"}]
+  },
+  {
+    "id": 10,
+    "date": "2023-02-07",
+    "title": "Stack Overflow 流量开始显著下降",
+    "description": "数据显示 ChatGPT 发布后，Stack Overflow 月访问量从 2022 年峰值的 17 亿开始持续下滑。开发者越来越倾向于直接向 AI 提问而非在论坛搜索答案。",
+    "category": "company",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "SimilarWeb 数据", "url": "https://www.similarweb.com/website/stackoverflow.com/"}]
+  },
+  {
+    "id": 11,
+    "date": "2023-03-14",
+    "title": "GPT-4 发布",
+    "description": "OpenAI 发布多模态大模型 GPT-4，在编码基准测试中大幅超越前代。GPT-4 可以通过 LeetCode Hard 级别题目，代码生成质量产生质的飞跃。",
+    "category": "company",
+    "impactScore": 9,
+    "relatedLinks": [{"label": "GPT-4 技术报告", "url": "https://openai.com/research/gpt-4"}]
+  },
+  {
+    "id": 12,
+    "date": "2023-03-27",
+    "title": "GitHub Copilot X 发布",
+    "description": "GitHub 发布 Copilot X，集成 GPT-4，新增聊天、PR 摘要、文档生成和 CLI 等功能，从单纯的代码补全进化为全方位 AI 开发伴侣。",
+    "category": "tool_release",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "GitHub 公告", "url": "https://github.blog/2023-03-22-github-copilot-x-the-ai-powered-developer-experience/"}]
+  },
+  {
+    "id": 13,
+    "date": "2023-07-11",
+    "title": "Meta 开源 Code Llama",
+    "description": "Meta 开源 Code Llama 系列模型（7B/13B/34B），基于 Llama 2 在代码数据上微调。这使得开发者可以免费部署自己的 AI 编程助手，推动了开源 AI 编程生态的发展。",
+    "category": "open_source",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "GitHub 仓库", "url": "https://github.com/facebookresearch/codellama"}]
+  },
+  {
+    "id": 14,
+    "date": "2023-10-18",
+    "title": "Cursor IDE 爆发式增长",
+    "description": "AI-first IDE Cursor 用户数突破增长拐点，以深度集成 AI 的编辑器体验吸引大量开发者。Cursor 代表了 AI 原生 IDE 的新趋势，直接挑战 VS Code 的统治地位。",
+    "category": "tool_release",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "Cursor 官网", "url": "https://cursor.sh/"}]
+  },
+  {
+    "id": 15,
+    "date": "2023-11-06",
+    "title": "拜登签署 AI 行政命令",
+    "description": "美国总统拜登签署关于 AI 安全的行政命令，要求对大型 AI 模型进行安全测试和报告。这是首个针对 AI（包括代码生成 AI）的重大政策法规。",
+    "category": "policy",
+    "impactScore": 7,
+    "relatedLinks": [{"label": "白宫公告", "url": "https://www.whitehouse.gov/ai/"}]
+  },
+  {
+    "id": 16,
+    "date": "2024-02-27",
+    "title": "Devin：首个 AI 软件工程师",
+    "description": "Cognition Labs 发布 Devin，号称首个完全自主的 AI 软件工程师。Devin 能独立完成从需求分析到部署的完整开发流程，引发了对 AI 是否会取代程序员的热烈讨论。",
+    "category": "tool_release",
+    "impactScore": 9,
+    "relatedLinks": [{"label": "Cognition Labs", "url": "https://www.cognition-labs.com/"}]
+  },
+  {
+    "id": 17,
+    "date": "2024-03-04",
+    "title": "Claude 3 系列发布",
+    "description": "Anthropic 发布 Claude 3 系列模型（Haiku/Sonnet/Opus），其中 Opus 在多项编码基准测试中与 GPT-4 持平甚至超越，为开发者提供了强有力的替代选择。",
+    "category": "company",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "Anthropic 公告", "url": "https://www.anthropic.com/news/claude-3-family"}]
+  },
+  {
+    "id": 18,
+    "date": "2024-06-20",
+    "title": "GitHub 报告：AI 代码占比达 40%",
+    "description": "GitHub CEO Thomas Dohmke 在演讲中透露，GitHub 上新提交的代码中约 40% 由 AI 辅助生成。这一数据标志着 AI 已从辅助工具变成了软件开发的核心力量。",
+    "category": "company",
+    "impactScore": 9,
+    "relatedLinks": [{"label": "GitHub Universe", "url": "https://githubuniverse.com/"}]
+  },
+  {
+    "id": 19,
+    "date": "2024-08-14",
+    "title": "Cursor 估值突破 4 亿美元",
+    "description": "AI 编程 IDE Cursor 的开发公司 Anysphere 完成新一轮融资，估值超过 4 亿美元。这标志着 AI 原生开发工具已获得主流资本的认可。",
+    "category": "company",
+    "impactScore": 7,
+    "relatedLinks": [{"label": "融资报道", "url": "https://cursor.sh/"}]
+  },
+  {
+    "id": 20,
+    "date": "2024-10-29",
+    "title": "Anthropic 发布 Claude Code CLI",
+    "description": "Anthropic 推出 Claude Code，一个在终端中运行的 AI 编程代理。它能直接操作文件系统、运行命令，成为首个成熟的终端原生 AI 编程工具。",
+    "category": "tool_release",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "Claude Code", "url": "https://docs.anthropic.com/en/docs/claude-code"}]
+  },
+  {
+    "id": 21,
+    "date": "2024-12-09",
+    "title": "EU AI Act 正式生效",
+    "description": "欧盟《人工智能法案》正式生效，将 AI 系统按风险等级分类监管。AI 代码生成工具属于有限风险类别，需满足透明度要求。全球 AI 监管进入新时代。",
+    "category": "policy",
+    "impactScore": 7,
+    "relatedLinks": [{"label": "EU AI Act", "url": "https://artificialintelligenceact.eu/"}]
+  },
+  {
+    "id": 22,
+    "date": "2025-01-21",
+    "title": "DeepSeek-R1 开源震动硅谷",
+    "description": "中国 AI 公司深度求索开源 DeepSeek-R1 推理模型，在编码任务中表现出色且训练成本极低。引发全球对 AI 开源路线和中美 AI 竞争的重新审视。",
+    "category": "open_source",
+    "impactScore": 9,
+    "relatedLinks": [{"label": "DeepSeek 官网", "url": "https://www.deepseek.com/"}]
+  },
+  {
+    "id": 23,
+    "date": "2025-02-24",
+    "title": "GitHub Copilot 免费版永久开放",
+    "description": "GitHub 宣布 Copilot 免费版永久对所有开发者开放，每月提供 2000 次代码补全。此举旨在加速 AI 编程工具的普及，进一步巩固市场领导地位。",
+    "category": "tool_release",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "GitHub 博客", "url": "https://github.blog/"}]
+  },
+  {
+    "id": 24,
+    "date": "2025-04-15",
+    "title": "Stack Overflow 流量较峰值下降 55%",
+    "description": "2025 年初数据显示，Stack Overflow 月访问量较 2022 年峰值已下降约 55%。尽管平台推出了 AI 功能 OverflowAI，但仍未能扭转用户流失趋势。",
+    "category": "company",
+    "impactScore": 8,
+    "relatedLinks": [{"label": "流量分析", "url": "https://www.similarweb.com/"}]
+  },
+  {
+    "id": 25,
+    "date": "2025-05-22",
+    "title": "Claude 4 / Opus 4 发布",
+    "description": "Anthropic 发布 Claude 4 系列，其中 Opus 4 成为编码任务的新标杆，在 SWE-bench 上取得历史最高分。Claude Code 同步升级，支持多文件编辑和自主调试。",
+    "category": "company",
+    "impactScore": 9,
+    "relatedLinks": [{"label": "Anthropic", "url": "https://www.anthropic.com/"}]
+  }
+]

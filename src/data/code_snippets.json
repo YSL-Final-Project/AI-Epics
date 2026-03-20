@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "language": "Python",
+    "code": "def fibonacci(n):\n    if n <= 0:\n        return []\n    elif n == 1:\n        return [0]\n    \n    fib = [0, 1]\n    for i in range(2, n):\n        fib.append(fib[i-1] + fib[i-2])\n    return fib",
+    "source": "human",
+    "explanation": "这是一段经典的人写代码，变量命名简洁，逻辑清晰，使用传统循环方式实现斐波那契数列。"
+  },
+  {
+    "id": 2,
+    "language": "JavaScript",
+    "code": "const debounce = (func, wait, immediate = false) => {\n  let timeout;\n  return function executedFunction(...args) {\n    const context = this;\n    const later = () => {\n      timeout = null;\n      if (!immediate) func.apply(context, args);\n    };\n    const callNow = immediate && !timeout;\n    clearTimeout(timeout);\n    timeout = setTimeout(later, wait);\n    if (callNow) func.apply(context, args);\n  };\n};",
+    "source": "ai",
+    "explanation": "AI 生成的代码通常会添加额外的功能（如 immediate 参数），且注释变量名更为详细（executedFunction）。"
+  },
+  {
+    "id": 3,
+    "language": "Python",
+    "code": "def merge_sort(arr):\n    \"\"\"Implement merge sort algorithm.\n    \n    Args:\n        arr: List of comparable elements to sort.\n    \n    Returns:\n        New sorted list.\n    \"\"\"\n    if len(arr) <= 1:\n        return arr\n    \n    mid = len(arr) // 2\n    left_half = merge_sort(arr[:mid])\n    right_half = merge_sort(arr[mid:])\n    \n    return merge(left_half, right_half)\n\ndef merge(left, right):\n    \"\"\"Merge two sorted lists into one sorted list.\"\"\"\n    result = []\n    i = j = 0\n    \n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i])\n            i += 1\n        else:\n            result.append(right[j])\n            j += 1\n    \n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result",
+    "source": "ai",
+    "explanation": "AI 倾向于生成完整的 docstring 文档和类型说明，且代码结构非常规范，几乎像教科书一样。"
+  },
+  {
+    "id": 4,
+    "language": "JavaScript",
+    "code": "function formatDate(d) {\n  var m = d.getMonth() + 1;\n  var day = d.getDate();\n  var y = d.getFullYear();\n  return y + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;\n}",
+    "source": "human",
+    "explanation": "使用 var 声明、手动补零的字符串拼接——这是典型的人写的老式 JavaScript 风格。"
+  },
+  {
+    "id": 5,
+    "language": "TypeScript",
+    "code": "interface CacheOptions<T> {\n  maxSize: number;\n  ttl: number;\n  onEvict?: (key: string, value: T) => void;\n}\n\nclass LRUCache<T> {\n  private cache = new Map<string, { value: T; expiry: number }>();\n  private options: CacheOptions<T>;\n\n  constructor(options: CacheOptions<T>) {\n    this.options = options;\n  }\n\n  get(key: string): T | undefined {\n    const entry = this.cache.get(key);\n    if (!entry) return undefined;\n    if (Date.now() > entry.expiry) {\n      this.cache.delete(key);\n      return undefined;\n    }\n    // Move to end (most recently used)\n    this.cache.delete(key);\n    this.cache.set(key, entry);\n    return entry.value;\n  }\n\n  set(key: string, value: T): void {\n    if (this.cache.has(key)) {\n      this.cache.delete(key);\n    } else if (this.cache.size >= this.options.maxSize) {\n      const firstKey = this.cache.keys().next().value!;\n      const evicted = this.cache.get(firstKey)!;\n      this.cache.delete(firstKey);\n      this.options.onEvict?.(firstKey, evicted.value);\n    }\n    this.cache.set(key, { value, expiry: Date.now() + this.options.ttl });\n  }\n}",
+    "source": "ai",
+    "explanation": "AI 生成的代码特征：完整的泛型类型、详细的接口定义、可选回调函数，以及考虑周全的边界情况处理。"
+  },
+  {
+    "id": 6,
+    "language": "Python",
+    "code": "# quick n dirty csv parser lol\ndef parse_csv(fname):\n    rows = []\n    with open(fname) as f:\n        hdrs = f.readline().strip().split(',')\n        for line in f:\n            vals = line.strip().split(',')\n            rows.append(dict(zip(hdrs, vals)))\n    return rows",
+    "source": "human",
+    "explanation": "口语化注释（'quick n dirty', 'lol'）、简短缩写变量名（fname, hdrs, vals）是典型的人类程序员快速编码风格。"
+  },
+  {
+    "id": 7,
+    "language": "JavaScript",
+    "code": "const deepClone = (obj) => {\n  if (obj === null || typeof obj !== 'object') return obj;\n  if (obj instanceof Date) return new Date(obj.getTime());\n  if (obj instanceof RegExp) return new RegExp(obj.source, obj.flags);\n  if (Array.isArray(obj)) return obj.map(item => deepClone(item));\n  \n  const cloned = Object.create(Object.getPrototypeOf(obj));\n  for (const key of Reflect.ownKeys(obj)) {\n    const descriptor = Object.getOwnPropertyDescriptor(obj, key);\n    if (descriptor) {\n      if ('value' in descriptor) {\n        descriptor.value = deepClone(descriptor.value);\n      }\n      Object.defineProperty(cloned, key, descriptor);\n    }\n  }\n  return cloned;\n};",
+    "source": "ai",
+    "explanation": "AI 生成的深拷贝考虑了 Date、RegExp、原型链、属性描述符等各种边界情况，比人类通常考虑的要全面得多。"
+  },
+  {
+    "id": 8,
+    "language": "Python",
+    "code": "import re\n\ndef extract_emails(text):\n    pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}'\n    return list(set(re.findall(pattern, text)))\n\n# usage: emails = extract_emails(my_text)",
+    "source": "human",
+    "explanation": "简短实用的工具函数，带有使用示例注释。正则表达式虽然正确但不够全面——这是人类程序员的典型'够用就好'风格。"
+  },
+  {
+    "id": 9,
+    "language": "TypeScript",
+    "code": "type EventMap = Record<string, unknown[]>;\n\nclass EventEmitter<T extends EventMap> {\n  private handlers = new Map<keyof T, Set<Function>>();\n\n  on<K extends keyof T>(event: K, handler: (...args: T[K]) => void) {\n    if (!this.handlers.has(event)) {\n      this.handlers.set(event, new Set());\n    }\n    this.handlers.get(event)!.add(handler);\n    return () => this.off(event, handler);\n  }\n\n  off<K extends keyof T>(event: K, handler: (...args: T[K]) => void) {\n    this.handlers.get(event)?.delete(handler);\n  }\n\n  emit<K extends keyof T>(event: K, ...args: T[K]) {\n    this.handlers.get(event)?.forEach(h => (h as Function)(...args));\n  }\n}",
+    "source": "human",
+    "explanation": "虽然类型安全做得很好，但 Function 类型的强制转换暴露了人类程序员的实用主义——AI 通常会避免使用 Function 类型。"
+  },
+  {
+    "id": 10,
+    "language": "Python",
+    "code": "def calculate_statistics(data: list[float]) -> dict[str, float]:\n    \"\"\"Calculate comprehensive statistics for a dataset.\n    \n    Parameters:\n        data: A list of numerical values.\n    \n    Returns:\n        A dictionary containing mean, median, std_dev,\n        min, max, and range of the dataset.\n    \n    Raises:\n        ValueError: If the input list is empty.\n    \"\"\"\n    if not data:\n        raise ValueError(\"Cannot calculate statistics for an empty dataset.\")\n    \n    n = len(data)\n    sorted_data = sorted(data)\n    \n    mean = sum(data) / n\n    \n    if n % 2 == 0:\n        median = (sorted_data[n // 2 - 1] + sorted_data[n // 2]) / 2\n    else:\n        median = sorted_data[n // 2]\n    \n    variance = sum((x - mean) ** 2 for x in data) / n\n    std_dev = variance ** 0.5\n    \n    return {\n        \"mean\": round(mean, 4),\n        \"median\": round(median, 4),\n        \"std_dev\": round(std_dev, 4),\n        \"min\": min(data),\n        \"max\": max(data),\n        \"range\": max(data) - min(data),\n    }",
+    "source": "ai",
+    "explanation": "AI 典型特征：完整的 docstring（含 Parameters、Returns、Raises 段）、输入验证、round() 处理浮点精度，代码结构教科书般规范。"
+  }
+]

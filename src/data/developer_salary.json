@@ -1,0 +1,31 @@
+{
+  "salaryComparison": [
+    {"category": "初级开发者", "withAI": 75000, "withoutAI": 65000},
+    {"category": "中级开发者", "withAI": 115000, "withoutAI": 100000},
+    {"category": "高级开发者", "withAI": 165000, "withoutAI": 148000},
+    {"category": "架构师", "withAI": 195000, "withoutAI": 180000},
+    {"category": "技术主管", "withAI": 210000, "withoutAI": 195000}
+  ],
+  "jobTrends": [
+    {"year": 2018, "positions": 920000},
+    {"year": 2019, "positions": 980000},
+    {"year": 2020, "positions": 890000},
+    {"year": 2021, "positions": 1050000},
+    {"year": 2022, "positions": 1150000},
+    {"year": 2023, "positions": 980000},
+    {"year": 2024, "positions": 850000},
+    {"year": 2025, "positions": 820000}
+  ],
+  "proficiencyVsSalary": [
+    {"proficiency": 10, "salary": 62000, "label": "完全不了解 AI"},
+    {"proficiency": 20, "salary": 68000, "label": "听说过"},
+    {"proficiency": 30, "salary": 75000, "label": "偶尔使用 ChatGPT"},
+    {"proficiency": 40, "salary": 85000, "label": "日常使用 Copilot"},
+    {"proficiency": 50, "salary": 98000, "label": "熟练使用多个工具"},
+    {"proficiency": 60, "salary": 112000, "label": "能定制 AI 工作流"},
+    {"proficiency": 70, "salary": 128000, "label": "AI 原生开发者"},
+    {"proficiency": 80, "salary": 145000, "label": "AI 工具链专家"},
+    {"proficiency": 85, "salary": 160000, "label": "AI 应用架构师"},
+    {"proficiency": 95, "salary": 185000, "label": "AI 基础设施工程师"}
+  ]
+}

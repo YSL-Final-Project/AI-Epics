@@ -1,0 +1,26 @@
+{
+  "overallPercentage": 40,
+  "industryComparison": [
+    {"industry": "Web 前端开发", "percentage": 52},
+    {"industry": "移动端开发", "percentage": 38},
+    {"industry": "数据科学", "percentage": 45},
+    {"industry": "DevOps/云", "percentage": 35},
+    {"industry": "嵌入式/IoT", "percentage": 18},
+    {"industry": "游戏开发", "percentage": 28},
+    {"industry": "企业后端", "percentage": 42}
+  ],
+  "acceptanceRate": [
+    {"month": "2023-01", "rate": 22},
+    {"month": "2023-03", "rate": 24},
+    {"month": "2023-06", "rate": 27},
+    {"month": "2023-09", "rate": 29},
+    {"month": "2023-12", "rate": 31},
+    {"month": "2024-01", "rate": 32},
+    {"month": "2024-03", "rate": 34},
+    {"month": "2024-06", "rate": 36},
+    {"month": "2024-09", "rate": 38},
+    {"month": "2024-12", "rate": 40},
+    {"month": "2025-01", "rate": 41},
+    {"month": "2025-03", "rate": 43}
+  ]
+}

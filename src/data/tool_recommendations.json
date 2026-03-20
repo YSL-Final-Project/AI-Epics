@@ -1,0 +1,20 @@
+[
+  {"language": "Python", "experienceLevel": "beginner", "tool": "GitHub Copilot", "reason": "Copilot 对 Python 支持最成熟，免费版足够入门使用，且 VS Code 集成体验流畅。"},
+  {"language": "Python", "experienceLevel": "intermediate", "tool": "Cursor", "reason": "Cursor 的代码库级别理解能力能帮助你更好地重构和优化 Python 项目。"},
+  {"language": "Python", "experienceLevel": "advanced", "tool": "Claude Code", "reason": "Claude Code 的 200K 上下文窗口和终端集成非常适合管理大型 Python 项目和复杂调试。"},
+  {"language": "JavaScript", "experienceLevel": "beginner", "tool": "GitHub Copilot", "reason": "Copilot 在 JavaScript/TypeScript 上训练数据最丰富，代码补全准确率最高。"},
+  {"language": "JavaScript", "experienceLevel": "intermediate", "tool": "Cursor", "reason": "Cursor 的 AI 原生 IDE 体验特别适合前端开发，可以理解整个项目上下文。"},
+  {"language": "JavaScript", "experienceLevel": "advanced", "tool": "Claude Code", "reason": "Claude Code 能直接运行 npm 命令和测试，适合全栈 JavaScript 高级工作流。"},
+  {"language": "Java", "experienceLevel": "beginner", "tool": "GitHub Copilot", "reason": "Copilot 的 JetBrains 插件与 IntelliJ IDEA 集成良好，适合 Java 初学者。"},
+  {"language": "Java", "experienceLevel": "intermediate", "tool": "Cody", "reason": "Cody 对大型 Java 代码库的理解能力出色，且支持 JetBrains IDE。"},
+  {"language": "Java", "experienceLevel": "advanced", "tool": "Claude Code", "reason": "Claude Code 能理解复杂的 Java 企业架构，辅助大规模重构和设计模式优化。"},
+  {"language": "Go", "experienceLevel": "beginner", "tool": "GitHub Copilot", "reason": "Copilot 对 Go 语言的惯用写法支持良好，能帮助初学者写出地道的 Go 代码。"},
+  {"language": "Go", "experienceLevel": "intermediate", "tool": "Cursor", "reason": "Cursor 能理解 Go 的包结构和接口设计，提供上下文相关的建议。"},
+  {"language": "Go", "experienceLevel": "advanced", "tool": "Claude Code", "reason": "Claude Code 适合处理 Go 微服务架构的复杂调试和性能优化。"},
+  {"language": "Rust", "experienceLevel": "beginner", "tool": "GitHub Copilot", "reason": "Copilot 能帮助 Rust 初学者处理所有权和生命周期等复杂概念。"},
+  {"language": "Rust", "experienceLevel": "intermediate", "tool": "Claude Code", "reason": "Claude Code 对 Rust 的编译错误分析特别出色，能解释并修复 borrow checker 报错。"},
+  {"language": "Rust", "experienceLevel": "advanced", "tool": "Claude Code", "reason": "Claude Code 的深度代码分析能力适合处理复杂的 unsafe 代码和高性能 Rust 项目。"},
+  {"language": "TypeScript", "experienceLevel": "beginner", "tool": "Cursor", "reason": "Cursor 的 AI 编辑器对 TypeScript 类型推导支持极好，非常适合初学者。"},
+  {"language": "TypeScript", "experienceLevel": "intermediate", "tool": "Cursor", "reason": "Cursor 理解 TypeScript 复杂类型系统，能提供精准的类型建议和重构。"},
+  {"language": "TypeScript", "experienceLevel": "advanced", "tool": "Claude Code", "reason": "Claude Code 适合大型 TypeScript 项目的架构级别重构和复杂泛型设计。"}
+]
