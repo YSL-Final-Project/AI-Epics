@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
@@ -7,12 +8,14 @@ import CursorFollower from './components/CursorFollower';
 import ScrollProgress from './components/ScrollProgress';
 import WelcomeToast from './components/WelcomeToast';
 import MatrixEasterEgg from './components/MatrixEasterEgg';
-import HomePage from './pages/HomePage';
-import TimelinePage from './pages/TimelinePage';
-import DataExplorerPage from './pages/DataExplorerPage';
-import ComparePage from './pages/ComparePage';
-import InteractivePage from './pages/InteractivePage';
-import AboutPage from './pages/AboutPage';
+
+const HomePage = lazy(() => import('./pages/HomePage'));
+const TimelinePage = lazy(() => import('./pages/TimelinePage'));
+const DataExplorerPage = lazy(() => import('./pages/DataExplorerPage'));
+const ComparePage = lazy(() => import('./pages/ComparePage'));
+const InteractivePage = lazy(() => import('./pages/InteractivePage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function App() {
   return (
@@ -28,16 +31,19 @@ function App() {
           <MatrixEasterEgg />
           <Navbar />
           <main className="relative">
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/timeline" element={<TimelinePage />} />
-                <Route path="/data" element={<DataExplorerPage />} />
-                <Route path="/compare" element={<ComparePage />} />
-                <Route path="/interactive" element={<InteractivePage />} />
-                <Route path="/about" element={<AboutPage />} />
-              </Routes>
-            </AnimatePresence>
+            <Suspense fallback={<div className="min-h-screen" />}>
+              <AnimatePresence mode="wait">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/timeline" element={<TimelinePage />} />
+                  <Route path="/data" element={<DataExplorerPage />} />
+                  <Route path="/compare" element={<ComparePage />} />
+                  <Route path="/interactive" element={<InteractivePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </AnimatePresence>
+            </Suspense>
           </main>
           <Footer />
         </div>

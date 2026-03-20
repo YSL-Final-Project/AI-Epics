@@ -7,25 +7,10 @@ import trafficData from '../../data/stackoverflow_traffic.json';
 import surveyData from '../../data/stackoverflow_survey.json';
 import type { SOTrafficPoint, SOSurveyData } from '../../types';
 import { useTheme } from '../../context/ThemeContext';
+import LineReveal from '../../components/animations/LineReveal';
 
 const traffic = trafficData as SOTrafficPoint[];
 const survey = surveyData as SOSurveyData;
-
-function LineReveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const prefersReduced = useReducedMotion();
-  return (
-    <div className={`overflow-hidden ${className}`}>
-      <motion.div
-        initial={prefersReduced ? false : { y: '105%' }}
-        whileInView={{ y: '0%' }}
-        viewport={{ once: true }}
-        transition={{ delay, duration: 0.75, ease: [0.32, 0.72, 0, 1] }}
-      >
-        {children}
-      </motion.div>
-    </div>
-  );
-}
 
 function MinimalTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
@@ -83,7 +68,7 @@ export default function StackOverflowTab() {
           </LineReveal>
           <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
         </div>
-        <div className="rounded-2xl p-4 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]">
+        <div className="overflow-x-auto rounded-2xl p-4 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]">
           <ResponsiveContainer width="100%" height={320}>
             <LineChart data={traffic}>
               <XAxis dataKey="month" tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} interval={3} />
@@ -109,7 +94,7 @@ export default function StackOverflowTab() {
           </LineReveal>
           <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
         </div>
-        <div className="rounded-2xl p-4 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]">
+        <div className="overflow-x-auto rounded-2xl p-4 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]">
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={survey.annualQuestions}>
               <XAxis dataKey="year" tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} />

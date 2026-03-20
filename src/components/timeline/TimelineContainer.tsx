@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import timelineData from '../../data/timeline_events.json';
 import type { TimelineEvent as TimelineEventType } from '../../types';
@@ -6,8 +6,15 @@ import TimelineFilter from './TimelineFilter';
 import TimelineEvent from './TimelineEvent';
 
 export default function TimelineContainer() {
+  const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
+
+  // Debounce search by 300ms
+  useEffect(() => {
+    const timer = setTimeout(() => setSearchQuery(searchInput), 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
   const prefersReduced = useReducedMotion();
 
   const events = timelineData as TimelineEventType[];
@@ -36,8 +43,8 @@ export default function TimelineContainer() {
   return (
     <div className="max-w-4xl mx-auto px-5 sm:px-8 pb-32">
       <TimelineFilter
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        searchQuery={searchInput}
+        onSearchChange={setSearchInput}
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
       />

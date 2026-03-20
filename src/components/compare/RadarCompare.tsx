@@ -91,6 +91,7 @@ export default function RadarCompare() {
         <span className="text-xs text-slate-400 self-center ml-2">选择 1-3 种语言</span>
       </div>
 
+      <div className="overflow-x-auto">
       <ResponsiveContainer width="100%" height={400}>
         <RadarChart data={radarData}>
           <PolarGrid stroke={theme === 'dark' ? '#334155' : '#e2e8f0'} />
@@ -121,6 +122,7 @@ export default function RadarCompare() {
           />
         </RadarChart>
       </ResponsiveContainer>
+      </div>
     </div>
   );
 }

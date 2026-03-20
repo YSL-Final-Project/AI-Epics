@@ -5,9 +5,9 @@ import DataSourceList from '../components/about/DataSourceList';
 import ContactForm from '../components/about/ContactForm';
 
 const teamMembers = [
-  { name: '成员 A', role: '前端开发 / 数据可视化', avatar: '👨‍💻', github: 'https://github.com/' },
-  { name: '成员 B', role: '数据采集 / 研究分析', avatar: '👩‍🔬', github: 'https://github.com/' },
-  { name: '成员 C', role: 'UI 设计 / 交互设计', avatar: '🎨', github: 'https://github.com/' },
+  { name: 'Chengkun Liao', role: 'Scrum Master / 首页 & 关于页开发', avatar: '👨‍💻', github: 'https://github.com/' },
+  { name: 'Junyao Yang', role: '数据架构 / 数据洞察 & 竞技场开发', avatar: '👩‍🔬', github: 'https://github.com/' },
+  { name: 'Mingjie Shen', role: '交互设计 / 时间线 & 实验室开发', avatar: '🎨', github: 'https://github.com/' },
 ];
 
 const sectionVariants = {

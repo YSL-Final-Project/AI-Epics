@@ -30,7 +30,7 @@ export default function IDEMarketChart() {
   return (
     <div className="space-y-10">
       {/* Stacked Bar: Market Share */}
-      <div>
+      <div className="overflow-x-auto">
         <h4 className="text-base font-semibold text-slate-900 dark:text-white mb-4">
           IDE 市场占有率变化 (2019-2025)
         </h4>
@@ -50,7 +50,7 @@ export default function IDEMarketChart() {
       </div>
 
       {/* Bubble Chart: Ecosystem */}
-      <div>
+      <div className="overflow-x-auto">
         <h4 className="text-base font-semibold text-slate-900 dark:text-white mb-4">
           IDE 插件生态 vs AI 集成程度
         </h4>

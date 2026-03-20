@@ -7,6 +7,8 @@ import PagePreviewCard from '../components/home/PagePreviewCard';
 import ParticleField from '../components/ParticleField';
 import ChapterDots from '../components/ChapterDots';
 import StickyScrollNarrative from '../components/StickyScrollNarrative';
+import LineReveal from '../components/animations/LineReveal';
+import ScaleReveal from '../components/animations/ScaleReveal';
 import type { PagePreview } from '../types';
 
 const pagesPreviews: PagePreview[] = [
@@ -53,56 +55,6 @@ const CHAPTERS = [
   { id: 'chapter-stats',     label: '数据' },
   { id: 'chapter-explore',   label: '探索' },
 ];
-
-// ─── Apple-style clip-path line reveal ────────────────────────────────────────
-// Each LINE reveals upward from a hidden clip — cleaner than overflow+translate
-function LineReveal({
-  children,
-  delay = 0,
-  className = '',
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const prefersReduced = useReducedMotion();
-  return (
-    <div className={`overflow-hidden ${className}`}>
-      <motion.div
-        initial={prefersReduced ? false : { y: '102%' }}
-        whileInView={{ y: '0%' }}
-        viewport={{ once: true, margin: '-40px' }}
-        transition={{ delay, duration: 0.82, ease: [0.32, 0.72, 0, 1] }}
-      >
-        {children}
-      </motion.div>
-    </div>
-  );
-}
-
-// ─── Apple-style scale+blur reveal for block elements ─────────────────────────
-function ScaleReveal({
-  children,
-  delay = 0,
-  className = '',
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const prefersReduced = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={prefersReduced ? false : { opacity: 0, scale: 0.94, filter: 'blur(8px)' }}
-      whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ delay, duration: 0.65, ease: [0.32, 0.72, 0, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 // ─── Char-by-char 3D reveal (hero only) ───────────────────────────────────────
 function SplitChars({

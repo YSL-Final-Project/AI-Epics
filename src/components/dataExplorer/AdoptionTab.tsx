@@ -6,24 +6,9 @@ import {
 import adoptionData from '../../data/ai_adoption.json';
 import type { AIAdoptionData } from '../../types';
 import { useTheme } from '../../context/ThemeContext';
+import LineReveal from '../../components/animations/LineReveal';
 
 const data = adoptionData as AIAdoptionData;
-
-function LineReveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const prefersReduced = useReducedMotion();
-  return (
-    <div className={`overflow-hidden ${className}`}>
-      <motion.div
-        initial={prefersReduced ? false : { y: '105%' }}
-        whileInView={{ y: '0%' }}
-        viewport={{ once: true }}
-        transition={{ delay, duration: 0.75, ease: [0.32, 0.72, 0, 1] }}
-      >
-        {children}
-      </motion.div>
-    </div>
-  );
-}
 
 // Custom minimal tooltip
 function MinimalTooltip({ active, payload, label }: any) {
@@ -99,7 +84,7 @@ export default function AdoptionTab() {
           ))}
         </div>
 
-        <div className="rounded-2xl p-4 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]">
+        <div className="overflow-x-auto rounded-2xl p-4 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]">
           <ResponsiveContainer width="100%" height={320}>
             <AreaChart data={data.userGrowth}>
               <XAxis dataKey="month" tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} interval={2} />

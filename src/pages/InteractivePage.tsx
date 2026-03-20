@@ -3,37 +3,8 @@ import PageTransition from '../components/layout/PageTransition';
 import CodeQuiz from '../components/interactive/CodeQuiz';
 import PredictionVote from '../components/interactive/PredictionVote';
 import ToolRecommender from '../components/interactive/ToolRecommender';
-
-function LineReveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const prefersReduced = useReducedMotion();
-  return (
-    <div className={`overflow-hidden ${className}`}>
-      <motion.div
-        initial={prefersReduced ? false : { y: '105%' }}
-        whileInView={{ y: '0%' }}
-        viewport={{ once: true }}
-        transition={{ delay, duration: 0.75, ease: [0.32, 0.72, 0, 1] }}
-      >
-        {children}
-      </motion.div>
-    </div>
-  );
-}
-
-function ScaleReveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const prefersReduced = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={prefersReduced ? false : { opacity: 0, scale: 0.95, filter: 'blur(6px)' }}
-      whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ delay, duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
+import LineReveal from '../components/animations/LineReveal';
+import ScaleReveal from '../components/animations/ScaleReveal';
 
 const sections = [
   { id: 'quiz', label: '01', title: 'Code Quiz', Component: CodeQuiz },
