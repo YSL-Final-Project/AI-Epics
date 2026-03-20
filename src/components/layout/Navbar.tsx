@@ -10,6 +10,7 @@ const navLinks = [
   { path: '/data',       label: '洞察' },
   { path: '/compare',    label: '竞技场' },
   { path: '/interactive',label: '实验室' },
+  { path: '/story',      label: '故事' },
   { path: '/about',      label: '关于' },
 ];
 
