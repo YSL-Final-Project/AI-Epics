@@ -42,7 +42,7 @@ const ch1Timeline = [
 export default function StoryPage() {
   return (
     <div className="dark">
-      <div className="bg-[#0a0a0f] text-white min-h-screen selection:bg-cyan-500/30 overflow-x-hidden">
+      <div className="bg-[#0a0a0f] text-white min-h-screen selection:bg-cyan-500/30" style={{ overflowX: 'clip' }}>
         <Starfield density={250} speed={0.2} />
         <StoryNav />
 
