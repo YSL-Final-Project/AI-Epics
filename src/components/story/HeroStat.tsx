@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useMotionValueEvent, MotionValue } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, useMotionValueEvent, MotionValue } from 'framer-motion';
 import ScrollLinkedCounter from './ScrollLinkedCounter';
 
 interface HeroStatProps {
@@ -29,6 +29,8 @@ export default function HeroStat({
   const span = end - start;
 
   const [style, setStyle] = useState({ opacity: 0, scale: 0.9 });
+  const [pulse, setPulse] = useState(false);
+  const hasPulsed = useRef(false);
 
   useMotionValueEvent(progress, 'change', (p) => {
     let opacity = 0;
@@ -48,6 +50,20 @@ export default function HeroStat({
     else scale = 0.95;
 
     setStyle({ opacity, scale });
+
+    // Pulse when counter reaches ~97% of target
+    const counterEnd = start + span * 0.6;
+    const fraction = (p - (start + span * 0.05)) / (counterEnd - (start + span * 0.05));
+    if (fraction >= 0.95 && !hasPulsed.current) {
+      hasPulsed.current = true;
+      setPulse(true);
+      setTimeout(() => setPulse(false), 1200);
+    }
+
+    // Reset pulse when scrolling back
+    if (p < start + span * 0.1) {
+      hasPulsed.current = false;
+    }
   });
 
   return (
@@ -55,16 +71,31 @@ export default function HeroStat({
       style={{ opacity: style.opacity, transform: `scale(${style.scale})` }}
       className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center"
     >
-      <ScrollLinkedCounter
-        progress={progress}
-        from={from}
-        to={to}
-        range={[start + span * 0.05, start + span * 0.6]}
-        prefix={prefix}
-        suffix={suffix}
-        decimals={decimals}
-        className="text-6xl sm:text-8xl md:text-9xl font-black text-white tabular-nums tracking-tight"
-      />
+      <div className="relative">
+        <ScrollLinkedCounter
+          progress={progress}
+          from={from}
+          to={to}
+          range={[start + span * 0.05, start + span * 0.6]}
+          prefix={prefix}
+          suffix={suffix}
+          decimals={decimals}
+          className="text-6xl sm:text-8xl md:text-9xl font-black text-white tabular-nums tracking-tight"
+        />
+
+        {/* Arrival pulse ring */}
+        {pulse && (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0.5 }}
+            animate={{ scale: 4, opacity: 0 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          >
+            <div className="w-16 h-16 rounded-full border border-cyan-400/40" />
+          </motion.div>
+        )}
+      </div>
+
       <p className="mt-6 text-lg sm:text-xl text-white/50 font-light max-w-lg">
         {label}
       </p>

@@ -132,6 +132,7 @@ export default function RacingBarChart() {
                   <motion.div
                     key={lang.name}
                     layout
+                    layoutId={`lang-row-${lang.name}`}
                     transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
                     className="flex items-center gap-3"
                     data-cursor-label={lang.name}

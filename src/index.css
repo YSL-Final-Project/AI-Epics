@@ -872,6 +872,23 @@
   66% { transform: translate(2%, 3%); }
 }
 
+/* ============================================
+   AMBIENT CURSOR GLOW
+   ============================================ */
+.ambient-glow::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    650px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(6, 182, 212, 0.04),
+    transparent 65%
+  );
+  transition: background 0.3s ease;
+}
+
 /* Story page has its own dark world — use a fade-only transition for it */
 ::view-transition-old(story-root),
 ::view-transition-new(story-root) {
