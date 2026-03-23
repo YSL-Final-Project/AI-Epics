@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, useTransform, useMotionValueEvent, MotionValue, useScroll } from 'framer-motion';
+import { motion, useTransform, useMotionValueEvent, MotionValue, useScroll, useVelocity, useSpring } from 'framer-motion';
 import StickyChapter from '../components/story/StickyChapter';
 import ChapterTitle from '../components/story/ChapterTitle';
 import HeroStat from '../components/story/HeroStat';
@@ -12,6 +12,8 @@ import Starfield from '../components/story/Starfield';
 import GlitchText from '../components/story/GlitchText';
 import { Link } from 'react-router-dom';
 import ScrollRevealText from '../components/story/ScrollRevealText';
+import AmbientLight from '../components/shared/AmbientLight';
+import DualWaveText from '../components/story/DualWaveText';
 
 const industryData = [
   { label: 'Web 前端', value: 52 },
@@ -43,7 +45,8 @@ const ch1Timeline = [
 export default function StoryPage() {
   return (
     <div className="dark">
-      <div className="bg-[#0a0a0f] text-white min-h-screen selection:bg-cyan-500/30" style={{ overflowX: 'clip' }}>
+      <div className="bg-[#0a0a0f] text-white min-h-screen selection:bg-cyan-500/30 ambient-glow" style={{ overflowX: 'clip' }}>
+        <AmbientLight />
         <Starfield density={250} speed={0.2} />
         <div className="film-grain" />
         <StoryNav />
@@ -57,6 +60,7 @@ export default function StoryPage() {
         <NarrativeBreak
           text="在那之前，一切都还很简单。"
           subtext="代码是人类写的。毫无例外。"
+          ribbon="BEFORE AI"
         />
 
         {/* ═══════════════ CHAPTER 1: THE QUIET BEFORE ═══════════════ */}
@@ -80,6 +84,7 @@ export default function StoryPage() {
           text="然后，2022年11月30日，"
           subtext="世界醒来发现规则已经改变。"
           glitch
+          ribbon="CHATGPT"
         />
 
         {/* ═══════════════ CHAPTER 2: THE EXPLOSION ═══════════════ */}
@@ -98,10 +103,14 @@ export default function StoryPage() {
           )}
         </StickyChapter>
 
+        {/* Dual-wave: AI vs Human tension */}
+        <DualWaveText />
+
         {/* Narrative transition: Chapter 2 → Chapter 3 */}
         <NarrativeBreak
           text="当尘埃落定，一个问题浮现——"
           subtext="开发者，到底还剩下什么？"
+          ribbon="HUMAN vs MACHINE"
         />
 
         {/* ═══════════════ CHAPTER 3: THE NEW DEVELOPER ═══════════════ */}
@@ -133,14 +142,42 @@ export default function StoryPage() {
 /* ──────────────────────────────────────────────────── */
 /*  NARRATIVE BREAK — emotional transitions             */
 /* ──────────────────────────────────────────────────── */
-function NarrativeBreak({ text, subtext, glitch = false }: { text: string; subtext: string; glitch?: boolean }) {
+function VelocityRibbon({ ribbon }: { ribbon?: string }) {
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const skewX = useSpring(
+    useTransform(scrollVelocity, [-3000, 3000], [12, -12]),
+    { stiffness: 400, damping: 40 }
+  );
+  const x = useSpring(
+    useTransform(scrollVelocity, [-3000, 3000], [-30, 30]),
+    { stiffness: 200, damping: 30 }
+  );
+  if (!ribbon) return null;
+  const repeated = `${ribbon} · ${ribbon} · ${ribbon} · ${ribbon} · `;
+  return (
+    <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none">
+      <motion.p
+        style={{ skewX, x }}
+        className="text-[clamp(2rem,6vw,5rem)] font-black text-white/[0.03] tracking-tight whitespace-nowrap select-none"
+      >
+        {repeated}
+      </motion.p>
+    </div>
+  );
+}
+
+function NarrativeBreak({ text, subtext, glitch = false, ribbon }: { text: string; subtext: string; glitch?: boolean; ribbon?: string }) {
   return (
     <div className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+      {/* Velocity ribbon background */}
+      <VelocityRibbon ribbon={ribbon} />
+
       {/* Gradient separators */}
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#0a0a0f] to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
 
-      <div className="text-center px-8 max-w-2xl">
+      <div className="text-center px-8 max-w-2xl relative z-10">
         {glitch ? (
           // Glitch text keeps a whileInView entrance so the effect is visible on arrival
           <motion.div
