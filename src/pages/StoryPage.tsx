@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { motion, useTransform, useMotionValueEvent, MotionValue, useScroll, useVelocity, useSpring } from 'framer-motion';
 import StickyChapter from '../components/story/StickyChapter';
 import ChapterTitle from '../components/story/ChapterTitle';
@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import ScrollRevealText from '../components/story/ScrollRevealText';
 import AmbientLight from '../components/shared/AmbientLight';
 import DualWaveText from '../components/story/DualWaveText';
+import DesktopEvolution from '../components/story/DesktopEvolution';
 
 const industryData = [
   { label: 'Web 前端', value: 52 },
@@ -54,6 +55,11 @@ export default function StoryPage() {
         {/* ═══════════════ OVERTURE ═══════════════ */}
         <StickyChapter heightVh={250}>
           {(progress) => <Overture progress={progress} />}
+        </StickyChapter>
+
+        {/* ═══════════════ DESKTOP EVOLUTION ═══════════════ */}
+        <StickyChapter heightVh={200}>
+          {(progress) => <DesktopEvolution progress={progress} />}
         </StickyChapter>
 
         {/* Narrative transition: Overture → Chapter 1 */}

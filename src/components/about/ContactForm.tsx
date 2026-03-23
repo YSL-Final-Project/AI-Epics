@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { IconCheck } from '../icons/TechIcons';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -17,7 +18,7 @@ export default function ContactForm() {
         animate={{ opacity: 1, scale: 1 }}
         className="text-center py-10"
       >
-        <div className="text-4xl mb-3">✅</div>
+        <div className="mb-3"><IconCheck size={40} className="text-emerald-400 mx-auto" /></div>
         <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">感谢你的反馈！</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400">我们会尽快查看并回复。</p>
         <button

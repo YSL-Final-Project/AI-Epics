@@ -1,9 +1,10 @@
+import { type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
 interface TeamCardProps {
   name: string;
   role: string;
-  avatar: string;
+  avatar: ReactNode;
   github: string;
   index: number;
 }

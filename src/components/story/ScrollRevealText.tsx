@@ -4,8 +4,9 @@ import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 interface ScrollRevealTextProps {
   text: string;
   className?: string;
-  /** useScroll offset tuple, defaults to entering viewport → centered */
-  scrollOffset?: [string, string];
+  /** useScroll offset tuple */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  scrollOffset?: any;
 }
 
 // Each character (or word for English) is its own component to safely call useTransform

@@ -60,7 +60,7 @@ export default function WelcomeToast() {
 
                 {/* Tags */}
                 <div className="flex gap-1.5 mt-2 flex-wrap">
-                  {['📅 时间线', '📊 洞察', '🎮 实验室'].map((tag, i) => (
+                  {['⟡ 时间线', '◈ 洞察', '△ 实验室'].map((tag, i) => (
                     <motion.span
                       key={tag}
                       initial={prefersReduced ? false : { opacity: 0, scale: 0.8 }}

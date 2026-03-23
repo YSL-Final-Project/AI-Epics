@@ -4,12 +4,12 @@ import { motion, useReducedMotion } from 'framer-motion';
 const terminalLines = [
   { prompt: '$ ', text: 'npx create-future --template ai-coding', delay: 38 },
   { prompt: '', text: '', delay: 0 },
-  { prompt: '  ', text: '🔍 Analyzing the AI coding revolution...', delay: 22 },
-  { prompt: '  ', text: '📊 Loading data from 2018-2025...', delay: 22 },
+  { prompt: '  ', text: '[scan] Analyzing the AI coding revolution...', delay: 22 },
+  { prompt: '  ', text: '[data] Loading data from 2018-2025...', delay: 22 },
   { prompt: '  ', text: '', delay: 0 },
-  { prompt: '  ', text: '✅ 25 milestones tracked', delay: 28 },
-  { prompt: '  ', text: '✅ 5 AI tools compared', delay: 28 },
-  { prompt: '  ', text: '✅ 10 programming languages ranked', delay: 28 },
+  { prompt: '  ', text: '[done] 25 milestones tracked', delay: 28 },
+  { prompt: '  ', text: '[done] 5 AI tools compared', delay: 28 },
+  { prompt: '  ', text: '[done] 10 programming languages ranked', delay: 28 },
   { prompt: '', text: '', delay: 0 },
   { prompt: '$ ', text: 'echo "Welcome to the AI Code Era"', delay: 38 },
 ];
@@ -28,8 +28,8 @@ const IDLE_QUOTES = [
 
 function getLineColor(line: string) {
   if (line.startsWith('$')) return 'text-emerald-400';
-  if (line.startsWith('  ✅')) return 'text-cyan-300';
-  if (line.startsWith('  🔍') || line.startsWith('  📊')) return 'text-slate-400';
+  if (line.includes('[done]')) return 'text-cyan-300';
+  if (line.includes('[scan]') || line.includes('[data]')) return 'text-slate-400';
   return 'text-green-400';
 }
 
@@ -44,7 +44,7 @@ export default function HeroTerminal() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
-  const idleTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const quoteIndexRef = useRef(0);
 
   // Idle easter egg — after 25s of no user interaction, type a fun quote
@@ -244,7 +244,7 @@ export default function HeroTerminal() {
                   className="text-cyan-400"
                   style={{ textShadow: '0 0 10px rgba(6,182,212,0.9)' }}
                   animate={{ opacity: [1, 0, 1] }}
-                  transition={{ duration: 0.8, repeat: Infinity, ease: 'steps(1)' }}
+                  transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
                 >
                   ▊
                 </motion.span>
@@ -271,7 +271,7 @@ export default function HeroTerminal() {
                 className="text-cyan-400"
                 style={{ textShadow: '0 0 10px rgba(6,182,212,0.9)' }}
                 animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 0.8, repeat: Infinity, ease: 'steps(1)' }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
               >
                 ▊
               </motion.span>

@@ -60,7 +60,7 @@ export default function StickyScrollNarrative() {
       <section className="py-24 px-6 bg-[#060612] text-center space-y-20">
         {[
           { label: '01 · THE SHIFT', title: '代码不再只是人类的语言', accent: 'text-cyan-400' },
-          { label: '02 · THE NUMBERS', title: '46% 的新代码由 AI 生成', accent: 'text-violet-400' },
+          { label: '02 · THE NUMBERS', title: 'GitHub 上 46% 的新代码由 AI 生成', accent: 'text-violet-400' },
           { label: '03 · THE FUTURE', title: '边界正在消失', accent: 'text-rose-400' },
         ].map(s => (
           <div key={s.label}>
@@ -118,8 +118,11 @@ export default function StickyScrollNarrative() {
           style={{ opacity: s2Opacity, scale: s2Scale, filter: s2Filter }}
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 will-change-transform"
         >
-          <p className="font-mono text-[10px] tracking-[0.55em] text-white/30 uppercase mb-10">
+          <p className="font-mono text-[10px] tracking-[0.55em] text-white/30 uppercase mb-6">
             02
+          </p>
+          <p className="text-sm sm:text-base font-light text-white/30 mb-8 max-w-md leading-relaxed">
+            GitHub 上每提交两行新代码，<br className="sm:hidden" />就有一行来自 AI。
           </p>
           <div className="flex items-start justify-center leading-none">
             <span className="text-[clamp(6rem,20vw,13rem)] font-black text-white tracking-tight tabular-nums">
@@ -129,8 +132,11 @@ export default function StickyScrollNarrative() {
               %
             </span>
           </div>
+          <p className="mt-5 text-base sm:text-lg font-light text-white/40">
+            新代码由 AI 生成
+          </p>
           {/* SVG ring showing 46% */}
-          <div className="mt-6 relative w-16 h-16">
+          <div className="mt-5 relative w-14 h-14">
             <svg viewBox="0 0 64 64" className="w-full h-full -rotate-90">
               <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
               <circle
@@ -142,12 +148,9 @@ export default function StickyScrollNarrative() {
                 strokeLinecap="round"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center font-mono text-[10px] text-white/40">
-              46%
-            </span>
           </div>
-          <p className="mt-4 font-mono text-[10px] tracking-[0.35em] text-white/25 uppercase">
-            GitHub · 2023
+          <p className="mt-3 font-mono text-[9px] tracking-[0.35em] text-white/20 uppercase">
+            来源：GitHub · 2023
           </p>
         </motion.div>
 

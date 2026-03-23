@@ -4,11 +4,12 @@ import PageTransition from '../components/layout/PageTransition';
 import HeroTerminal from '../components/home/HeroTerminal';
 import StatsDashboard from '../components/home/StatsDashboard';
 import PagePreviewCard from '../components/home/PagePreviewCard';
-import ParticleField from '../components/ParticleField';
+import MatrixRain from '../components/MatrixRain';
 import ChapterDots from '../components/ChapterDots';
 import StickyScrollNarrative from '../components/StickyScrollNarrative';
 import LineReveal from '../components/animations/LineReveal';
 import ScaleReveal from '../components/animations/ScaleReveal';
+import { IconTimeline, IconChart, IconSwords, IconLab, IconTerminal } from '../components/icons/TechIcons';
 import type { PagePreview } from '../types';
 
 const pagesPreviews: PagePreview[] = [
@@ -16,35 +17,35 @@ const pagesPreviews: PagePreview[] = [
     title: 'AI 进化时间线',
     description: '从 GPT-1 到 Claude 4，25 个里程碑事件串起 AI 编程的完整进化史',
     path: '/timeline',
-    icon: '📅',
+    icon: <IconTimeline size={20} />,
     color: 'bg-cyan-500',
   },
   {
     title: '深度洞察',
     description: '4 大维度深度剖析：工具采用率、SO 衰落、代码生成占比、开发者薪资',
     path: '/data',
-    icon: '📊',
+    icon: <IconChart size={20} />,
     color: 'bg-violet-500',
   },
   {
     title: '技术竞技场',
     description: '编程语言争霸动画、AI 工具擂台赛、IDE 生态变迁全景图',
     path: '/compare',
-    icon: '⚔️',
+    icon: <IconSwords size={20} />,
     color: 'bg-amber-500',
   },
   {
     title: '创意实验室',
     description: 'AI 代码猜猜看、未来预测投票、个性化工具推荐',
     path: '/interactive',
-    icon: '🎮',
+    icon: <IconLab size={20} />,
     color: 'bg-emerald-500',
   },
   {
     title: '关于项目',
     description: '数据来源、研究方法、团队介绍',
     path: '/about',
-    icon: '📝',
+    icon: <IconTerminal size={20} />,
     color: 'bg-rose-500',
   },
 ];
@@ -141,19 +142,19 @@ export default function HomePage() {
         <section
           id="chapter-hero"
           ref={sectionRef}
-          className="relative py-16 sm:py-24 px-4 overflow-hidden min-h-[90vh] flex flex-col justify-center"
+          className="relative py-16 sm:py-24 px-4 overflow-hidden min-h-[90vh] flex flex-col justify-center bg-black"
         >
-          {/* Particle field */}
-          <ParticleField count={50} color="6,182,212" className="opacity-50 dark:opacity-90" />
+          {/* Matrix rain — pure black bg + green glyphs */}
+          <MatrixRain color="#00ff41" density={8} speed={0.15} className="opacity-75" />
 
-          {/* Parallax orbs */}
+          {/* Subtle orbs for depth — very low opacity so black dominates */}
           <motion.div
             style={{ x: orb1X, y: orb1Y }}
-            className="absolute top-16 left-[8%] w-80 h-80 bg-cyan-500/20 dark:bg-cyan-500/15 rounded-full blur-[110px] pointer-events-none"
+            className="absolute top-16 left-[8%] w-80 h-80 bg-emerald-500/5 rounded-full blur-[110px] pointer-events-none"
           />
           <motion.div
             style={{ x: orb2X, y: orb2Y }}
-            className="absolute top-32 right-[8%] w-64 h-64 bg-violet-500/20 dark:bg-violet-500/15 rounded-full blur-[100px] pointer-events-none"
+            className="absolute top-32 right-[8%] w-64 h-64 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none"
           />
 
           <div className="max-w-7xl mx-auto text-center relative" style={{ perspective: '1000px' }}>

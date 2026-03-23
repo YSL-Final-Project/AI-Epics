@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { IconCpu } from './icons/TechIcons';
 
 const KONAMI = [
   'ArrowUp','ArrowUp',
@@ -139,11 +140,11 @@ export default function MatrixEasterEgg() {
               onClick={e => e.stopPropagation()}
             >
               <motion.div
-                className="text-5xl mb-5"
+                className="mb-5"
                 animate={{ rotate: [0, -5, 5, -3, 3, 0] }}
                 transition={{ delay: 0.8, duration: 0.7 }}
               >
-                🤖
+                <IconCpu size={48} className="text-green-400 mx-auto" />
               </motion.div>
 
               {/* Glitchy title */}

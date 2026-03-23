@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
-  BarChart, Bar, LineChart, Line,
+  LineChart, Line,
   XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
 import codeGenData from '../../data/code_generation.json';

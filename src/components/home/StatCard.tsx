@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { motion, useSpring, useReducedMotion } from 'framer-motion';
 
 interface StatCardProps {
@@ -8,7 +8,7 @@ interface StatCardProps {
   label: string;
   gradient: string;
   glowColor: string;
-  icon: string;
+  icon: ReactNode;
 }
 
 export default function StatCard({ value, numericValue, suffix, label, gradient, glowColor, icon }: StatCardProps) {
