@@ -846,6 +846,17 @@
 }
 
 /* ============================================
+   DESKTOP EVOLUTION GLITCH SHAKE
+   ============================================ */
+@keyframes glitchShake {
+  0%  { transform: translate(0, 0)   skewX(0deg); }
+  25% { transform: translate(-3px, 1px) skewX(-1deg); }
+  50% { transform: translate(2px, -1px) skewX(0.5deg); }
+  75% { transform: translate(-1px, 2px) skewX(-0.5deg); }
+  100%{ transform: translate(0, 0)   skewX(0deg); }
+}
+
+/* ============================================
    FILM GRAIN OVERLAY
    ============================================ */
 .film-grain {

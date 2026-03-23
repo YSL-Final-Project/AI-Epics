@@ -3,16 +3,17 @@ import PageTransition from '../components/layout/PageTransition';
 import TeamCard from '../components/about/TeamCard';
 import DataSourceList from '../components/about/DataSourceList';
 import ContactForm from '../components/about/ContactForm';
+import { IconTerminal, IconMicroscope, IconPalette, IconChart, IconRefresh, IconTrendUp } from '../components/icons/TechIcons';
 
 const teamMembers = [
-  { name: 'Chengkun Liao', role: 'Scrum Master / 首页 & 关于页开发', avatar: '👨‍💻', github: 'https://github.com/' },
-  { name: 'Junyao Yang', role: '数据架构 / 数据洞察 & 竞技场开发', avatar: '👩‍🔬', github: 'https://github.com/' },
-  { name: 'Mingjie Shen', role: '交互设计 / 时间线 & 实验室开发', avatar: '🎨', github: 'https://github.com/' },
+  { name: 'Chengkun Liao', role: 'Scrum Master / 首页 & 关于页开发', avatar: <IconTerminal size={24} className="text-cyan-400" />, github: 'https://github.com/' },
+  { name: 'Junyao Yang', role: '数据架构 / 数据洞察 & 竞技场开发', avatar: <IconMicroscope size={24} className="text-violet-400" />, github: 'https://github.com/' },
+  { name: 'Mingjie Shen', role: '交互设计 / 时间线 & 实验室开发', avatar: <IconPalette size={24} className="text-rose-400" />, github: 'https://github.com/' },
 ];
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] as const } },
 };
 
 export default function AboutPage() {
@@ -58,12 +59,12 @@ export default function AboutPage() {
               <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-5">研究方法</h2>
               <div className="space-y-4">
                 {[
-                  { icon: '📊', title: '数据采集', desc: 'GitHub Octoverse、SO Survey、SimilarWeb 等权威来源' },
-                  { icon: '🔄', title: '数据清洗', desc: '标准化处理，消除异常值，确保可比性' },
-                  { icon: '📈', title: '可视化', desc: 'Recharts + 自定义动画，匹配最优图表形式' },
+                  { icon: <IconChart size={18} className="text-cyan-400" />, title: '数据采集', desc: 'GitHub Octoverse、SO Survey、SimilarWeb 等权威来源' },
+                  { icon: <IconRefresh size={18} className="text-violet-400" />, title: '数据清洗', desc: '标准化处理，消除异常值，确保可比性' },
+                  { icon: <IconTrendUp size={18} className="text-emerald-400" />, title: '可视化', desc: 'Recharts + 自定义动画，匹配最优图表形式' },
                 ].map(item => (
                   <div key={item.title} className="flex items-start gap-3">
-                    <span className="text-xl shrink-0">{item.icon}</span>
+                    <span className="shrink-0 mt-0.5">{item.icon}</span>
                     <div>
                       <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{item.title}</h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400">{item.desc}</p>

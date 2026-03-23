@@ -1,5 +1,5 @@
 import { useRef, useState, useMemo } from 'react';
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
 
 /* ── data ── */
 const languages = [

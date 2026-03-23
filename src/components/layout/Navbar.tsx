@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
 import ScrambleText from '../ScrambleText';
+import { IconSun, IconMoon } from '../icons/TechIcons';
 
 const navLinks = [
   { path: '/',            label: '首页' },
@@ -19,7 +20,7 @@ const mobileItemVariants = {
   visible: (i: number) => ({
     opacity: 1,
     x: 0,
-    transition: { delay: i * 0.06, duration: 0.35, ease: [0.23, 1, 0.32, 1] },
+    transition: { delay: i * 0.06, duration: 0.35, ease: [0.23, 1, 0.32, 1] as const },
   }),
   exit: { opacity: 0, x: -12, transition: { duration: 0.2 } },
 };
@@ -49,7 +50,7 @@ export default function Navbar() {
       }`}
       initial={prefersReduced ? false : { y: -64, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+      transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] as const }}
     >
       {/* Gradient bottom-border that appears on scroll */}
       <motion.div
@@ -132,7 +133,7 @@ export default function Navbar() {
                 animate={{ left: theme === 'dark' ? '30px' : '2px' }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               >
-                {theme === 'dark' ? '🌙' : '☀️'}
+                {theme === 'dark' ? <IconMoon size={13} /> : <IconSun size={13} />}
               </motion.div>
             </motion.button>
 
@@ -165,7 +166,7 @@ export default function Navbar() {
               initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
               animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] as const }}
               className="md:hidden pb-4 space-y-1"
             >
               {navLinks.map((link, i) => (

@@ -86,7 +86,7 @@ const rowVariants = {
     opacity: 1,
     x: 0,
     filter: 'blur(0px)',
-    transition: { delay: 0.3 + i * 0.12, duration: 0.6, ease: [0.23, 1, 0.32, 1] },
+    transition: { delay: 0.3 + i * 0.12, duration: 0.6, ease: [0.23, 1, 0.32, 1] as const },
   }),
 };
 
@@ -94,7 +94,7 @@ const barVariants = {
   hidden: { width: '0%' },
   visible: (pct: number) => ({
     width: `${pct}%`,
-    transition: { delay: 0.15, duration: 0.8, ease: [0.23, 1, 0.32, 1] },
+    transition: { delay: 0.15, duration: 0.8, ease: [0.23, 1, 0.32, 1] as const },
   }),
 };
 

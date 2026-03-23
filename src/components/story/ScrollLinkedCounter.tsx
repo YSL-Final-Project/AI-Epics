@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTransform, useMotionValueEvent, MotionValue } from 'framer-motion';
 
 interface ScrollLinkedCounterProps {

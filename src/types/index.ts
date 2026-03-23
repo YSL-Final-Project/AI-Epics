@@ -155,6 +155,6 @@ export interface PagePreview {
   title: string;
   description: string;
   path: string;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
 }
