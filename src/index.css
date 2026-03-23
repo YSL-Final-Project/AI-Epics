@@ -822,3 +822,59 @@
     display: none !important;
   }
 }
+
+/* ============================================
+   VIEW TRANSITIONS
+   ============================================ */
+
+/* Old page: slide up + fade out */
+@keyframes vt-slide-out {
+  to { opacity: 0; translate: 0 -20px; }
+}
+
+/* New page: slide in from below + fade in */
+@keyframes vt-slide-in {
+  from { opacity: 0; translate: 0 20px; }
+}
+
+::view-transition-old(root) {
+  animation: vt-slide-out 0.32s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-slide-in 0.42s cubic-bezier(0, 0, 0.2, 1) both;
+}
+
+/* ============================================
+   FILM GRAIN OVERLAY
+   ============================================ */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.film-grain::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.4s steps(3) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-3%, -2%); }
+  66% { transform: translate(2%, 3%); }
+}
+
+/* Story page has its own dark world — use a fade-only transition for it */
+::view-transition-old(story-root),
+::view-transition-new(story-root) {
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+}

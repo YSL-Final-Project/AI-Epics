@@ -1,127 +1,287 @@
-import { useState } from 'react';
-import {
-  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  ResponsiveContainer, Legend, Tooltip
-} from 'recharts';
-import { useTheme } from '../../context/ThemeContext';
+import { useRef, useState, useMemo } from 'react';
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 
+/* ── data ── */
 const languages = [
-  {
-    name: 'Python',
-    color: '#3776AB',
-    metrics: { popularity: 98, salary: 85, aiCompat: 95, learnCurve: 90, community: 92 },
-  },
-  {
-    name: 'JavaScript',
-    color: '#F7DF1E',
-    metrics: { popularity: 88, salary: 78, aiCompat: 85, learnCurve: 75, community: 95 },
-  },
-  {
-    name: 'TypeScript',
-    color: '#3178C6',
-    metrics: { popularity: 82, salary: 88, aiCompat: 90, learnCurve: 65, community: 80 },
-  },
-  {
-    name: 'Rust',
-    color: '#CE422B',
-    metrics: { popularity: 55, salary: 95, aiCompat: 60, learnCurve: 35, community: 70 },
-  },
-  {
-    name: 'Go',
-    color: '#00ADD8',
-    metrics: { popularity: 60, salary: 92, aiCompat: 70, learnCurve: 72, community: 65 },
-  },
-  {
-    name: 'Java',
-    color: '#ED8B00',
-    metrics: { popularity: 65, salary: 82, aiCompat: 80, learnCurve: 55, community: 85 },
-  },
+  { name: 'Python',     color: '#5a7ec2', highlight: '什么都能写，什么都写不坏',  metrics: [98, 85, 95, 90, 92] },
+  { name: 'Rust',       color: '#b8604f', highlight: '最难学，但薪资最高',      metrics: [55, 95, 60, 35, 70] },
+  { name: 'TypeScript', color: '#5186cc', highlight: 'JavaScript 的进化形态',   metrics: [82, 88, 90, 65, 80] },
+  { name: 'JavaScript', color: '#c4a24d', highlight: '社区 95 分，无人能及',     metrics: [88, 78, 85, 75, 95] },
+  { name: 'Go',         color: '#4db0ba', highlight: 'Google 的云端利器',       metrics: [60, 92, 70, 72, 65] },
+  { name: 'Java',       color: '#a86d3f', highlight: '20 年老兵，仍在阵中',     metrics: [65, 82, 80, 55, 85] },
 ];
 
-const dimensions = [
-  { key: 'popularity', label: '流行度' },
-  { key: 'salary', label: '薪资水平' },
-  { key: 'aiCompat', label: 'AI 兼容性' },
-  { key: 'learnCurve', label: '学习曲线' },
-  { key: 'community', label: '社区规模' },
-];
+const dims = ['流行度', '薪资水平', 'AI 兼容性', '学习曲线', '社区规模'];
+const N = dims.length;
+const LANG_COUNT = languages.length;
 
+/* ── geometry helpers ── */
+const CX = 200, CY = 200, R = 150;
+const angles = dims.map((_, i) => (Math.PI * 2 * i) / N - Math.PI / 2);
+
+function vertex(i: number, r: number) {
+  return { x: CX + r * Math.cos(angles[i]), y: CY + r * Math.sin(angles[i]) };
+}
+
+function polygonPath(metrics: number[], scale = 1) {
+  return metrics
+    .map((v, i) => {
+      const p = vertex(i, (v / 100) * R * scale);
+      return `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`;
+    })
+    .join(' ') + ' Z';
+}
+
+function ringPath(r: number) {
+  return dims.map((_, i) => {
+    const p = vertex(i, r);
+    return `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`;
+  }).join(' ') + ' Z';
+}
+
+/* ── component ── */
 export default function RadarCompare() {
-  const [selected, setSelected] = useState<string[]>(['Python', 'TypeScript', 'Rust']);
-  const { theme } = useTheme();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [introOp, setIntroOp] = useState(1);
+  const [chartOp, setChartOp] = useState(0);
+  const [outroOp, setOutroOp] = useState(0);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [pathProgress, setPathProgress] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
-  const radarData = dimensions.map(dim => {
-    const point: Record<string, string | number> = { dimension: dim.label };
-    selected.forEach(langName => {
-      const lang = languages.find(l => l.name === langName);
-      if (lang) point[langName] = lang.metrics[dim.key as keyof typeof lang.metrics];
-    });
-    return point;
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
   });
 
-  const toggleLanguage = (name: string) => {
-    setSelected(prev => {
-      if (prev.includes(name)) {
-        if (prev.length <= 1) return prev;
-        return prev.filter(n => n !== name);
-      }
-      if (prev.length >= 3) return prev;
-      return [...prev, name];
-    });
-  };
+  useMotionValueEvent(scrollYProgress, 'change', (p) => {
+    // Intro
+    if (p <= 0.06) setIntroOp(1);
+    else if (p <= 0.10) setIntroOp(1 - (p - 0.06) / 0.04);
+    else setIntroOp(0);
+
+    // Chart
+    if (p <= 0.08) setChartOp(0);
+    else if (p <= 0.12) setChartOp((p - 0.08) / 0.04);
+    else if (p <= 0.83) setChartOp(1);
+    else if (p <= 0.88) setChartOp(1 - (p - 0.83) / 0.05);
+    else setChartOp(0);
+
+    // Languages: 0.14–0.72 → cycle through 6 languages
+    if (p >= 0.14 && p <= 0.72) {
+      const t = (p - 0.14) / (0.72 - 0.14);
+      const segLen = 1 / LANG_COUNT;
+      const idx = Math.min(Math.floor(t / segLen), LANG_COUNT - 1);
+      const within = (t - idx * segLen) / segLen;
+      setActiveIdx(idx);
+      setPathProgress(Math.min(within * 1.5, 1)); // draw faster, hold at 1
+      setShowAll(false);
+    }
+
+    // Show all overlay: 0.72–0.83
+    if (p > 0.72 && p <= 0.83) {
+      setShowAll(true);
+      setPathProgress(1);
+    }
+
+    // Outro
+    if (p <= 0.86) setOutroOp(0);
+    else if (p <= 0.92) setOutroOp((p - 0.86) / 0.06);
+    else setOutroOp(1);
+  });
+
+  const activeLang = languages[activeIdx];
+
+  // compute average score for outro
+  const avgScores = useMemo(() =>
+    languages.map(l => ({
+      name: l.name,
+      avg: l.metrics.reduce((a, b) => a + b, 0) / N,
+    })).sort((a, b) => b.avg - a.avg),
+  []);
 
   return (
-    <div>
-      {/* Language selector */}
-      <div className="flex flex-wrap gap-2 mb-6 justify-center">
-        {languages.map(lang => (
-          <button
-            key={lang.name}
-            onClick={() => toggleLanguage(lang.name)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all border-2 ${
-              selected.includes(lang.name)
-                ? 'text-white shadow-md'
-                : 'bg-transparent text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600 opacity-60 hover:opacity-100'
-            }`}
-            style={selected.includes(lang.name) ? { backgroundColor: lang.color, borderColor: lang.color } : {}}
-          >
-            {lang.name}
-          </button>
-        ))}
-        <span className="text-xs text-slate-400 self-center ml-2">选择 1-3 种语言</span>
-      </div>
+    <div ref={containerRef} className="relative" style={{ height: '250vh' }}>
+      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+        <div className="w-full max-w-3xl mx-auto px-6 relative h-full">
 
-      <div className="overflow-x-auto">
-      <ResponsiveContainer width="100%" height={400}>
-        <RadarChart data={radarData}>
-          <PolarGrid stroke={theme === 'dark' ? '#334155' : '#e2e8f0'} />
-          <PolarAngleAxis dataKey="dimension" tick={{ fill: theme === 'dark' ? '#94a3b8' : '#64748b', fontSize: 12 }} />
-          <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: theme === 'dark' ? '#64748b' : '#94a3b8', fontSize: 10 }} />
-          {selected.map(langName => {
-            const lang = languages.find(l => l.name === langName)!;
-            return (
-              <Radar
-                key={langName}
-                name={langName}
-                dataKey={langName}
-                stroke={lang.color}
-                fill={lang.color}
-                fillOpacity={0.15}
-                strokeWidth={2}
-              />
-            );
-          })}
-          <Legend />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: theme === 'dark' ? '#1e293b' : '#fff',
-              borderColor: theme === 'dark' ? '#475569' : '#e2e8f0',
-              borderRadius: '8px',
-              color: theme === 'dark' ? '#e2e8f0' : '#1e293b',
-            }}
-          />
-        </RadarChart>
-      </ResponsiveContainer>
+          {/* ── Intro ── */}
+          <div
+            style={{ opacity: introOp, pointerEvents: introOp < 0.1 ? 'none' : 'auto' }}
+            className="absolute inset-0 flex flex-col items-center justify-center"
+          >
+            <p className="text-xs font-mono tracking-[0.5em] text-slate-400/40 dark:text-white/15 uppercase mb-6">
+              5 Dimensions
+            </p>
+            <h3 className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight text-center leading-tight">
+              每种语言都有软肋。
+              <br />
+              <span className="text-slate-400 dark:text-white/25">谁最接近完美？</span>
+            </h3>
+            <p className="mt-6 text-sm text-slate-400 dark:text-white/20 font-light">
+              流行度 · 薪资 · AI 兼容 · 学习曲线 · 社区
+            </p>
+          </div>
+
+          {/* ── Chart ── */}
+          <div
+            style={{ opacity: chartOp, pointerEvents: chartOp < 0.1 ? 'none' : 'auto' }}
+            className="absolute inset-0 flex flex-col items-center justify-center"
+          >
+            {/* Watermark language name */}
+            <span
+              className="absolute text-[100px] sm:text-[160px] font-black leading-none tracking-tighter text-slate-100 dark:text-white/[0.03] select-none pointer-events-none transition-all duration-500"
+              style={{ color: showAll ? undefined : undefined }}
+            >
+              {showAll ? '全景' : activeLang.name}
+            </span>
+
+            {/* SVG Radar */}
+            <svg viewBox="0 0 400 400" className="w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] relative z-10">
+              {/* Grid rings */}
+              {[0.25, 0.5, 0.75, 1].map(s => (
+                <path
+                  key={s}
+                  d={ringPath(R * s)}
+                  fill="none"
+                  className="stroke-slate-200/40 dark:stroke-white/[0.04]"
+                  strokeWidth={0.5}
+                />
+              ))}
+
+              {/* Axis lines + labels */}
+              {dims.map((label, i) => {
+                const p = vertex(i, R + 20);
+                const end = vertex(i, R);
+                return (
+                  <g key={label}>
+                    <line
+                      x1={CX} y1={CY} x2={end.x} y2={end.y}
+                      className="stroke-slate-200/30 dark:stroke-white/[0.03]"
+                      strokeWidth={0.5}
+                    />
+                    <text
+                      x={p.x} y={p.y}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="fill-slate-400 dark:fill-white/20 text-[10px] sm:text-[11px]"
+                      style={{ fontSize: '11px' }}
+                    >
+                      {label}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Ghost shapes (previous languages) */}
+              {!showAll && languages.slice(0, activeIdx).map((lang) => (
+                <path
+                  key={`ghost-${lang.name}`}
+                  d={polygonPath(lang.metrics)}
+                  fill={lang.color}
+                  fillOpacity={0.03}
+                  stroke={lang.color}
+                  strokeWidth={1}
+                  strokeOpacity={0.12}
+                />
+              ))}
+
+              {/* All overlay */}
+              {showAll && languages.map((lang) => (
+                <path
+                  key={`all-${lang.name}`}
+                  d={polygonPath(lang.metrics)}
+                  fill={lang.color}
+                  fillOpacity={0.08}
+                  stroke={lang.color}
+                  strokeWidth={1.5}
+                  strokeOpacity={0.5}
+                />
+              ))}
+
+              {/* Active language shape — scale reveal */}
+              {!showAll && (
+                <>
+                  <path
+                    d={polygonPath(activeLang.metrics, pathProgress)}
+                    fill={activeLang.color}
+                    fillOpacity={0.12}
+                    stroke={activeLang.color}
+                    strokeWidth={2}
+                    strokeOpacity={pathProgress > 0.1 ? 0.8 : 0}
+                    className="transition-all duration-300"
+                  />
+                  {/* Vertex dots — enlarged hit area */}
+                  {activeLang.metrics.map((v, i) => {
+                    const pt = vertex(i, (v / 100) * R * pathProgress);
+                    return (
+                      <g key={i}
+                        data-cursor-label={activeLang.name}
+                        data-cursor-value={`${v}`}
+                        data-cursor-color={activeLang.color}
+                        data-cursor-sub={dims[i]}
+                      >
+                        {/* Invisible hit area */}
+                        <circle cx={pt.x} cy={pt.y} r={14} fill="transparent" />
+                        {/* Visible dot */}
+                        <circle
+                          cx={pt.x}
+                          cy={pt.y}
+                          r={3}
+                          fill={activeLang.color}
+                          style={{ opacity: pathProgress > 0.3 ? 0.8 : 0 }}
+                          className="transition-opacity duration-300"
+                        />
+                      </g>
+                    );
+                  })}
+                </>
+              )}
+            </svg>
+
+            {/* Active language callout */}
+            <div className="mt-4 text-center relative z-10 h-12">
+              {!showAll ? (
+                <div key={activeLang.name} className="transition-all duration-300">
+                  <span
+                    className="text-lg font-bold transition-colors duration-300"
+                    style={{ color: activeLang.color }}
+                  >
+                    {activeLang.name}
+                  </span>
+                  <span className="text-sm text-slate-400 dark:text-white/20 ml-3">
+                    {activeLang.highlight}
+                  </span>
+                </div>
+              ) : (
+                <div>
+                  <span className="text-lg font-bold text-slate-900 dark:text-white">
+                    综合排名 #1
+                  </span>
+                  <span className="text-sm ml-3" style={{ color: languages[0].color }}>
+                    Python — 均分 {avgScores[0].avg.toFixed(0)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── Outro ── */}
+          <div
+            style={{ opacity: outroOp, pointerEvents: outroOp < 0.1 ? 'none' : 'auto' }}
+            className="absolute inset-0 flex flex-col items-center justify-center text-center"
+          >
+            <p className="text-6xl sm:text-8xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
+              Python.
+            </p>
+            <p className="text-xl sm:text-2xl font-light text-slate-400 dark:text-white/30">
+              没有短板，就是最大的长板。
+            </p>
+            <p className="text-sm text-slate-300 dark:text-white/15 mt-3 font-light leading-relaxed">
+              五个维度，全部 85 分以上。没有第二种语言做到了。
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
