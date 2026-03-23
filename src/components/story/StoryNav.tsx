@@ -11,6 +11,7 @@ export default function StoryNav() {
     >
       <Link
         to="/"
+        viewTransition
         className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all text-sm font-mono"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">

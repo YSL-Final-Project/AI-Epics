@@ -62,7 +62,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-1.5 group">
+          <Link to="/" viewTransition className="flex items-center gap-1.5 group">
             <motion.span
               className="text-cyan-500 font-mono text-lg"
               whileHover={{ rotate: -15, scale: 1.2 }}
@@ -90,6 +90,7 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
+                viewTransition
                 className="relative px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors"
               >
                 {location.pathname === link.path && (
@@ -178,6 +179,7 @@ export default function Navbar() {
                 >
                   <Link
                     to={link.path}
+                    viewTransition
                     onClick={() => setMobileMenuOpen(false)}
                     className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                       location.pathname === link.path

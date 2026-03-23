@@ -11,6 +11,7 @@ import StoryNav from '../components/story/StoryNav';
 import Starfield from '../components/story/Starfield';
 import GlitchText from '../components/story/GlitchText';
 import { Link } from 'react-router-dom';
+import ScrollRevealText from '../components/story/ScrollRevealText';
 
 const industryData = [
   { label: 'Web 前端', value: 52 },
@@ -44,6 +45,7 @@ export default function StoryPage() {
     <div className="dark">
       <div className="bg-[#0a0a0f] text-white min-h-screen selection:bg-cyan-500/30" style={{ overflowX: 'clip' }}>
         <Starfield density={250} speed={0.2} />
+        <div className="film-grain" />
         <StoryNav />
 
         {/* ═══════════════ OVERTURE ═══════════════ */}
@@ -138,33 +140,32 @@ function NarrativeBreak({ text, subtext, glitch = false }: { text: string; subte
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#0a0a0f] to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-20%' }}
-        transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="text-center px-8 max-w-2xl"
-      >
+      <div className="text-center px-8 max-w-2xl">
         {glitch ? (
-          <GlitchText
-            text={text}
-            className="text-2xl sm:text-4xl font-light text-white/60 leading-relaxed"
-          />
+          // Glitch text keeps a whileInView entrance so the effect is visible on arrival
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-10%' }}
+            transition={{ duration: 1.0, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <GlitchText
+              text={text}
+              className="text-2xl sm:text-4xl font-light text-white/60 leading-relaxed"
+            />
+          </motion.div>
         ) : (
-          <p className="text-2xl sm:text-4xl font-light text-white/60 leading-relaxed">
-            {text}
-          </p>
+          <ScrollRevealText
+            text={text}
+            className="text-2xl sm:text-4xl font-light text-white/80 leading-relaxed"
+          />
         )}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6, duration: 1.0 }}
+        <ScrollRevealText
+          text={subtext}
           className="mt-6 text-lg sm:text-xl text-white/30 font-extralight"
-        >
-          {subtext}
-        </motion.p>
-      </motion.div>
+          scrollOffset={['start 0.82', 'center 0.48']}
+        />
+      </div>
 
       {/* Subtle horizontal line */}
       <motion.div
@@ -224,6 +225,7 @@ function Overture({ progress }: { progress: MotionValue<number> }) {
   const titleOp = useScrollOpacity(progress, [0.42, 0.55, 0.75, 0.85], [0, 1, 1, 0]);
   const titleY = useScrollValue(progress, [0.42, 0.55], [40, 0]);
   const titleScale = useScrollValue(progress, [0.42, 0.55, 0.75, 0.85], [0.9, 1, 1, 1.1]);
+  const titleWeight = useScrollValue(progress, [0.42, 0.6], [100, 900]);
 
   // Parallax: code line drifts up as title appears
   const codeY = useScrollValue(progress, [0.42, 0.7], [0, -60]);
@@ -258,7 +260,10 @@ function Overture({ progress }: { progress: MotionValue<number> }) {
         }}
         className="mt-16 text-center"
       >
-        <h1 className="text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter">
+        <h1
+          className="text-5xl sm:text-7xl md:text-9xl tracking-tighter"
+          style={{ fontWeight: Math.round(titleWeight) }}
+        >
           <span className="bg-gradient-to-b from-white via-white/90 to-white/30 bg-clip-text text-transparent">
             The AI
           </span>
@@ -906,12 +911,14 @@ function Epilogue() {
         >
           <Link
             to="/"
+            viewTransition
             className="px-8 py-3.5 rounded-full border border-white/10 text-sm text-white/40 hover:text-white/70 hover:border-white/25 transition-all duration-300 font-mono"
           >
             探索完整数据 →
           </Link>
           <Link
             to="/timeline"
+            viewTransition
             className="px-8 py-3.5 rounded-full border border-cyan-500/15 text-sm text-cyan-500/50 hover:text-cyan-400/80 hover:border-cyan-500/30 transition-all duration-300 font-mono"
           >
             浏览时间线 →
