@@ -1,11 +1,52 @@
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
+import CodePeek from './shared/CodePeek';
+
+const PEEK_CODE = `// Canvas-based Matrix rain — Claude Code keywords
+const randChar = () => CHAR_POOL[Math.floor(Math.random() * CHAR_POOL.length)];
+
+const draw = () => {
+  // Fade trail — slower fade = longer tails
+  const fadeAlpha = speed < 0.5 ? 0.03 : 0.06;
+  ctx.fillStyle = \`rgba(0, 0, 0, \${fadeAlpha})\`;
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.font = \`\${fontSize}px "Courier New", monospace\`;
+
+  for (let i = 0; i < columns.length; i++) {
+    const x = i * density;
+    const y = columns[i];
+
+    // Head glyph — white-green flash
+    ctx.fillStyle = '#fff';
+    ctx.globalAlpha = 0.85;
+    ctx.fillText(randChar(), x, y);
+
+    // Main color trail
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.7;
+    ctx.fillText(randChar(), x, y - fontSize);
+
+    // Dimmer ghost trail
+    ctx.globalAlpha = 0.25;
+    ctx.fillText(randChar(), x, y - fontSize * 2);
+    ctx.globalAlpha = 1;
+
+    // Reset column when off-screen (stagger re-entry)
+    if (y > h + 50 && Math.random() > 0.98)
+      columns[i] = -Math.random() * h * 0.5;
+
+    columns[i] += fontSize * 0.65 * speed;
+  }
+  animId = requestAnimationFrame(draw);
+};`;
 
 interface MatrixRainProps {
   className?: string;
-  color?: string;     // CSS color for the glyphs
-  density?: number;   // columns count factor (lower = more columns)
-  speed?: number;     // fall speed multiplier
+  color?: string;
+  density?: number;
+  speed?: number;
+  showPeek?: boolean;
 }
 
 // Claude Code CLI keywords + symbols
@@ -30,6 +71,7 @@ export default function MatrixRain({
   color = '#0fa',
   density = 18,
   speed = 1,
+  showPeek = false,
 }: MatrixRainProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prefersReduced = useReducedMotion();
@@ -113,6 +155,24 @@ export default function MatrixRain({
   }, [prefersReduced, color, density, speed]);
 
   if (prefersReduced) return null;
+
+  if (showPeek) {
+    return (
+      <>
+        <canvas
+          ref={canvasRef}
+          className={`absolute inset-0 w-full h-full ${className}`}
+          style={{ pointerEvents: 'none' }}
+        />
+        <CodePeek
+          code={PEEK_CODE}
+          title="Matrix Rain"
+          fileName="MatrixRain.tsx"
+          className="absolute bottom-5 right-5 z-10"
+        />
+      </>
+    );
+  }
 
   return (
     <canvas

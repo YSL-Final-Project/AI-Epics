@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useI18n } from '../i18n';
 
 const DURATION = 6000; // ms before auto-dismiss
 
 export default function WelcomeToast() {
+  const { t } = useI18n();
   const prefersReduced = useReducedMotion();
   const [show, setShow] = useState(false);
 
@@ -52,15 +54,15 @@ export default function WelcomeToast() {
 
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-slate-900 dark:text-white text-sm leading-snug">
-                  欢迎来到 AI Code Era！
+                  {t.welcome.title}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  2018–2025 AI 编程革命全景。探索数据、对比工具、参与互动。
+                  {t.welcome.desc}
                 </p>
 
                 {/* Tags */}
                 <div className="flex gap-1.5 mt-2 flex-wrap">
-                  {['⟡ 时间线', '◈ 洞察', '△ 实验室'].map((tag, i) => (
+                  {t.welcome.tags.map((tag, i) => (
                     <motion.span
                       key={tag}
                       initial={prefersReduced ? false : { opacity: 0, scale: 0.8 }}
@@ -78,7 +80,7 @@ export default function WelcomeToast() {
               <button
                 onClick={() => setShow(false)}
                 className="shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors text-lg leading-none mt-0.5"
-                aria-label="关闭"
+                aria-label={t.welcome.close}
               >
                 ×
               </button>

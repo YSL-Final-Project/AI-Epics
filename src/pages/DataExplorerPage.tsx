@@ -1,8 +1,10 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import PageTransition from '../components/layout/PageTransition';
 import DataExplorerTabs from '../components/dataExplorer/DataExplorerTabs';
+import { useI18n } from '../i18n';
 
 export default function DataExplorerPage() {
+  const { t } = useI18n();
   const prefersReduced = useReducedMotion();
 
   return (
@@ -26,7 +28,7 @@ export default function DataExplorerPage() {
                 transition={{ delay: 0.3, duration: 0.75, ease: [0.32, 0.72, 0, 1] }}
                 className="text-[clamp(2.5rem,8vw,4.5rem)] font-black text-slate-900 dark:text-white tracking-[-0.03em] leading-[0.95]"
               >
-                深度洞察
+                {t.dataExplorer.title}
               </motion.h1>
             </div>
           </div>

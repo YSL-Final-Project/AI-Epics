@@ -15,35 +15,10 @@ import ScrollRevealText from '../components/story/ScrollRevealText';
 import AmbientLight from '../components/shared/AmbientLight';
 import DualWaveText from '../components/story/DualWaveText';
 import DesktopEvolution from '../components/story/DesktopEvolution';
-
-const industryData = [
-  { label: 'Web 前端', value: 52 },
-  { label: '数据科学', value: 45 },
-  { label: '企业后端', value: 42 },
-  { label: '移动端', value: 38 },
-  { label: 'DevOps', value: 35 },
-  { label: '游戏开发', value: 28 },
-  { label: '嵌入式', value: 18 },
-];
-
-const keyEvents = [
-  { date: '2022.11', title: 'ChatGPT 发布', impact: '5天100万用户' },
-  { date: '2023.03', title: 'GPT-4 发布', impact: '代码质量质变' },
-  { date: '2023.10', title: 'Cursor 爆发', impact: 'AI 原生 IDE' },
-  { date: '2024.02', title: 'Devin 发布', impact: '首个 AI 工程师' },
-  { date: '2024.06', title: '40% 代码由 AI 生成', impact: '基础设施级别' },
-  { date: '2025.01', title: 'DeepSeek-R1', impact: '开源震动硅谷' },
-];
-
-const ch1Timeline = [
-  { year: 2018, event: 'GPT-1', detail: '1.17亿参数，少有人关注' },
-  { year: 2019, event: 'GPT-2', detail: '太危险不敢公开发布' },
-  { year: 2020, event: 'GPT-3', detail: '1750亿参数，开始写代码' },
-  { year: 2021, event: 'Copilot 内测', detail: 'AI 第一次坐上副驾' },
-  { year: 2022, event: 'ChatGPT', detail: '一切都变了' },
-];
+import { useI18n } from '../i18n';
 
 export default function StoryPage() {
+  const { t } = useI18n();
   return (
     <div className="dark">
       <div className="bg-[#0a0a0f] text-white min-h-screen selection:bg-cyan-500/30 ambient-glow" style={{ overflowX: 'clip' }}>
@@ -64,8 +39,8 @@ export default function StoryPage() {
 
         {/* Narrative transition: Overture → Chapter 1 */}
         <NarrativeBreak
-          text="在那之前，一切都还很简单。"
-          subtext="代码是人类写的。毫无例外。"
+          text={t.story.break1}
+          subtext={t.story.break1Sub}
           ribbon="BEFORE AI"
         />
 
@@ -77,8 +52,8 @@ export default function StoryPage() {
                 progress={progress}
                 range={[0, 0.18]}
                 chapter="Chapter 01"
-                title="暗流涌动"
-                subtitle="2018–2021：编程曾是纯人类的手艺，然后地基开始动摇"
+                title={t.story.ch1Title}
+                subtitle={t.story.ch1Subtitle}
               />
               <Chapter1Content progress={progress} />
             </>
@@ -87,8 +62,8 @@ export default function StoryPage() {
 
         {/* Narrative transition: Chapter 1 → Chapter 2 */}
         <NarrativeBreak
-          text="然后，2022年11月30日，"
-          subtext="世界醒来发现规则已经改变。"
+          text={t.story.break2}
+          subtext={t.story.break2Sub}
           glitch
           ribbon="CHATGPT"
         />
@@ -101,8 +76,8 @@ export default function StoryPage() {
                 progress={progress}
                 range={[0, 0.08]}
                 chapter="Chapter 02"
-                title="大爆炸"
-                subtitle="2022–2024：700 天内，AI 从实验变成基础设施"
+                title={t.story.ch2Title}
+                subtitle={t.story.ch2Subtitle}
               />
               <Chapter2Content progress={progress} />
             </>
@@ -114,8 +89,8 @@ export default function StoryPage() {
 
         {/* Narrative transition: Chapter 2 → Chapter 3 */}
         <NarrativeBreak
-          text="当尘埃落定，一个问题浮现——"
-          subtext="开发者，到底还剩下什么？"
+          text={t.story.break3}
+          subtext={t.story.break3Sub}
           ribbon="HUMAN vs MACHINE"
         />
 
@@ -127,8 +102,8 @@ export default function StoryPage() {
                 progress={progress}
                 range={[0, 0.12]}
                 chapter="Chapter 03"
-                title="新物种"
-                subtitle="2025+：AI 没有取代开发者，而是重新定义了'开发者'的含义"
+                title={t.story.ch3Title}
+                subtitle={t.story.ch3Subtitle}
               />
               <Chapter3Content progress={progress} />
             </>
@@ -195,6 +170,7 @@ function NarrativeBreak({ text, subtext, glitch = false, ribbon }: { text: strin
             <GlitchText
               text={text}
               className="text-2xl sm:text-4xl font-light text-white/60 leading-relaxed"
+              showPeek
             />
           </motion.div>
         ) : (
@@ -261,6 +237,7 @@ function useScrollValue(progress: MotionValue<number>, keys: number[], values: n
 /*  OVERTURE                                            */
 /* ──────────────────────────────────────────────────── */
 function Overture({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
   const codeText = 'function future() { return human + AI; }';
   const charCount = useTransform(progress, [0.08, 0.4], [0, codeText.length]);
 
@@ -316,7 +293,7 @@ function Overture({ progress }: { progress: MotionValue<number> }) {
           </span>
         </h1>
         <p className="mt-6 text-base sm:text-lg text-white/25 font-extralight tracking-wide">
-          一个关于编程如何被永远改变的故事
+          {t.story.overtureSubtitle}
         </p>
 
         {/* Scroll indicator */}
@@ -346,6 +323,8 @@ function CodeTyping({ text, charCount }: { text: string; charCount: MotionValue<
 /*  CHAPTER 1 — THE QUIET BEFORE (Horizontal Timeline)*/
 /* ──────────────────────────────────────────────────── */
 function Chapter1Content({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
+  const ch1Timeline = t.story.ch1Timeline;
   const timelineOp = useScrollOpacity(progress, [0.18, 0.25, 0.55, 0.6], [0, 1, 1, 0]);
   const soOp = useScrollOpacity(progress, [0.6, 0.65, 0.88, 0.95], [0, 1, 1, 0]);
 
@@ -374,7 +353,7 @@ function Chapter1Content({ progress }: { progress: MotionValue<number> }) {
         {/* Fixed label */}
         <div className="absolute bottom-24 left-1/2 -translate-x-1/2 text-center">
           <p className="text-xs font-mono text-white/15 tracking-[0.4em] uppercase">
-            向下滚动 · 时间在流动
+            {t.story.scrollHint}
           </p>
         </div>
       </div>
@@ -382,7 +361,7 @@ function Chapter1Content({ progress }: { progress: MotionValue<number> }) {
       {/* SO traffic — appears after timeline scrolls away */}
       <div style={{ opacity: soOp }} className="absolute inset-0 flex flex-col items-center justify-center px-8">
         <p className="text-xs font-mono text-white/20 tracking-[0.3em] uppercase mb-8">
-          Stack Overflow 流量 · 上升期
+          {t.story.soTrafficLabel}
         </p>
         <div className="w-full max-w-xl">
           <svg viewBox="0 0 600 200" className="w-full" fill="none">
@@ -423,10 +402,10 @@ function Chapter1Content({ progress }: { progress: MotionValue<number> }) {
           />
           <span className="text-4xl sm:text-5xl font-black text-white/25 ml-1">M</span>
           <p className="text-xs text-white/20 mt-3 font-light">
-            Stack Overflow 月访问量达到历史最高——
+            {t.story.soMonthlyPeak}
           </p>
           <p className="text-sm text-white/40 mt-1 font-light">
-            没有人预见到接下来会发生什么。
+            {t.story.soNobodySaw}
           </p>
         </div>
       </div>
@@ -484,54 +463,22 @@ function TimelineCard({
 /*  CHAPTER 2 — THE EXPLOSION                          */
 /* ──────────────────────────────────────────────────── */
 function Chapter2Content({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
   return (
     <>
-      {/* Part 1: The date that changed everything — 0.08 to 0.18 */}
       <TheDateScene progress={progress} />
-
-      {/* Part 2: SO crashes — 0.18 to 0.32 */}
-      <HeroStat
-        progress={progress}
-        range={[0.18, 0.3]}
-        from={0}
-        to={55}
-        suffix="%"
-        label="Stack Overflow 流量从峰值暴跌"
-        sublabel="1700M → 760M 月访问量"
-      />
-
-      {/* Part 3: Cross chart — 0.3 to 0.44 */}
+      <HeroStat progress={progress} range={[0.18, 0.3]} from={0} to={55} suffix="%" label={t.story.soTrafficCrash} sublabel={t.story.soTrafficCrashSub} />
       <CrossChartScene progress={progress} />
-
-      {/* Part 4: 40% hero — 0.44 to 0.55 */}
-      <HeroStat
-        progress={progress}
-        range={[0.44, 0.53]}
-        from={0}
-        to={40}
-        suffix="%"
-        label="GitHub 上的新代码由 AI 辅助生成"
-        sublabel="2024.06 — GitHub CEO 在演讲中确认"
-      />
-
-      {/* Part 5: Industry bars — 0.55 to 0.68 */}
+      <HeroStat progress={progress} range={[0.44, 0.53]} from={0} to={40} suffix="%" label={t.story.aiCodeOnGithub} sublabel={t.story.aiCodeConfirm} />
       <IndustryBarsScene progress={progress} />
-
-      {/* Part 6: Event cascade — 0.68 to 0.85 */}
       <EventCascade progress={progress} />
-
-      {/* Part 7: Emotional closing — 0.85 to 0.95 */}
-      <ChapterClosing
-        progress={progress}
-        range={[0.85, 0.95]}
-        text="700天。从玩具到基础设施。"
-        subtext="历史上没有任何技术以这个速度重塑一个行业。"
-      />
+      <ChapterClosing progress={progress} range={[0.85, 0.95]} text={t.story.ch2Closing} subtext={t.story.ch2ClosingSub} />
     </>
   );
 }
 
 function TheDateScene({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
   const opacity = useScrollOpacity(progress, [0.08, 0.12, 0.16, 0.18], [0, 1, 1, 0]);
   const scale = useScrollValue(progress, [0.08, 0.14], [0.5, 1]);
   const blur = useScrollValue(progress, [0.08, 0.12], [10, 0]);
@@ -540,7 +487,7 @@ function TheDateScene({ progress }: { progress: MotionValue<number> }) {
     <div style={{ opacity }} className="absolute inset-0 flex flex-col items-center justify-center">
       <div style={{ transform: `scale(${scale})`, filter: `blur(${blur}px)` }} className="text-center">
         <p className="text-xs font-mono text-white/20 tracking-[0.5em] uppercase mb-6">
-          那一天
+          {t.story.thatDay}
         </p>
         <p className="text-6xl sm:text-8xl md:text-9xl font-black tabular-nums tracking-tight">
           <span className="text-white/90">2022</span>
@@ -550,7 +497,7 @@ function TheDateScene({ progress }: { progress: MotionValue<number> }) {
           <span className="text-cyan-400/80">30</span>
         </p>
         <p className="mt-6 text-lg text-white/30 font-light">
-          ChatGPT 发布。一切从此不同。
+          {t.story.chatgptLaunch}
         </p>
       </div>
     </div>
@@ -558,14 +505,15 @@ function TheDateScene({ progress }: { progress: MotionValue<number> }) {
 }
 
 function CrossChartScene({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
   const opacity = useScrollOpacity(progress, [0.3, 0.34, 0.42, 0.44], [0, 1, 1, 0]);
   return (
     <div style={{ opacity }} className="absolute inset-0 flex flex-col items-center justify-center px-8">
       <p className="text-sm text-white/30 font-light mb-2 text-center max-w-lg">
-        一条线上升，一条线坠落——
+        {t.story.crossChartDesc}
       </p>
       <p className="text-xs text-white/15 font-light mb-8 text-center max-w-md">
-        当 AI 工具采用率上升时，Stack Overflow 的命运已经注定
+        {t.story.crossChartSub}
       </p>
       <CrossChart progress={progress} range={[0.32, 0.43]} />
     </div>
@@ -573,11 +521,13 @@ function CrossChartScene({ progress }: { progress: MotionValue<number> }) {
 }
 
 function IndustryBarsScene({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
+  const industryData = t.story.industries;
   const opacity = useScrollOpacity(progress, [0.55, 0.58, 0.65, 0.68], [0, 1, 1, 0]);
   return (
     <div style={{ opacity }} className="absolute inset-0 flex flex-col items-center justify-center px-8">
-      <p className="text-lg text-white/50 font-light mb-2 text-center">AI 代码生成渗透率</p>
-      <p className="text-xs text-white/15 font-mono mb-8 text-center">没有一个领域幸免</p>
+      <p className="text-lg text-white/50 font-light mb-2 text-center">{t.story.aiPenetration}</p>
+      <p className="text-xs text-white/15 font-mono mb-8 text-center">{t.story.noFieldSpared}</p>
       <ScrollLinkedBars
         progress={progress}
         range={[0.56, 0.66]}
@@ -589,11 +539,13 @@ function IndustryBarsScene({ progress }: { progress: MotionValue<number> }) {
 }
 
 function EventCascade({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
+  const keyEvents = t.story.keyEvents;
   const opacity = useScrollOpacity(progress, [0.68, 0.72, 0.83, 0.86], [0, 1, 1, 0]);
   return (
     <div style={{ opacity }} className="absolute inset-0 flex flex-col items-center justify-center px-6">
       <p className="text-xs font-mono tracking-[0.3em] text-cyan-500/30 uppercase mb-8">
-        关键事件 · 时间线
+        {t.story.keyEventsTimeline}
       </p>
       <div className="relative space-y-5 max-w-md w-full">
         {/* Vertical line */}
@@ -648,17 +600,15 @@ function ChapterClosing({ progress, range, text, subtext }: {
 /*  CHAPTER 3 — THE NEW DEVELOPER                     */
 /* ──────────────────────────────────────────────────── */
 function Chapter3Content({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
   return (
     <>
-      {/* Salary divide — 0.12 to 0.45 */}
       <SalaryDivide progress={progress} range={[0.12, 0.45]} />
-
-      {/* Narrative pause */}
       <ChapterClosing
         progress={progress}
         range={[0.45, 0.55]}
-        text="3倍的薪资鸿沟。"
-        subtext="不是天赋的差距，而是工具的差距。"
+        text={t.story.salaryGap}
+        subtext={t.story.salaryGapSub}
       />
 
       {/* Job positions declining — 0.55 to 0.72 */}
@@ -671,11 +621,12 @@ function Chapter3Content({ progress }: { progress: MotionValue<number> }) {
 }
 
 function JobDecline({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
   const opacity = useScrollOpacity(progress, [0.55, 0.6, 0.7, 0.73], [0, 1, 1, 0]);
   return (
     <div style={{ opacity }} className="absolute inset-0 flex flex-col items-center justify-center px-8">
       <p className="text-xs font-mono text-white/15 tracking-[0.3em] uppercase mb-6">
-        开发者岗位 · 年度招聘量
+        {t.story.jobPositions}
       </p>
       <div className="flex items-end gap-1.5 h-44">
         {[920, 980, 890, 1050, 1150, 980, 850, 820].map((v, i) => (
@@ -692,9 +643,9 @@ function JobDecline({ progress }: { progress: MotionValue<number> }) {
           suffix="%"
           className="text-4xl font-black text-red-400/80 tabular-nums"
         />
-        <p className="text-sm text-white/25 mt-2 font-light">较峰值下降 · 2022 → 2025</p>
+        <p className="text-sm text-white/25 mt-2 font-light">{t.story.declineFromPeak} · 2022 → 2025</p>
         <p className="text-xs text-white/15 mt-1">
-          岗位在消失——但薪资在分化。
+          {t.story.jobsDisappearing}
         </p>
       </div>
     </div>
@@ -726,6 +677,7 @@ function JobBar({ value, year, progress, index }: { value: number; year: number;
 }
 
 function IDERevolution({ progress }: { progress: MotionValue<number> }) {
+  const { t } = useI18n();
   const opacity = useScrollOpacity(progress, [0.72, 0.77, 0.9, 0.93], [0, 1, 1, 0]);
 
   const ideData = [
@@ -737,16 +689,16 @@ function IDERevolution({ progress }: { progress: MotionValue<number> }) {
 
   return (
     <div style={{ opacity }} className="absolute inset-0 flex flex-col items-center justify-center px-8">
-      <p className="text-xs font-mono text-white/15 tracking-[0.3em] uppercase mb-2">IDE 格局</p>
-      <p className="text-sm text-white/30 font-light mb-8">一个从零到 18% 的搅局者</p>
+      <p className="text-xs font-mono text-white/15 tracking-[0.3em] uppercase mb-2">{t.story.ideLandscape}</p>
+      <p className="text-sm text-white/30 font-light mb-8">{t.story.ideDisruptor}</p>
       <div className="w-full max-w-md space-y-4">
         {ideData.map((ide) => (
           <IDEBar key={ide.name} ide={ide} progress={progress} />
         ))}
       </div>
       <p className="mt-8 text-xs text-white/15 font-light text-center max-w-sm">
-        Cursor 在两年内从不存在到占据近五分之一的市场份额。<br />
-        工具之争，实质上是 AI 能力之争。
+        {t.story.ideDesc}<br />
+        {t.story.ideToolWar}
       </p>
     </div>
   );
@@ -784,53 +736,28 @@ function IDEBar({ ide, progress }: { ide: { name: string; share2022: number; sha
 /*  BRANCHING MOMENT — Interactive choice               */
 /* ──────────────────────────────────────────────────── */
 function BranchingMoment() {
+  const { t } = useI18n();
   const [choice, setChoice] = useState<'none' | 'optimist' | 'realist'>('none');
 
   const optimistView = (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="max-w-xl text-center"
-    >
-      <p className="text-3xl sm:text-4xl font-light text-cyan-400/80 mb-6">
-        黎明
-      </p>
-      <p className="text-lg text-white/50 font-light leading-relaxed">
-        AI 正在消除编程的门槛。设计师可以实现原型、产品经理可以写脚本、
-        创业者可以独自构建完整产品。
-      </p>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-xl text-center">
+      <p className="text-3xl sm:text-4xl font-light text-cyan-400/80 mb-6">{t.story.dawn}</p>
+      <p className="text-lg text-white/50 font-light leading-relaxed">{t.story.dawnP1}</p>
       <p className="text-base text-white/40 font-light leading-relaxed mt-4">
-        我们正在进入一个<span className="text-white/70">人人都是开发者</span>的时代。
-        创造力，而非语法，成为最终的竞争力。
+        {t.story.dawnP2}<span className="text-white/70">{t.story.dawnP2Highlight}</span>{t.story.dawnP2End}
       </p>
-      <p className="text-sm text-white/20 mt-8">
-        10x 工程师不再罕见——他们只是学会了与 AI 协作的普通人。
-      </p>
+      <p className="text-sm text-white/20 mt-8">{t.story.dawnP3}</p>
     </motion.div>
   );
 
   const realistView = (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="max-w-xl text-center"
-    >
-      <p className="text-3xl sm:text-4xl font-light text-red-400/80 mb-6">
-        暮色
-      </p>
-      <p className="text-lg text-white/50 font-light leading-relaxed">
-        初级开发岗位正在消失。AI 生成的代码充斥代码库，
-        但没有人真正理解它是如何工作的。技术债务在加速累积。
-      </p>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-xl text-center">
+      <p className="text-3xl sm:text-4xl font-light text-red-400/80 mb-6">{t.story.dusk}</p>
+      <p className="text-lg text-white/50 font-light leading-relaxed">{t.story.duskP1}</p>
       <p className="text-base text-white/40 font-light leading-relaxed mt-4">
-        我们正在培养一代<span className="text-white/70">不会编程的"程序员"</span>。
-        当 AI 出错时——它总会出错——谁来修复？
+        {t.story.duskP2}<span className="text-white/70">{t.story.duskP2Highlight}</span>{t.story.duskP2End}
       </p>
-      <p className="text-sm text-white/20 mt-8">
-        真正的风险不是 AI 取代开发者，而是开发者忘记了怎么开发。
-      </p>
+      <p className="text-sm text-white/20 mt-8">{t.story.duskP3}</p>
     </motion.div>
   );
 
@@ -860,10 +787,10 @@ function BranchingMoment() {
         {choice === 'none' ? (
           <>
             <p className="text-xs font-mono tracking-[0.4em] text-white/20 uppercase mb-8">
-              选择你的视角
+              {t.story.chooseView}
             </p>
             <p className="text-2xl sm:text-3xl text-white/50 font-light mb-12">
-              AI 时代的开发者，面对的是黎明还是暮色？
+              {t.story.chooseQuestion}
             </p>
             <div className="flex flex-col sm:flex-row gap-6">
               <button
@@ -872,9 +799,9 @@ function BranchingMoment() {
               >
                 <div className="absolute inset-0 bg-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <span className="text-lg text-cyan-400/60 group-hover:text-cyan-400/90 transition-colors font-light">
-                  黎明 · 乐观者
+                  {t.story.dawnOptimist}
                 </span>
-                <p className="text-xs text-white/20 mt-2">人人都是开发者</p>
+                <p className="text-xs text-white/20 mt-2">{t.story.dawnSub}</p>
               </button>
               <button
                 onClick={() => setChoice('realist')}
@@ -882,9 +809,9 @@ function BranchingMoment() {
               >
                 <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <span className="text-lg text-red-400/60 group-hover:text-red-400/90 transition-colors font-light">
-                  暮色 · 现实者
+                  {t.story.duskRealist}
                 </span>
-                <p className="text-xs text-white/20 mt-2">被遗忘的手艺</p>
+                <p className="text-xs text-white/20 mt-2">{t.story.duskSub}</p>
               </button>
             </div>
           </>
@@ -895,7 +822,7 @@ function BranchingMoment() {
               onClick={() => setChoice('none')}
               className="mt-10 text-xs font-mono text-white/15 hover:text-white/30 transition-colors"
             >
-              ← 选择另一个视角
+              {t.story.chooseAnother}
             </button>
           </>
         )}
@@ -908,6 +835,7 @@ function BranchingMoment() {
 /*  EPILOGUE                                            */
 /* ──────────────────────────────────────────────────── */
 function Epilogue() {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-8 text-center relative">
       {/* Subtle radial glow */}
@@ -926,10 +854,10 @@ function Epilogue() {
         className="relative"
       >
         <p className="text-2xl sm:text-3xl text-white/40 font-extralight max-w-2xl leading-relaxed">
-          AI 没有取代开发者。
+          {t.story.epilogueP1}
         </p>
         <p className="text-2xl sm:text-3xl text-white/70 font-light max-w-2xl leading-relaxed mt-3">
-          它重新定义了<GlitchText text="「开发者」" className="text-cyan-400/70" />的含义。
+          {t.story.epilogueP2}<GlitchText text={t.story.epilogueP2Highlight} className="text-cyan-400/70" />{t.story.epilogueP2End}
         </p>
 
         <motion.div
@@ -939,9 +867,9 @@ function Epilogue() {
           transition={{ delay: 0.8, duration: 1.0 }}
         >
           <p className="mt-12 text-base text-white/20 font-light max-w-lg mx-auto leading-relaxed">
-            无论你选择哪个视角，有一件事是确定的——
+            {t.story.epilogueP3}
             <br />
-            回到过去的路，已经被关上了。
+            {t.story.epilogueP3End}
           </p>
         </motion.div>
 
@@ -957,19 +885,19 @@ function Epilogue() {
             viewTransition
             className="px-8 py-3.5 rounded-full border border-white/10 text-sm text-white/40 hover:text-white/70 hover:border-white/25 transition-all duration-300 font-mono"
           >
-            探索完整数据 →
+            {t.story.exploreData}
           </Link>
           <Link
             to="/timeline"
             viewTransition
             className="px-8 py-3.5 rounded-full border border-cyan-500/15 text-sm text-cyan-500/50 hover:text-cyan-400/80 hover:border-cyan-500/30 transition-all duration-300 font-mono"
           >
-            浏览时间线 →
+            {t.story.browseTimeline}
           </Link>
         </motion.div>
 
         <p className="mt-24 text-[10px] text-white/8 font-mono tracking-widest">
-          AI Code Era — 一个关于编程如何被永远改变的故事
+          {t.story.epilogueByline}
         </p>
       </motion.div>
     </div>

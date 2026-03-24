@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
+import { I18nProvider } from './i18n';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import CursorFollower from './components/CursorFollower';
@@ -63,13 +64,15 @@ function AppLayout() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/*" element={<AppLayout />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <I18nProvider>
+      <ThemeProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/*" element={<AppLayout />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </I18nProvider>
   );
 }
 

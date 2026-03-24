@@ -5,6 +5,7 @@ import PredictionVote from '../components/interactive/PredictionVote';
 import ToolRecommender from '../components/interactive/ToolRecommender';
 import LineReveal from '../components/animations/LineReveal';
 import ScaleReveal from '../components/animations/ScaleReveal';
+import { useI18n } from '../i18n';
 
 const sections = [
   { id: 'quiz', label: '01', title: 'Code Quiz', Component: CodeQuiz },
@@ -13,6 +14,7 @@ const sections = [
 ];
 
 export default function InteractivePage() {
+  const { t } = useI18n();
   const prefersReduced = useReducedMotion();
 
   return (
@@ -30,7 +32,7 @@ export default function InteractivePage() {
               Interactive
             </motion.p>
             <LineReveal className="text-[clamp(2.5rem,8vw,4.5rem)] font-black text-slate-900 dark:text-white tracking-[-0.03em] leading-[0.95]">
-              创意实验室
+              {t.interactive.title}
             </LineReveal>
           </div>
 

@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+import { useI18n } from '../../i18n';
 
 export default function Footer() {
+  const { t } = useI18n();
   return (
     <footer className="relative border-t border-slate-200/50 dark:border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -12,9 +14,9 @@ export default function Footer() {
             <span className="text-slate-400 dark:text-slate-500 text-sm ml-2">© 2025</span>
           </div>
           <div className="flex gap-6 text-sm text-slate-400 dark:text-slate-500">
-            <Link to="/about" className="hover:text-cyan-500 transition-colors">关于项目</Link>
-            <Link to="/about" className="hover:text-cyan-500 transition-colors">数据来源</Link>
-            <Link to="/about" className="hover:text-cyan-500 transition-colors">联系我们</Link>
+            <Link to="/about" className="hover:text-cyan-500 transition-colors">{t.footer.aboutProject}</Link>
+            <Link to="/about" className="hover:text-cyan-500 transition-colors">{t.footer.dataSource}</Link>
+            <Link to="/about" className="hover:text-cyan-500 transition-colors">{t.footer.contactUs}</Link>
           </div>
         </div>
       </div>

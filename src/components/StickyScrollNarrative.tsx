@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { useI18n } from '../i18n';
 
 /**
  * Apple-style sticky scroll narrative.
@@ -14,6 +15,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion
  *  Scene 3 (0.67→ 1.00): "边界正在消失" — the future
  */
 export default function StickyScrollNarrative() {
+  const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
 
@@ -59,9 +61,9 @@ export default function StickyScrollNarrative() {
     return (
       <section className="py-24 px-6 bg-[#060612] text-center space-y-20">
         {[
-          { label: '01 · THE SHIFT', title: '代码不再只是人类的语言', accent: 'text-cyan-400' },
-          { label: '02 · THE NUMBERS', title: 'GitHub 上 46% 的新代码由 AI 生成', accent: 'text-violet-400' },
-          { label: '03 · THE FUTURE', title: '边界正在消失', accent: 'text-rose-400' },
+          { label: t.narrative.scene1Label, title: t.narrative.scene1Title, accent: 'text-cyan-400' },
+          { label: t.narrative.scene2Label, title: t.narrative.scene2Title, accent: 'text-violet-400' },
+          { label: t.narrative.scene3Label, title: t.narrative.scene3Title, accent: 'text-rose-400' },
         ].map(s => (
           <div key={s.label}>
             <p className={`font-mono text-[11px] tracking-[0.4em] uppercase mb-4 ${s.accent}`}>{s.label}</p>
@@ -106,10 +108,10 @@ export default function StickyScrollNarrative() {
             <div className="text-white/20">{'}'}</div>
           </div>
           <span className="block text-[clamp(4.5rem,12vw,8.5rem)] font-black text-white tracking-tight leading-none">
-            代码
+            {t.narrative.code}
           </span>
           <span className="block text-[clamp(1.2rem,3.5vw,2.4rem)] font-light text-white/45 tracking-widest mt-4">
-            不再只是人类的语言
+            {t.narrative.codeSubtitle}
           </span>
         </motion.div>
 
@@ -122,7 +124,7 @@ export default function StickyScrollNarrative() {
             02
           </p>
           <p className="text-sm sm:text-base font-light text-white/30 mb-8 max-w-md leading-relaxed">
-            GitHub 上每提交两行新代码，<br className="sm:hidden" />就有一行来自 AI。
+            {t.narrative.numbersDesc}
           </p>
           <div className="flex items-start justify-center leading-none">
             <span className="text-[clamp(6rem,20vw,13rem)] font-black text-white tracking-tight tabular-nums">
@@ -133,7 +135,7 @@ export default function StickyScrollNarrative() {
             </span>
           </div>
           <p className="mt-5 text-base sm:text-lg font-light text-white/40">
-            新代码由 AI 生成
+            {t.narrative.numbersLabel}
           </p>
           {/* SVG ring showing 46% */}
           <div className="mt-5 relative w-14 h-14">
@@ -150,7 +152,7 @@ export default function StickyScrollNarrative() {
             </svg>
           </div>
           <p className="mt-3 font-mono text-[9px] tracking-[0.35em] text-white/20 uppercase">
-            来源：GitHub · 2023
+            {t.narrative.numbersSource}
           </p>
         </motion.div>
 
@@ -163,7 +165,7 @@ export default function StickyScrollNarrative() {
             03
           </p>
           <span className="block text-[clamp(3rem,9vw,7rem)] font-black text-white tracking-tight leading-none mb-8">
-            边界正在消失
+            {t.narrative.scene3Title}
           </span>
           {/* Orbit visual — 3 dots orbiting a center */}
           <div className="relative w-20 h-20 mb-6">
