@@ -15,6 +15,7 @@ import ScrollRevealText from '../components/story/ScrollRevealText';
 import AmbientLight from '../components/shared/AmbientLight';
 import DualWaveText from '../components/story/DualWaveText';
 import DesktopEvolution from '../components/story/DesktopEvolution';
+import StoryAutoScroll from '../components/story/StoryAutoScroll';
 import { useI18n } from '../i18n';
 
 export default function StoryPage() {
@@ -26,6 +27,7 @@ export default function StoryPage() {
         <Starfield density={250} speed={0.2} />
         <div className="film-grain" />
         <StoryNav />
+        <StoryAutoScroll />
 
         {/* ═══════════════ OVERTURE ═══════════════ */}
         <StickyChapter heightVh={250}>
