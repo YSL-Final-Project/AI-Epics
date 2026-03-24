@@ -2,6 +2,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ── Slide Frame spin ──────────────────────────────────────────────────── */
+@property --frame-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes slideFrameSpin {
+  to { --frame-angle: 360deg; }
+}
+
 /* ── Cyber Grid scroll ──────────────────────────────────────────────────── */
 @keyframes cyberGridScroll {
   0%   { background-position: 0 0; }
