@@ -1,5 +1,42 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import CodePeek from '../shared/CodePeek';
+
+const PEEK_CODE = `// Scroll position drives which year is shown.
+// Three phases fade in/out: intro → chart → outro.
+
+useMotionValueEvent(scrollYProgress, 'change', (p) => {
+  // 0.00–0.10  intro text fades out
+  // 0.08–0.12  chart fades in
+  // 0.12–0.83  chart plays through all years
+  // 0.83–0.88  chart fades, outro fades in
+
+  // Intro opacity
+  if (p <= 0.06) setIntroOp(1);
+  else if (p <= 0.10) setIntroOp(1 - (p - 0.06) / 0.04);
+  else setIntroOp(0);
+
+  // Chart opacity
+  if (p <= 0.08) setChartOp(0);
+  else if (p <= 0.12) setChartOp((p - 0.08) / 0.04);
+  else if (p <= 0.83) setChartOp(1);
+  else if (p <= 0.88) setChartOp(1 - (p - 0.83) / 0.05);
+  else setChartOp(0);
+
+  // Map scroll range 0.12–0.83 → year index
+  if (p >= 0.12 && p <= 0.83) {
+    const t = (p - 0.12) / (0.83 - 0.12);
+    setYearIndex(Math.round(t * (TOTAL - 1)));
+  }
+});
+
+// Framer Motion layoutId animates bars between rank positions
+<motion.div key={lang.name} layout layoutId={\`lang-row-\${lang.name}\`}
+  transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+/>
+<motion.div animate={{ width: \`\${(lang.score / 100) * 100}%\` }}
+  transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+/>`;
 import rankingsData from '../../data/language_rankings.json';
 import type { LanguageRankingsData } from '../../types';
 
@@ -80,6 +117,12 @@ export default function RacingBarChart() {
 
   return (
     <div ref={containerRef} className="relative" style={{ height: '500vh' }}>
+      <CodePeek
+        code={PEEK_CODE}
+        title="Racing Bar Chart"
+        fileName="RacingBarChart.tsx"
+        className="absolute top-5 right-5 z-10"
+      />
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         <div className="w-full max-w-4xl mx-auto px-6 sm:px-10 relative">
 

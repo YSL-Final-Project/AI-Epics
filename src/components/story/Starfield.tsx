@@ -1,4 +1,47 @@
 import { useEffect, useRef } from 'react';
+import CodePeek from '../shared/CodePeek';
+
+const PEEK_CODE = `// 200 stars drift upward, each with independent speed & pulse
+interface Star {
+  x: number; y: number;
+  size: number; opacity: number;
+  speed: number;
+  pulse: number; pulseSpeed: number; // sine-wave twinkle
+}
+
+function initStars() {
+  stars = Array.from({ length: density }, () => ({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    size:  Math.random() * 1.5 + 0.3,
+    opacity: Math.random() * 0.5 + 0.1,
+    speed: Math.random() * speed + 0.1,
+    pulse: Math.random() * Math.PI * 2,
+    pulseSpeed: Math.random() * 0.02 + 0.005,
+  }));
+}
+
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+  for (const star of stars) {
+    star.y -= star.speed;           // drift upward
+    star.pulse += star.pulseSpeed;  // advance twinkle phase
+
+    // Wrap: reappear at bottom when off top
+    if (star.y < -2) {
+      star.y = h + 2;
+      star.x = Math.random() * w;
+    }
+
+    // Sinusoidal twinkle modulates opacity
+    const pulseOpacity = star.opacity * (0.6 + 0.4 * Math.sin(star.pulse));
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    ctx.fillStyle = \`rgba(255, 255, 255, \${pulseOpacity})\`;
+    ctx.fill();
+  }
+  animId = requestAnimationFrame(draw);
+}`;
 
 interface StarfieldProps {
   density?: number;
@@ -87,10 +130,18 @@ export default function Starfield({ density = 200, speed = 0.3 }: StarfieldProps
   }, [density, speed]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.6 }}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{ opacity: 0.6 }}
+      />
+      <CodePeek
+        code={PEEK_CODE}
+        title="Starfield"
+        fileName="Starfield.tsx"
+        className="fixed top-5 right-5 z-10"
+      />
+    </>
   );
 }

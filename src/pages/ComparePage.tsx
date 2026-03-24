@@ -6,8 +6,10 @@ import ToolCompareTable from '../components/compare/ToolCompareTable';
 import IDEMarketChart from '../components/compare/IDEMarketChart';
 import LineReveal from '../components/animations/LineReveal';
 import CursorSpotlight from '../components/compare/CursorSpotlight';
+import { useI18n } from '../i18n';
 
 export default function ComparePage() {
+  const { t } = useI18n();
   const prefersReduced = useReducedMotion();
 
   return (
@@ -25,7 +27,7 @@ export default function ComparePage() {
             Compare
           </motion.p>
           <LineReveal className="text-[clamp(2.5rem,8vw,4.5rem)] font-black text-slate-900 dark:text-white tracking-[-0.03em] leading-[0.95]">
-            用数据说话。
+            {t.compare.title}
           </LineReveal>
           <motion.p
             initial={prefersReduced ? false : { opacity: 0 }}
@@ -33,7 +35,7 @@ export default function ComparePage() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="mt-4 text-base text-slate-400 dark:text-white/20 font-light"
           >
-            语言、工具、IDE — 一次看清十年变迁。
+            {t.compare.subtitle}
           </motion.p>
         </div>
 

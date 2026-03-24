@@ -1,5 +1,31 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
+import CodePeek from '../shared/CodePeek';
+import { useI18n } from '../../i18n';
+
+const PEEK_CODE = `// Each phrase oscillates horizontally via a sine wave.
+// Phase offset = index × 0.9 so adjacent lines are staggered.
+function WavePhrase({ text, index, scrollYProgress, direction }) {
+  const x = useTransform(scrollYProgress, (v) => {
+    const phase = index * 0.9 + v * Math.PI * 2 - Math.PI / 2;
+    return Math.sin(phase) * 28 * direction; // px
+  });
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.25, 0.75, 1],
+    [0.1, 0.7, 0.7, 0.1]
+  );
+  return (
+    <motion.p style={{ x, opacity }}>
+      {text}
+    </motion.p>
+  );
+}
+
+// Two columns: AI (direction = +1) vs Human (direction = -1)
+// They wave in opposite directions, creating a push-pull tension
+const leftPhrases  = ['速度', '规模', '自动化', '无限', '压缩'];
+const rightPhrases = ['判断', '意义', '创造力', '直觉', '情感'];`;
 
 function WavePhrase({
   text, index, scrollYProgress, direction,
@@ -27,10 +53,10 @@ function WavePhrase({
   );
 }
 
-const leftPhrases = ['速度', '规模', '自动化', '无限', '压缩'];
-const rightPhrases = ['判断', '意义', '创造力', '直觉', '情感'];
-
 export default function DualWaveText() {
+  const { t } = useI18n();
+  const leftPhrases = t.dualWave.left;
+  const rightPhrases = t.dualWave.right;
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -38,7 +64,7 @@ export default function DualWaveText() {
   });
 
   return (
-    <div ref={ref} className="h-[50vh] flex items-center overflow-hidden px-8 sm:px-16">
+    <div ref={ref} className="h-[50vh] flex items-center overflow-hidden px-8 sm:px-16 relative">
       {/* AI side */}
       <div className="flex-1 text-right space-y-1">
         <p className="text-[10px] font-mono tracking-[0.4em] text-cyan-400/30 uppercase mb-4">AI</p>
@@ -57,6 +83,13 @@ export default function DualWaveText() {
           <WavePhrase key={p} text={p} index={i} scrollYProgress={scrollYProgress} direction={-1} />
         ))}
       </div>
+
+      <CodePeek
+        code={PEEK_CODE}
+        title="Dual Wave Text"
+        fileName="DualWaveText.tsx"
+        className="absolute top-3 right-3 z-10"
+      />
     </div>
   );
 }

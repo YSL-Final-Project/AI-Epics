@@ -2,8 +2,10 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import PageTransition from '../components/layout/PageTransition';
 import TimelineContainer from '../components/timeline/TimelineContainer';
+import { useI18n } from '../i18n';
 
 export default function TimelinePage() {
+  const { t } = useI18n();
   const prefersReduced = useReducedMotion();
   const heroRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +59,7 @@ export default function TimelinePage() {
                 className="overflow-hidden"
               >
                 <span className="block text-[clamp(3.5rem,10vw,7rem)] font-black text-slate-900 dark:text-white tracking-[-0.04em] leading-[0.9]">
-                  进化之路
+                  {t.timeline.title}
                 </span>
               </motion.div>
 
@@ -68,7 +70,7 @@ export default function TimelinePage() {
                 className="mt-3"
               >
                 <span className="text-[clamp(1rem,2.5vw,1.4rem)] font-light text-slate-400 dark:text-white/30 tracking-[0.15em]">
-                  AI 编程革命的 25 个瞬间
+                  {t.timeline.subtitle}
                 </span>
               </motion.div>
             </div>

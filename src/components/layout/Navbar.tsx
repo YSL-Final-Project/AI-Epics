@@ -2,17 +2,18 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
+import { useI18n } from '../../i18n';
 import ScrambleText from '../ScrambleText';
 import { IconSun, IconMoon } from '../icons/TechIcons';
 
-const navLinks = [
-  { path: '/',            label: '首页' },
-  { path: '/timeline',   label: '时间线' },
-  { path: '/data',       label: '洞察' },
-  { path: '/compare',    label: '竞技场' },
-  { path: '/interactive',label: '实验室' },
-  { path: '/story',      label: '故事' },
-  { path: '/about',      label: '关于' },
+const navKeys = [
+  { path: '/',            key: 'home' as const },
+  { path: '/timeline',   key: 'timeline' as const },
+  { path: '/data',       key: 'data' as const },
+  { path: '/compare',    key: 'compare' as const },
+  { path: '/interactive', key: 'interactive' as const },
+  { path: '/story',      key: 'story' as const },
+  { path: '/about',      key: 'about' as const },
 ];
 
 const mobileItemVariants = {
@@ -27,6 +28,7 @@ const mobileItemVariants = {
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
+  const { t, toggleLang, lang } = useI18n();
   const location = useLocation();
   const prefersReduced = useReducedMotion();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,6 +42,8 @@ export default function Navbar() {
 
   // Close mobile menu on route change
   useEffect(() => { setMobileMenuOpen(false); }, [location.pathname]);
+
+  const navLinks = navKeys.map(n => ({ path: n.path, label: t.nav[n.key] }));
 
   return (
     <motion.nav
@@ -120,6 +124,17 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            {/* Language Toggle */}
+            <motion.button
+              onClick={toggleLang}
+              className="relative px-2.5 py-1 rounded-lg text-xs font-mono font-semibold tracking-wide border border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all duration-200"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+              aria-label="Toggle language"
+            >
+              {lang === 'zh' ? 'EN' : '中文'}
+            </motion.button>
+
             {/* Theme Toggle */}
             <motion.button
               onClick={toggleTheme}

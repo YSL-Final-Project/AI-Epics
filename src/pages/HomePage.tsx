@@ -10,52 +10,29 @@ import StickyScrollNarrative from '../components/StickyScrollNarrative';
 import LineReveal from '../components/animations/LineReveal';
 import ScaleReveal from '../components/animations/ScaleReveal';
 import { IconTimeline, IconChart, IconSwords, IconLab, IconTerminal } from '../components/icons/TechIcons';
+import { useI18n } from '../i18n';
 import type { PagePreview } from '../types';
 
-const pagesPreviews: PagePreview[] = [
-  {
-    title: 'AI 进化时间线',
-    description: '从 GPT-1 到 Claude 4，25 个里程碑事件串起 AI 编程的完整进化史',
-    path: '/timeline',
-    icon: <IconTimeline size={20} />,
-    color: 'bg-cyan-500',
-  },
-  {
-    title: '深度洞察',
-    description: '4 大维度深度剖析：工具采用率、SO 衰落、代码生成占比、开发者薪资',
-    path: '/data',
-    icon: <IconChart size={20} />,
-    color: 'bg-violet-500',
-  },
-  {
-    title: '技术竞技场',
-    description: '编程语言争霸动画、AI 工具擂台赛、IDE 生态变迁全景图',
-    path: '/compare',
-    icon: <IconSwords size={20} />,
-    color: 'bg-amber-500',
-  },
-  {
-    title: '创意实验室',
-    description: 'AI 代码猜猜看、未来预测投票、个性化工具推荐',
-    path: '/interactive',
-    icon: <IconLab size={20} />,
-    color: 'bg-emerald-500',
-  },
-  {
-    title: '关于项目',
-    description: '数据来源、研究方法、团队介绍',
-    path: '/about',
-    icon: <IconTerminal size={20} />,
-    color: 'bg-rose-500',
-  },
-];
+function usePagesPreviews(): PagePreview[] {
+  const { t } = useI18n();
+  return [
+    { title: t.home.previewTimeline, description: t.home.previewTimelineDesc, path: '/timeline', icon: <IconTimeline size={20} />, color: 'bg-cyan-500' },
+    { title: t.home.previewData, description: t.home.previewDataDesc, path: '/data', icon: <IconChart size={20} />, color: 'bg-violet-500' },
+    { title: t.home.previewCompare, description: t.home.previewCompareDesc, path: '/compare', icon: <IconSwords size={20} />, color: 'bg-amber-500' },
+    { title: t.home.previewInteractive, description: t.home.previewInteractiveDesc, path: '/interactive', icon: <IconLab size={20} />, color: 'bg-emerald-500' },
+    { title: t.home.previewAbout, description: t.home.previewAboutDesc, path: '/about', icon: <IconTerminal size={20} />, color: 'bg-rose-500' },
+  ];
+}
 
-const CHAPTERS = [
-  { id: 'chapter-hero',      label: '引言' },
-  { id: 'chapter-narrative', label: '叙事' },
-  { id: 'chapter-stats',     label: '数据' },
-  { id: 'chapter-explore',   label: '探索' },
-];
+function useChapters() {
+  const { t } = useI18n();
+  return [
+    { id: 'chapter-hero',      label: t.home.chapterHero },
+    { id: 'chapter-narrative', label: t.home.chapterNarrative },
+    { id: 'chapter-stats',     label: t.home.chapterStats },
+    { id: 'chapter-explore',   label: t.home.chapterExplore },
+  ];
+}
 
 // ─── Char-by-char 3D reveal (hero only) ───────────────────────────────────────
 function SplitChars({
@@ -109,8 +86,11 @@ function HairlineDivider({ color: _color = 'neutral' }: { color?: string }) {
 }
 
 export default function HomePage() {
+  const { t } = useI18n();
   const prefersReduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  const pagesPreviews = usePagesPreviews();
+  const CHAPTERS = useChapters();
 
   // Parallax orbs follow mouse
   const rawX = useMotionValue(0);
@@ -145,7 +125,7 @@ export default function HomePage() {
           className="relative py-16 sm:py-24 px-4 overflow-hidden min-h-[90vh] flex flex-col justify-center bg-black"
         >
           {/* Matrix rain — pure black bg + green glyphs */}
-          <MatrixRain color="#00ff41" density={8} speed={0.15} className="opacity-75" />
+          <MatrixRain color="#00ff41" density={8} speed={0.15} className="opacity-75" showPeek />
 
           {/* Subtle orbs for depth — very low opacity so black dominates */}
           <motion.div
@@ -170,7 +150,7 @@ export default function HomePage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
               </span>
-              2018 — 2025 数据驱动洞察
+              {t.home.badge}
             </motion.div>
 
             {/* Main title — char-by-char rotateX reveal */}
@@ -178,10 +158,10 @@ export default function HomePage() {
               className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white mb-6 leading-[1.1] tracking-tight"
               style={{ perspective: '600px' }}
             >
-              <SplitChars text="AI 编程时代的" baseDelay={0.15} stagger={0.045} />
+              <SplitChars text={t.home.titleLine1} baseDelay={0.15} stagger={0.045} />
               <br />
               <SplitChars
-                text="变革全景"
+                text={t.home.titleLine2}
                 className="text-shimmer"
                 baseDelay={0.55}
                 stagger={0.06}
@@ -191,7 +171,7 @@ export default function HomePage() {
             {/* Subtitle — one clean line */}
             <div className="mb-14">
               <LineReveal delay={0.7} className="text-base sm:text-lg text-slate-400 dark:text-slate-500 tracking-wide">
-                2018 — 2025 · AI 如何重塑软件开发
+                {t.home.subtitle}
               </LineReveal>
             </div>
 
@@ -235,7 +215,7 @@ export default function HomePage() {
                 Data
               </motion.p>
               <LineReveal className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
-                关键数据一览
+                {t.home.statsTitle}
               </LineReveal>
             </div>
 
@@ -273,7 +253,7 @@ export default function HomePage() {
                 Explore
               </motion.p>
               <LineReveal className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
-                深入探索每个维度
+                {t.home.exploreTitle}
               </LineReveal>
             </div>
 

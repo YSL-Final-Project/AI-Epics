@@ -2,6 +2,15 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ── CodePeek animations ─────────────────────────────────────────────────── */
+@keyframes codePeekSpin {
+  to { filter: hue-rotate(360deg); }
+}
+@keyframes codePeekPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(80, 250, 123, 0.6); }
+  50%       { opacity: 0.6; box-shadow: 0 0 0 5px rgba(80, 250, 123, 0); }
+}
+
 /* ============================================
    MESH GRADIENT BACKGROUND
    ============================================ */

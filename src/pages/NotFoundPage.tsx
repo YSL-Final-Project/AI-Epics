@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import PageTransition from '../components/layout/PageTransition';
+import { useI18n } from '../i18n';
 
 export default function NotFoundPage() {
+  const { t } = useI18n();
   return (
     <PageTransition>
       <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 text-center">
@@ -20,7 +22,7 @@ export default function NotFoundPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="mt-4 text-lg text-slate-500 dark:text-white/30 font-light"
         >
-          页面不存在
+          {t.notFound.message}
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -31,7 +33,7 @@ export default function NotFoundPage() {
             to="/"
             className="mt-8 inline-block font-mono text-sm tracking-wide px-6 py-2.5 rounded-full border border-slate-300 dark:border-white/10 text-slate-600 dark:text-white/40 hover:text-slate-900 dark:hover:text-white/70 hover:border-slate-500 dark:hover:border-white/20 transition-all duration-300"
           >
-            返回首页
+            {t.notFound.backHome}
           </Link>
         </motion.div>
       </div>
