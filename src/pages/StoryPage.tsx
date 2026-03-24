@@ -16,6 +16,9 @@ import AmbientLight from '../components/shared/AmbientLight';
 import DualWaveText from '../components/story/DualWaveText';
 import DesktopEvolution from '../components/story/DesktopEvolution';
 import StoryAutoScroll from '../components/story/StoryAutoScroll';
+import CyberGrid from '../components/CyberGrid';
+import HUDOverlay from '../components/HUDOverlay';
+import DataStream from '../components/DataStream';
 import { useI18n } from '../i18n';
 
 export default function StoryPage() {
@@ -28,6 +31,9 @@ export default function StoryPage() {
         <div className="film-grain" />
         <StoryNav />
         <StoryAutoScroll />
+        <HUDOverlay />
+        <CyberGrid color="cyan" opacity={0.03} />
+        <DataStream direction="horizontal" color="#06b6d4" density={15} speed={0.8} className="z-0 opacity-40" />
 
         {/* ═══════════════ OVERTURE ═══════════════ */}
         <StickyChapter heightVh={250}>

@@ -10,6 +10,8 @@ import StickyScrollNarrative from '../components/StickyScrollNarrative';
 import LineReveal from '../components/animations/LineReveal';
 import ScaleReveal from '../components/animations/ScaleReveal';
 import { IconTimeline, IconChart, IconSwords, IconLab, IconTerminal } from '../components/icons/TechIcons';
+import CyberGrid from '../components/CyberGrid';
+import DataStream from '../components/DataStream';
 import { useI18n } from '../i18n';
 import type { PagePreview } from '../types';
 
@@ -69,21 +71,6 @@ function SplitChars({
   );
 }
 
-// ─── Thin hairline divider — neutral, restrained ──────────────────────────────
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function HairlineDivider({ color: _color = 'neutral' }: { color?: string }) {
-  const prefersReduced = useReducedMotion();
-  return (
-    <motion.div
-      className="w-full h-px bg-gradient-to-r from-transparent via-white/8 dark:via-white/8 to-transparent"
-      initial={prefersReduced ? false : { scaleX: 0, opacity: 0 }}
-      whileInView={{ scaleX: 1, opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 1.6, ease: [0.32, 0.72, 0, 1] }}
-      style={{ transformOrigin: 'center' }}
-    />
-  );
-}
 
 export default function HomePage() {
   const { t } = useI18n();
@@ -126,6 +113,8 @@ export default function HomePage() {
         >
           {/* Matrix rain — pure black bg + green glyphs */}
           <MatrixRain color="#00ff41" density={8} speed={0.15} className="opacity-75" showPeek />
+          <CyberGrid color="cyan" opacity={0.025} />
+          <DataStream direction="vertical" color="#00ff41" density={12} speed={0.5} className="opacity-30" />
 
           {/* Subtle orbs for depth — very low opacity so black dominates */}
           <motion.div
@@ -186,12 +175,13 @@ export default function HomePage() {
           <StickyScrollNarrative />
         </section>
 
-        <HairlineDivider color="violet" />
+        <div className="neon-line mx-8 sm:mx-16" />
 
         {/* ═══════════════════════════════════════════════════════════════════
             CHAPTER 3 — Stats
         ═══════════════════════════════════════════════════════════════════ */}
-        <section id="chapter-stats" className="relative py-20 px-4 overflow-hidden">
+        <section id="chapter-stats" className="relative py-20 px-4 overflow-hidden circuit-overlay">
+          <div className="scan-beam" />
           {/* Chapter label */}
           <motion.span
             className="absolute top-8 right-8 font-mono text-[10px] tracking-[0.4em] text-slate-400/50 dark:text-white/20 uppercase"
@@ -223,7 +213,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <HairlineDivider color="rose" />
+        <div className="neon-line mx-8 sm:mx-16" />
 
         {/* ═══════════════════════════════════════════════════════════════════
             CHAPTER 4 — Explore
