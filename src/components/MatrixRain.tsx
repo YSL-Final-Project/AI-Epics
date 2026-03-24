@@ -104,46 +104,46 @@ export default function MatrixRain({
 
     const fontSize = Math.max(density * 0.85, 10);
 
-    const draw = () => {
+    let lastTime = 0;
+    const FRAME_INTERVAL = 1000 / 24; // Cap at 24fps for performance
+
+    const draw = (now: number) => {
+      animId = requestAnimationFrame(draw);
+
+      // Throttle frame rate
+      if (now - lastTime < FRAME_INTERVAL) return;
+      lastTime = now;
+
       // Fade trail — slower fade = longer tails
-      const fadeAlpha = speed < 0.5 ? 0.03 : 0.06;
+      const fadeAlpha = speed < 0.5 ? 0.04 : 0.07;
       ctx.fillStyle = `rgba(0, 0, 0, ${fadeAlpha})`;
       ctx.fillRect(0, 0, w, h);
 
       ctx.font = `${fontSize}px "Courier New", monospace`;
 
       for (let i = 0; i < columns.length; i++) {
-        const char = randChar();
         const x = i * density;
         const y = columns[i];
 
-        // Head glyph — white-green flash
+        // Head glyph — bright
         ctx.fillStyle = '#fff';
-        ctx.globalAlpha = 0.85;
-        ctx.fillText(char, x, y);
+        ctx.globalAlpha = 0.8;
+        ctx.fillText(randChar(), x, y);
 
-        // Second glyph — main color
+        // Trail glyph — main color (single trail instead of two)
         ctx.fillStyle = color;
-        ctx.globalAlpha = 0.7;
+        ctx.globalAlpha = 0.5;
         ctx.fillText(randChar(), x, y - fontSize);
-
-        // Third glyph — dimmer trail
-        ctx.globalAlpha = 0.25;
-        ctx.fillText(randChar(), x, y - fontSize * 2);
 
         ctx.globalAlpha = 1;
 
         // Reset column when it goes off screen
-        if (y > h + 50) {
-          if (Math.random() > 0.98) {
-            columns[i] = -Math.random() * h * 0.5; // stagger re-entry
-          }
+        if (y > h + 50 && Math.random() > 0.98) {
+          columns[i] = -Math.random() * h * 0.5;
         }
 
         columns[i] += fontSize * 0.65 * speed;
       }
-
-      animId = requestAnimationFrame(draw);
     };
 
     animId = requestAnimationFrame(draw);

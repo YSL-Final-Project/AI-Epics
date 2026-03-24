@@ -127,7 +127,14 @@ export default function Starfield({ density = 200, speed = 0.3 }: StarfieldProps
       }));
     }
 
-    function draw() {
+    let lastFrameTime = 0;
+    const FRAME_INTERVAL = 1000 / 24; // 24fps cap
+
+    function draw(now?: number) {
+      animId = requestAnimationFrame(draw);
+      if (now && now - lastFrameTime < FRAME_INTERVAL) return;
+      lastFrameTime = now || 0;
+
       ctx!.clearRect(0, 0, w, h);
 
       // Smoothly transition trail length
@@ -170,11 +177,10 @@ export default function Starfield({ density = 200, speed = 0.3 }: StarfieldProps
         ctx!.fillStyle = `rgba(255, 255, 255, ${pulseOpacity})`;
         ctx!.fill();
       }
-      animId = requestAnimationFrame(draw);
     }
 
     // Subscribe to warp state
-    const warpCheck = setInterval(() => { isWarping = canvasRef.current?.dataset.warp === 'true'; }, 50);
+    const warpCheck = setInterval(() => { isWarping = canvasRef.current?.dataset.warp === 'true'; }, 200);
 
     resize();
     initStars();

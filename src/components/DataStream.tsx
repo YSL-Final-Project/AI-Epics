@@ -59,7 +59,14 @@ export default function DataStream({
       }));
     }
 
-    function draw() {
+    let lastTime = 0;
+    const FRAME_INTERVAL = 1000 / 20; // Cap at 20fps
+
+    function draw(now?: number) {
+      animId = requestAnimationFrame(draw);
+      if (now && now - lastTime < FRAME_INTERVAL) return;
+      lastTime = now || 0;
+
       ctx!.clearRect(0, 0, w, h);
 
       for (const dash of dashes) {
@@ -101,7 +108,6 @@ export default function DataStream({
         ctx!.stroke();
         ctx!.globalAlpha = 1;
       }
-      animId = requestAnimationFrame(draw);
     }
 
     resize();

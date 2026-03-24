@@ -11,7 +11,6 @@ import LineReveal from '../components/animations/LineReveal';
 import ScaleReveal from '../components/animations/ScaleReveal';
 import { IconTimeline, IconChart, IconSwords, IconLab, IconTerminal } from '../components/icons/TechIcons';
 import CyberGrid from '../components/CyberGrid';
-import DataStream from '../components/DataStream';
 import { useI18n } from '../i18n';
 import type { PagePreview } from '../types';
 
@@ -112,9 +111,8 @@ export default function HomePage() {
           className="relative py-16 sm:py-24 px-4 overflow-hidden min-h-[90vh] flex flex-col justify-center bg-black"
         >
           {/* Matrix rain — pure black bg + green glyphs */}
-          <MatrixRain color="#00ff41" density={8} speed={0.15} className="opacity-75" showPeek />
+          <MatrixRain color="#00ff41" density={14} speed={0.15} className="opacity-75" showPeek />
           <CyberGrid color="cyan" opacity={0.025} />
-          <DataStream direction="vertical" color="#00ff41" density={12} speed={0.5} className="opacity-30" />
 
           {/* Subtle orbs for depth — very low opacity so black dominates */}
           <motion.div

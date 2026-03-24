@@ -27,13 +27,13 @@ export default function StoryPage() {
     <div className="dark">
       <div className="bg-[#0a0a0f] text-white min-h-screen selection:bg-cyan-500/30 ambient-glow" style={{ overflowX: 'clip' }}>
         <AmbientLight />
-        <Starfield density={250} speed={0.2} />
+        <Starfield density={120} speed={0.2} />
         <div className="film-grain" />
         <StoryNav />
         <StoryAutoScroll />
         <HUDOverlay />
         <CyberGrid color="cyan" opacity={0.03} />
-        <DataStream direction="horizontal" color="#06b6d4" density={15} speed={0.8} className="z-0 opacity-40" />
+        <DataStream direction="horizontal" color="#06b6d4" density={10} speed={0.6} className="z-0 opacity-30" />
 
         {/* ═══════════════ OVERTURE ═══════════════ */}
         <StickyChapter heightVh={250}>
