@@ -418,7 +418,7 @@ function TimelineCard({
   index,
   progress,
 }: {
-  item: typeof ch1Timeline[0];
+  item: { year: number; event: string; detail: string };
   index: number;
   progress: MotionValue<number>;
 }) {
@@ -558,7 +558,7 @@ function EventCascade({ progress }: { progress: MotionValue<number> }) {
   );
 }
 
-function EventRow({ event, progress, index }: { event: typeof keyEvents[0]; progress: MotionValue<number>; index: number }) {
+function EventRow({ event, progress, index }: { event: { date: string; title: string; impact: string }; progress: MotionValue<number>; index: number }) {
   const start = 0.72 + index * 0.015;
   const opacity = useScrollOpacity(progress, [start, start + 0.012], [0, 1]);
   const x = useScrollValue(progress, [start, start + 0.012], [40, 0]);
