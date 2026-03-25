@@ -70,7 +70,7 @@ export default function StatCard({ value, numericValue, suffix, label, gradient,
       transition={{ type: 'spring', stiffness: 380, damping: 22 }}
       className="hover-shine relative group h-full"
     >
-      <div className="relative overflow-hidden rounded-2xl p-6 glass-subtle holo-card h-full">
+      <div className="relative overflow-hidden rounded-2xl p-6 glass-subtle h-full">
         {/* Gradient top line */}
         <div className={`absolute top-0 left-0 w-full h-[2px] ${gradient}`} />
 

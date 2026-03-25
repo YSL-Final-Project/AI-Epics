@@ -7,7 +7,6 @@ import adoptionData from '../../data/ai_adoption.json';
 import type { AIAdoptionData } from '../../types';
 import { useTheme } from '../../context/ThemeContext';
 import LineReveal from '../../components/animations/LineReveal';
-import InsightCallout from './InsightCallout';
 
 const data = adoptionData as AIAdoptionData;
 
@@ -212,89 +211,6 @@ export default function AdoptionTab() {
               );
             })}
           </div>
-        </div>
-      </motion.div>
-
-      {/* Insight Callout */}
-      <InsightCallout
-        text="92% of developers now use or plan to use AI tools — that's higher than version control adoption was in 2010."
-        accent="cyan"
-      />
-
-      {/* Before / After — Developer Workflow Transformation */}
-      <motion.div
-        initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-      >
-        <div className="flex items-baseline gap-3 mb-8">
-          <LineReveal>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">Before / After</h3>
-          </LineReveal>
-          <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* 2021 Card */}
-          <motion.div
-            initial={prefersReduced ? false : { opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-            className="rounded-2xl p-6 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]"
-          >
-            <div className="font-mono text-[10px] tracking-[0.3em] text-slate-400/50 dark:text-white/15 uppercase mb-5">2021 Workflow</div>
-            <div className="flex flex-wrap items-center gap-2">
-              {['Stack Overflow', 'Manual Debug', 'Copy-Paste', 'Test'].map((step, i) => (
-                <motion.div
-                  key={step}
-                  initial={prefersReduced ? false : { opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-                  className="flex items-center gap-2"
-                >
-                  <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-200/60 dark:bg-white/[0.06] text-slate-600 dark:text-white/40 border border-slate-200/40 dark:border-white/[0.04]">
-                    {step}
-                  </span>
-                  {i < 3 && (
-                    <span className="text-slate-300 dark:text-white/10 text-xs">→</span>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* 2025 Card */}
-          <motion.div
-            initial={prefersReduced ? false : { opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
-            className="rounded-2xl p-6 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]"
-          >
-            <div className="font-mono text-[10px] tracking-[0.3em] text-slate-400/50 dark:text-white/15 uppercase mb-5">2025 Workflow</div>
-            <div className="flex flex-wrap items-center gap-2">
-              {['AI Suggest', 'Auto-Complete', 'AI Review', 'Auto-Test'].map((step, i) => (
-                <motion.div
-                  key={step}
-                  initial={prefersReduced ? false : { opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.15 + i * 0.1, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-                  className="flex items-center gap-2"
-                >
-                  <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-700/10 dark:bg-white/[0.1] text-slate-800 dark:text-white/60 border border-slate-300/40 dark:border-white/[0.08]">
-                    {step}
-                  </span>
-                  {i < 3 && (
-                    <span className="text-slate-400 dark:text-white/15 text-xs">→</span>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </motion.div>
     </div>

@@ -8,7 +8,6 @@ import surveyData from '../../data/stackoverflow_survey.json';
 import type { SOTrafficPoint, SOSurveyData } from '../../types';
 import { useTheme } from '../../context/ThemeContext';
 import LineReveal from '../../components/animations/LineReveal';
-import InsightCallout from './InsightCallout';
 
 const traffic = trafficData as SOTrafficPoint[];
 const survey = surveyData as SOSurveyData;
@@ -176,64 +175,6 @@ export default function StackOverflowTab() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </motion.div>
-
-      {/* Insight Callout */}
-      <InsightCallout
-        text="Stack Overflow lost 55% of its traffic in 2 years — the fastest decline of any major developer platform in history."
-        accent="rose"
-      />
-
-      {/* Where Did the Traffic Go? */}
-      <motion.div
-        initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-      >
-        <div className="flex items-baseline gap-3 mb-8">
-          <LineReveal>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">Where Did the Traffic Go?</h3>
-          </LineReveal>
-          <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-        </div>
-
-        <div className="space-y-5">
-          {[
-            { name: 'ChatGPT', pct: 35, icon: '🤖' },
-            { name: 'GitHub Copilot Chat', pct: 22, icon: '🧑‍💻' },
-            { name: 'Cursor / AI IDE', pct: 15, icon: '⚡' },
-            { name: 'Phind', pct: 10, icon: '🔍' },
-            { name: 'Perplexity', pct: 8, icon: '🧠' },
-            { name: 'Documentation sites', pct: 6, icon: '📄' },
-            { name: 'Other', pct: 4, icon: '···' },
-          ].map((item, i) => (
-            <motion.div
-              key={item.name}
-              initial={prefersReduced ? false : { opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.06, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-            >
-              <div className="flex items-baseline justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-white/30 flex items-center gap-2">
-                  <span className="text-xs">{item.icon}</span>
-                  {item.name}
-                </span>
-                <span className="text-xl font-black text-slate-900 dark:text-white/80 tabular-nums">{item.pct}%</span>
-              </div>
-              <div className="h-1.5 bg-slate-200/50 dark:bg-white/[0.03] rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full bg-slate-500 dark:bg-white/25"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${(item.pct / 40) * 100}%` }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 + i * 0.08, duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                />
-              </div>
-            </motion.div>
-          ))}
         </div>
       </motion.div>
     </div>

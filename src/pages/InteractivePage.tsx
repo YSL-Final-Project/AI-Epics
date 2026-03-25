@@ -3,18 +3,14 @@ import PageTransition from '../components/layout/PageTransition';
 import CodeQuiz from '../components/interactive/CodeQuiz';
 import PredictionVote from '../components/interactive/PredictionVote';
 import ToolRecommender from '../components/interactive/ToolRecommender';
-import AITimeMachine from '../components/interactive/AITimeMachine';
-import DeveloperDNA from '../components/interactive/DeveloperDNA';
 import LineReveal from '../components/animations/LineReveal';
 import ScaleReveal from '../components/animations/ScaleReveal';
 import { useI18n } from '../i18n';
 
 const sections = [
-  { id: 'time-machine', label: '01', title: 'AI Time Machine', subtitle: '穿越 AI 编程进化史', Component: AITimeMachine, dark: true },
-  { id: 'dna', label: '02', title: 'Developer DNA', subtitle: '测测你的开发者基因', Component: DeveloperDNA, dark: true },
-  { id: 'quiz', label: '03', title: 'Code Quiz', subtitle: 'AI 写的还是人写的？', Component: CodeQuiz, dark: false },
-  { id: 'vote', label: '04', title: 'Predict', subtitle: '预测 AI 编程的未来', Component: PredictionVote, dark: false },
-  { id: 'recommend', label: '05', title: 'Recommend', subtitle: '找到最适合你的 AI 工具', Component: ToolRecommender, dark: false },
+  { id: 'quiz', label: '01', title: 'Code Quiz', Component: CodeQuiz },
+  { id: 'vote', label: '02', title: 'Predict', Component: PredictionVote },
+  { id: 'recommend', label: '03', title: 'Recommend', Component: ToolRecommender },
 ];
 
 export default function InteractivePage() {
@@ -65,11 +61,7 @@ export default function InteractivePage() {
               </div>
 
               <ScaleReveal delay={i * 0.05 + 0.1}>
-                <div className={`rounded-2xl p-5 sm:p-8 border ${
-                  section.dark
-                    ? 'dark bg-[#0a0a1a] border-white/[0.06]'
-                    : 'bg-slate-50/50 dark:bg-white/[0.015] border-slate-200/30 dark:border-white/[0.03]'
-                }`}>
+                <div className="rounded-2xl p-5 sm:p-8 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03]">
                   <section.Component />
                 </div>
               </ScaleReveal>

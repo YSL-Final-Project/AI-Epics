@@ -7,7 +7,6 @@ import salaryData from '../../data/developer_salary.json';
 import type { DeveloperSalaryData } from '../../types';
 import { useTheme } from '../../context/ThemeContext';
 import LineReveal from '../../components/animations/LineReveal';
-import InsightCallout from './InsightCallout';
 
 const data = salaryData as DeveloperSalaryData;
 
@@ -156,64 +155,6 @@ export default function SalaryTab() {
           </div>
         </motion.div>
       </div>
-
-      {/* Insight Callout */}
-      <InsightCallout
-        text="The gap isn't talent — it's tools. A $65K junior with AI skills earns what a $100K mid-level earned without them."
-        accent="amber"
-      />
-
-      {/* AI Skill Tier Progression */}
-      <motion.div
-        initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-      >
-        <div className="flex items-baseline gap-3 mb-8">
-          <LineReveal>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">AI Skill Tier Progression</h3>
-          </LineReveal>
-          <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { tier: 1, label: 'No AI', salary: '$65K', premium: null },
-            { tier: 2, label: 'Occasional ChatGPT', salary: '$85K', premium: '+31%' },
-            { tier: 3, label: 'Daily Copilot', salary: '$120K', premium: '+85%' },
-            { tier: 4, label: 'AI-Native Workflow', salary: '$175K', premium: '+169%' },
-          ].map((item, i) => (
-            <motion.div
-              key={item.tier}
-              initial={prefersReduced ? false : { opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-              className="relative rounded-2xl p-5 bg-slate-50/50 dark:bg-white/[0.015] border border-slate-200/30 dark:border-white/[0.03] text-center"
-            >
-              {/* Arrow connector (hidden on first card) */}
-              {i > 0 && (
-                <span className="hidden lg:block absolute -left-3 top-1/2 -translate-y-1/2 text-slate-300 dark:text-white/10 text-sm">→</span>
-              )}
-              <div className="font-mono text-[10px] tracking-[0.3em] text-slate-400/50 dark:text-white/15 uppercase mb-3">
-                Tier {item.tier}
-              </div>
-              <div className="text-sm text-slate-600 dark:text-white/40 font-medium mb-3">
-                {item.label}
-              </div>
-              <div className="text-2xl font-black text-slate-900 dark:text-white/80 tabular-nums">
-                {item.salary}
-              </div>
-              {item.premium && (
-                <div className="mt-2 inline-block px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-200/60 dark:bg-white/[0.06] text-slate-600 dark:text-white/40">
-                  {item.premium}
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
     </div>
   );
 }
