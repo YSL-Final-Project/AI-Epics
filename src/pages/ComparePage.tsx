@@ -6,7 +6,6 @@ import ToolCompareTable from '../components/compare/ToolCompareTable';
 import IDEMarketChart from '../components/compare/IDEMarketChart';
 import LineReveal from '../components/animations/LineReveal';
 import CursorSpotlight from '../components/compare/CursorSpotlight';
-import LLMArena from '../components/compare/LLMArena';
 import { useI18n } from '../i18n';
 
 export default function ComparePage() {
@@ -53,13 +52,6 @@ export default function ComparePage() {
 
         {/* Section 04: IDE Market Chart — 300vh scroll-driven */}
         <IDEMarketChart />
-
-        {/* Section 05: LLM Arena — chatbot comparison */}
-        <div className="dark bg-[#0a0a1a] rounded-3xl mx-2 sm:mx-4 my-8 overflow-hidden">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <LLMArena />
-          </div>
-        </div>
       </div>
     </PageTransition>
   );
