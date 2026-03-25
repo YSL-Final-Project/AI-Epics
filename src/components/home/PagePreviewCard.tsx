@@ -68,7 +68,7 @@ export default function PagePreviewCard({ preview, index }: PagePreviewCardProps
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="tilt-card relative overflow-hidden rounded-2xl p-6 glass-subtle"
+          className="tilt-card holo-card relative overflow-hidden rounded-2xl p-6 glass-subtle"
           style={{ '--card-glow': glowColorMap[preview.color] ?? 'rgba(6,182,212,0.15)' } as React.CSSProperties}
         >
           {/* Cursor-tracked glow */}
