@@ -14,6 +14,7 @@ const navKeys = [
   { path: '/interactive', key: 'interactive' as const },
   { path: '/story',      key: 'story' as const },
   { path: '/about',      key: 'about' as const },
+  { path: '/dev-history', key: 'devHistory' as const },
 ];
 
 const mobileItemVariants = {
