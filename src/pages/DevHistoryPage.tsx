@@ -237,6 +237,63 @@ const commits = [
     color: '#06b6d4',
     highlight: true,
   },
+  {
+    hash: 'd11c7ae',
+    date: 'Mar 24 · 14:32',
+    dateShort: '3/24 PM',
+    label: '12',
+    title: 'Perf Optimization',
+    titleZh: '性能优化',
+    desc: 'Throttle all canvas animations to 24fps, reduce particle density, remove redundant DataStream from home.',
+    descZh: '全局 canvas 动画限制 24fps，降低粒子密度，移除首页冗余 DataStream。',
+    tags: ['Performance', '24fps', 'Canvas'],
+    milestone: false,
+    lines: 17280,
+    components: 64,
+    pages: 8,
+    dataFiles: 13,
+    totalFiles: 109,
+    color: '#facc15',
+    highlight: false,
+  },
+  {
+    hash: 'd7b756e',
+    date: 'Mar 24 · 16:15',
+    dateShort: '3/24 PM',
+    label: '13',
+    title: 'Data Explorer v2',
+    titleZh: '数据探索器 v2',
+    desc: 'Enhance Data Explorer with insight callouts, funnels, skill tiers, traffic redistribution; add slide-based Story presentation.',
+    descZh: '数据探索器增强：洞察卡片、漏斗图、技能分层、流量再分配可视化；故事页新增幻灯片演示模式。',
+    tags: ['DataViz', 'Insights', 'Funnels', 'Slides'],
+    milestone: true,
+    lines: 18763,
+    components: 67,
+    pages: 8,
+    dataFiles: 13,
+    totalFiles: 111,
+    color: '#f97316',
+    highlight: true,
+  },
+  {
+    hash: '1e136f4',
+    date: 'Mar 26 · 15:30',
+    dateShort: '3/26',
+    label: '14',
+    title: 'Dev History Page',
+    titleZh: '开发历史页面',
+    desc: 'Meta page — this page itself. Timeline + growth charts visualizing project evolution from git history.',
+    descZh: '元页面——你正在看的这个页面。时间轴 + 增长曲线，从 git 历史可视化项目演变。',
+    tags: ['Recharts', 'Timeline', 'Meta', 'Git'],
+    milestone: true,
+    lines: 19431,
+    components: 67,
+    pages: 9,
+    dataFiles: 13,
+    totalFiles: 112,
+    color: '#a855f7',
+    highlight: true,
+  },
 ];
 
 // Chart data (subset for readability)
@@ -533,8 +590,8 @@ export default function DevHistoryPage() {
               className="text-slate-400 text-base max-w-xl mx-auto leading-relaxed mb-8"
             >
               {isZh
-                ? '12 次提交 · 5 天 · 从一个空白模板到完整的数据可视化项目'
-                : '12 commits · 5 days · From a blank template to a full data visualization project'
+                ? '15 次提交 · 8 天 · 从一个空白模板到完整的数据可视化项目'
+                : '15 commits · 8 days · From a blank template to a full data visualization project'
               }
             </motion.p>
 
