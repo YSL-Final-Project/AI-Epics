@@ -8,6 +8,7 @@ const zh = {
     interactive: '实验室',
     story: '故事',
     about: '关于',
+    devHistory: '开发日志',
   },
 
   // ── Footer ──

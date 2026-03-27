@@ -10,6 +10,7 @@ const en: Translations = {
     interactive: 'Lab',
     story: 'Story',
     about: 'About',
+    devHistory: 'Dev Log',
   },
 
   // ── Footer ──
