@@ -24,11 +24,11 @@ function renderMarkdown(text: string) {
         elements.push(
           <div key={`code-${i}`} className="my-2 rounded-lg overflow-hidden">
             {codeLang && (
-              <div className="px-3 py-1 bg-white/[0.04] text-[10px] font-mono text-white/30 border-b border-white/[0.04]">
+              <div className="px-3 py-1 bg-black/[0.04] dark:bg-white/[0.04] text-[10px] font-mono text-black/30 dark:text-white/30 border-b border-black/[0.04] dark:border-white/[0.04]">
                 {codeLang}
               </div>
             )}
-            <pre className="p-3 bg-white/[0.02] text-[12px] font-mono leading-relaxed overflow-x-auto text-cyan-300/70">
+            <pre className="p-3 bg-black/[0.02] dark:bg-white/[0.02] text-[12px] font-mono leading-relaxed overflow-x-auto text-cyan-700 dark:text-cyan-300/70">
               {codeLines.join('\n')}
             </pre>
           </div>
@@ -47,11 +47,11 @@ function renderMarkdown(text: string) {
 
     // Headers
     if (line.startsWith('## ')) {
-      elements.push(<h4 key={i} className="text-sm font-bold text-white/80 mt-3 mb-1">{line.slice(3)}</h4>);
+      elements.push(<h4 key={i} className="text-sm font-bold text-black/80 dark:text-white/80 mt-3 mb-1">{line.slice(3)}</h4>);
       return;
     }
     if (line.startsWith('**') && line.endsWith('**')) {
-      elements.push(<p key={i} className="text-xs font-semibold text-white/60 mt-2 mb-0.5">{line.slice(2, -2)}</p>);
+      elements.push(<p key={i} className="text-xs font-semibold text-black/60 dark:text-white/60 mt-2 mb-0.5">{line.slice(2, -2)}</p>);
       return;
     }
 
@@ -60,7 +60,7 @@ function renderMarkdown(text: string) {
       if (line.includes('---')) return; // separator row
       const cells = line.split('|').filter(c => c.trim());
       elements.push(
-        <div key={i} className="flex gap-2 text-[11px] font-mono text-white/40 py-0.5">
+        <div key={i} className="flex gap-2 text-[11px] font-mono text-black/40 dark:text-white/40 py-0.5">
           {cells.map((cell, ci) => (
             <span key={ci} className="flex-1 truncate">{cell.trim()}</span>
           ))}
@@ -78,12 +78,12 @@ function renderMarkdown(text: string) {
     // Bold + inline code
     const formatted = line
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
-      .replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 bg-white/[0.06] rounded text-[11px] text-cyan-400/70 font-mono">$1</code>');
+      .replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 bg-black/[0.06] dark:bg-white/[0.06] rounded text-[11px] text-cyan-700 dark:text-cyan-400/70 font-mono">$1</code>');
 
     // List items
     if (line.startsWith('- ')) {
       elements.push(
-        <div key={i} className="flex gap-1.5 text-xs text-white/50 leading-relaxed ml-1">
+        <div key={i} className="flex gap-1.5 text-xs text-black/50 dark:text-white/50 leading-relaxed ml-1">
           <span className="text-cyan-500/40 mt-0.5 shrink-0">&#x2022;</span>
           <span dangerouslySetInnerHTML={{ __html: formatted.slice(2) }} />
         </div>
@@ -93,8 +93,8 @@ function renderMarkdown(text: string) {
     if (/^\d+\. /.test(line)) {
       const num = line.match(/^(\d+)\. /)?.[1];
       elements.push(
-        <div key={i} className="flex gap-1.5 text-xs text-white/50 leading-relaxed ml-1">
-          <span className="text-white/20 shrink-0 w-3 text-right">{num}.</span>
+        <div key={i} className="flex gap-1.5 text-xs text-black/50 dark:text-white/50 leading-relaxed ml-1">
+          <span className="text-black/20 dark:text-white/20 shrink-0 w-3 text-right">{num}.</span>
           <span dangerouslySetInnerHTML={{ __html: formatted.replace(/^\d+\. /, '') }} />
         </div>
       );
@@ -102,7 +102,7 @@ function renderMarkdown(text: string) {
     }
 
     elements.push(
-      <p key={i} className="text-xs text-white/50 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />
+      <p key={i} className="text-xs text-black/50 dark:text-white/50 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />
     );
   });
 
@@ -197,13 +197,13 @@ function ModelColumn({
   const tokensPerSec = Math.round(model.speed * speedMultiplier * 60);
 
   return (
-    <div className="flex flex-col rounded-xl overflow-hidden bg-white/[0.02] border border-white/[0.05] h-[420px]">
+    <div className="flex flex-col rounded-xl overflow-hidden bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.05] dark:border-white/[0.05] h-[420px]">
       {/* Model Header */}
-      <div className="flex items-center gap-2.5 px-4 py-3 border-b border-white/[0.04] bg-white/[0.02] shrink-0">
+      <div className="flex items-center gap-2.5 px-4 py-3 border-b border-black/[0.04] dark:border-white/[0.04] bg-black/[0.02] dark:bg-white/[0.02] shrink-0">
         <span className="text-lg">{model.avatar}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-white/80 truncate">{model.name}</p>
-          <p className="text-[10px] font-mono text-white/25 tracking-wide">{model.badge}</p>
+          <p className="text-sm font-semibold text-black/80 dark:text-white/80 truncate">{model.name}</p>
+          <p className="text-[10px] font-mono text-black/25 dark:text-white/25 tracking-wide">{model.badge}</p>
         </div>
         {/* Status indicator */}
         <div className="flex items-center gap-1.5">
@@ -213,7 +213,7 @@ function ModelColumn({
             animate={started && !done ? { opacity: [1, 0.3, 1] } : {}}
             transition={{ duration: 0.8, repeat: Infinity }}
           />
-          <span className="text-[9px] font-mono text-white/20">
+          <span className="text-[9px] font-mono text-black/20 dark:text-white/20">
             {done ? 'DONE' : started ? 'TYPING' : 'WAIT'}
           </span>
         </div>
@@ -240,8 +240,8 @@ function ModelColumn({
       </div>
 
       {/* Footer: Token counter */}
-      <div className="flex items-center justify-between px-4 py-2 border-t border-white/[0.04] bg-white/[0.015] shrink-0">
-        <span className="text-[10px] font-mono text-white/15">
+      <div className="flex items-center justify-between px-4 py-2 border-t border-black/[0.04] dark:border-white/[0.04] bg-black/[0.015] dark:bg-white/[0.015] shrink-0">
+        <span className="text-[10px] font-mono text-black/15 dark:text-white/15">
           {displayedChars} / {model.answer.length} chars
         </span>
         <span className="text-[10px] font-mono tabular-nums" style={{ color: model.color, opacity: 0.5 }}>
@@ -276,7 +276,6 @@ export default function LLMArena() {
     setPlaying(false);
     setDoneCount(0);
     setActiveQ(idx);
-    // Auto-start after a beat
     setTimeout(() => {
       setDoneCount(0);
       setPlaying(true);
@@ -296,18 +295,18 @@ export default function LLMArena() {
       {/* Section Header */}
       <div className="text-center mb-12">
         <motion.p
-          className="font-mono text-[10px] tracking-[0.6em] text-white/20 uppercase mb-5"
+          className="font-mono text-[10px] tracking-[0.6em] text-black/20 dark:text-white/20 uppercase mb-5"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
           05 / Arena
         </motion.p>
-        <LineReveal className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+        <LineReveal className="text-3xl sm:text-4xl font-black text-black dark:text-white tracking-tight">
           {lang === 'zh' ? 'LLM 竞技场' : 'LLM Arena'}
         </LineReveal>
         <motion.p
-          className="mt-3 text-sm text-white/30 font-light"
+          className="mt-3 text-sm text-black/30 dark:text-white/30 font-light"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -328,7 +327,7 @@ export default function LLMArena() {
             className={`px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 border ${
               activeQ === i
                 ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400'
-                : 'bg-white/[0.02] border-white/[0.06] text-white/30 hover:text-white/50 hover:border-white/10'
+                : 'bg-black/[0.02] dark:bg-white/[0.02] border-black/20 dark:border-white/[0.06] text-black/60 dark:text-white/30 hover:text-black/80 dark:hover:text-white/50 hover:border-black/30 dark:hover:border-white/10'
             }`}
           >
             {lang === 'zh' ? q.question.slice(0, 15) + '...' : q.questionEn.slice(0, 25) + '...'}
@@ -339,7 +338,7 @@ export default function LLMArena() {
       {/* Question Prompt Bar */}
       <motion.div
         layout
-        className="max-w-3xl mx-auto mb-8 px-5 py-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center gap-3"
+        className="max-w-3xl mx-auto mb-8 px-5 py-3.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] flex items-center gap-3"
       >
         <span className="text-cyan-500/50 shrink-0 text-sm">{'>'}</span>
         <AnimatePresence mode="wait">
@@ -348,7 +347,7 @@ export default function LLMArena() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="text-sm text-white/60 font-mono"
+            className="text-sm text-black/60 dark:text-white/60 font-mono"
           >
             {lang === 'zh' ? question.question : question.questionEn}
           </motion.p>
@@ -360,7 +359,7 @@ export default function LLMArena() {
         {/* Replay */}
         <button
           onClick={startPlay}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono text-white/40 hover:text-white/70 hover:border-white/15 transition-all"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-black/[0.03] dark:bg-white/[0.03] border border-black/20 dark:border-white/[0.06] text-xs font-mono text-black/60 dark:text-white/40 hover:text-black/80 dark:hover:text-white/70 hover:border-black/30 dark:hover:border-white/15 transition-all"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
             <path d="M1 6a5 5 0 019.5-1.5M11 1v3.5H7.5" />
@@ -370,8 +369,8 @@ export default function LLMArena() {
         </button>
 
         {/* Speed */}
-        <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-          <span className="text-[10px] font-mono text-white/20 mr-1">
+        <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06]">
+          <span className="text-[10px] font-mono text-black/50 dark:text-white/20 mr-1">
             {lang === 'zh' ? '速度' : 'Speed'}
           </span>
           {speeds.map((s, i) => (
@@ -381,7 +380,7 @@ export default function LLMArena() {
               className={`px-2 py-0.5 rounded text-[10px] font-mono transition-all ${
                 speedIdx === i
                   ? 'bg-cyan-500/15 text-cyan-400'
-                  : 'text-white/25 hover:text-white/50'
+                  : 'text-black/55 dark:text-white/25 hover:text-black/80 dark:hover:text-white/50'
               }`}
             >
               {s}x

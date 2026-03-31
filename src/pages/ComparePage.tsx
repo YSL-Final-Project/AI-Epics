@@ -55,7 +55,7 @@ export default function ComparePage() {
         <IDEMarketChart />
 
         {/* Section 05: LLM Arena — chatbot comparison */}
-        <div className="dark bg-[#0a0a1a] rounded-3xl mx-2 sm:mx-4 my-8 overflow-hidden">
+        <div className="bg-slate-100 dark:bg-[#0a0a1a] rounded-3xl mx-2 sm:mx-4 my-8 overflow-hidden border border-slate-300 dark:border-transparent">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <LLMArena />
           </div>
