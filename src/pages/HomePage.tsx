@@ -142,7 +142,7 @@ export default function HomePage() {
 
             {/* Main title — char-by-char rotateX reveal */}
             <h1
-              className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white mb-6 leading-[1.1] tracking-tight"
+              className="text-5xl sm:text-6xl lg:text-7xl font-black text-white dark:text-white mb-6 leading-[1.1] tracking-tight"
               style={{ perspective: '600px' }}
             >
               <SplitChars text={t.home.titleLine1} baseDelay={0.15} stagger={0.045} />
