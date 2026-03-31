@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../../context/ThemeContext';
 
 /**
  * Developer DNA — a personality quiz that generates your "developer genome"
@@ -81,6 +82,8 @@ const archetypes: Record<string, Archetype> = {
 };
 
 function RadarChart({ scores, maxScores }: { scores: number[]; maxScores: number }) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const CX = 120, CY = 120, R = 90;
   const n = DIMS.length;
 
@@ -103,7 +106,7 @@ function RadarChart({ scores, maxScores }: { scores: number[]; maxScores: number
             return `${p.x},${p.y}`;
           }).join(' ')}
           fill="none"
-          stroke="rgba(255,255,255,0.05)"
+          stroke={isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.07)"}
           strokeWidth="1"
         />
       ))}
@@ -112,7 +115,7 @@ function RadarChart({ scores, maxScores }: { scores: number[]; maxScores: number
       {DIMS.map((_, i) => {
         const p = getPoint(i, maxScores);
         return (
-          <line key={i} x1={CX} y1={CY} x2={p.x} y2={p.y} stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+          <line key={i} x1={CX} y1={CY} x2={p.x} y2={p.y} stroke={isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)"} strokeWidth="1" />
         );
       })}
 
@@ -145,7 +148,7 @@ function RadarChart({ scores, maxScores }: { scores: number[]; maxScores: number
               x={p.x} y={p.y}
               textAnchor="middle"
               dominantBaseline="middle"
-              className="text-[8px] font-mono fill-white/30"
+              className="text-[8px] font-mono fill-slate-400 dark:fill-white/30"
             >
               {dim}
             </text>
@@ -191,7 +194,7 @@ export default function DeveloperDNA() {
         transition={{ duration: 0.6 }}
         className="text-center"
       >
-        <p className="text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase mb-4">你的开发者 DNA</p>
+        <p className="text-[10px] font-mono text-slate-400 dark:text-white/20 tracking-[0.3em] uppercase mb-4">你的开发者 DNA</p>
 
         <RadarChart scores={scores} maxScores={Math.max(15, maxScore)} />
 
@@ -206,16 +209,16 @@ export default function DeveloperDNA() {
           <h3 className="text-2xl font-black mt-2" style={{ color: archetype.color }}>
             {archetype.name}
           </h3>
-          <p className="text-xs text-white/30 font-mono mt-1">{archetype.nameEn}</p>
-          <p className="text-sm text-white/50 mt-3 max-w-sm mx-auto">{archetype.desc}</p>
+          <p className="text-xs text-slate-400 dark:text-white/30 font-mono mt-1">{archetype.nameEn}</p>
+          <p className="text-sm text-slate-600 dark:text-white/50 mt-3 max-w-sm mx-auto">{archetype.desc}</p>
         </motion.div>
 
         {/* Score breakdown */}
         <div className="mt-6 space-y-2 max-w-xs mx-auto">
           {DIMS.map((dim, i) => (
             <div key={dim} className="flex items-center gap-2">
-              <span className="text-[10px] font-mono text-white/20 w-16 text-right">{dim}</span>
-              <div className="flex-1 h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+              <span className="text-[10px] font-mono text-slate-400 dark:text-white/20 w-16 text-right">{dim}</span>
+              <div className="flex-1 h-1.5 bg-slate-200 dark:bg-white/[0.04] rounded-full overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
                   style={{ background: DIM_COLORS[i] }}
@@ -224,7 +227,7 @@ export default function DeveloperDNA() {
                   transition={{ delay: 0.8 + i * 0.1, duration: 0.6 }}
                 />
               </div>
-              <span className="text-[10px] font-mono tabular-nums text-white/20 w-4">{scores[i]}</span>
+              <span className="text-[10px] font-mono tabular-nums text-slate-400 dark:text-white/20 w-4">{scores[i]}</span>
             </div>
           ))}
         </div>
@@ -234,7 +237,7 @@ export default function DeveloperDNA() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
           onClick={restart}
-          className="mt-8 px-6 py-2.5 rounded-full border border-white/10 text-xs font-mono text-white/30 hover:text-white/60 hover:border-white/20 transition-all"
+          className="mt-8 px-6 py-2.5 rounded-full border border-slate-200 dark:border-white/10 text-xs font-mono text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/60 hover:border-slate-400 dark:hover:border-white/20 transition-all"
         >
           重新测试
         </motion.button>
@@ -252,7 +255,7 @@ export default function DeveloperDNA() {
           <div
             key={i}
             className={`h-1 rounded-full transition-all duration-300 ${
-              i === currentQ ? 'w-6 bg-cyan-400' : i < currentQ ? 'w-1.5 bg-white/20' : 'w-1.5 bg-white/[0.06]'
+              i === currentQ ? 'w-6 bg-cyan-400' : i < currentQ ? 'w-1.5 bg-slate-300 dark:bg-white/20' : 'w-1.5 bg-slate-200 dark:bg-white/[0.06]'
             }`}
           />
         ))}
@@ -267,14 +270,14 @@ export default function DeveloperDNA() {
           exit={{ opacity: 0, x: -40 }}
           transition={{ duration: 0.35 }}
         >
-          <p className="text-lg font-bold text-white/80 mb-6 text-center">{q.question}</p>
+          <p className="text-lg font-bold text-slate-800 dark:text-white/80 mb-6 text-center">{q.question}</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {q.options.map((opt, i) => (
               <motion.button
                 key={i}
                 onClick={() => handleAnswer(opt.scores)}
-                className="px-5 py-4 rounded-xl text-sm text-left font-medium bg-white/[0.03] text-white/40 border border-white/[0.06] hover:border-cyan-500/30 hover:text-white/70 hover:bg-cyan-500/5 transition-all duration-200"
+                className="px-5 py-4 rounded-xl text-sm text-left font-medium bg-slate-50 dark:bg-white/[0.03] text-slate-600 dark:text-white/40 border border-slate-200 dark:border-white/[0.06] hover:border-cyan-500/30 hover:text-slate-900 dark:hover:text-white/70 hover:bg-cyan-500/5 transition-all duration-200"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.97 }}
                 initial={{ opacity: 0, y: 12 }}

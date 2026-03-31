@@ -22,8 +22,8 @@ export default function CodeSnippetCard({ snippet }: CodeSnippetCardProps) {
         <span className="text-xs text-slate-400/50 font-mono">#{snippet.id}</span>
       </div>
       {/* Code */}
-      <pre className="p-5 bg-[#0d1117] overflow-x-auto">
-        <code className="text-[13px] text-emerald-400 font-mono whitespace-pre leading-relaxed">
+      <pre className="p-5 bg-slate-50 dark:bg-[#0d1117] overflow-x-auto">
+        <code className="text-[13px] text-emerald-600 dark:text-emerald-400 font-mono whitespace-pre leading-relaxed">
           {snippet.code}
         </code>
       </pre>

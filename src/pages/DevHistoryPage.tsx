@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, useReducedMotion, useInView } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, ReferenceLine,
@@ -312,14 +313,14 @@ function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   const commit = commits.find(c => `${c.label} ${c.title}` === label);
   return (
-    <div className="bg-slate-900/95 border border-cyan-500/20 rounded-xl p-3 shadow-xl backdrop-blur-sm text-xs">
-      <p className="text-cyan-400 font-mono mb-2">{commit?.date}</p>
-      <p className="text-white font-bold mb-1">{commit?.title}</p>
+    <div className="bg-white dark:bg-slate-900/95 border border-slate-200 dark:border-cyan-500/20 rounded-xl p-3 shadow-xl backdrop-blur-sm text-xs">
+      <p className="text-cyan-600 dark:text-cyan-400 font-mono mb-2">{commit?.date}</p>
+      <p className="text-slate-900 dark:text-white font-bold mb-1">{commit?.title}</p>
       {payload.map((p: any) => (
-        <div key={p.dataKey} className="flex items-center gap-2 text-slate-300">
+        <div key={p.dataKey} className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
           <span style={{ color: p.color }}>■</span>
           <span className="capitalize">{p.name}:</span>
-          <span className="font-mono text-white">{p.value.toLocaleString()}</span>
+          <span className="font-mono text-slate-900 dark:text-white">{p.value.toLocaleString()}</span>
         </div>
       ))}
     </div>
@@ -333,7 +334,7 @@ function StatCounter({ value, suffix = '', label }: { value: number; suffix?: st
   return (
     <div ref={ref} className="text-center">
       <motion.div
-        className="text-4xl font-black text-white tabular-nums"
+        className="text-4xl font-black text-slate-900 dark:text-white tabular-nums"
         initial={{ opacity: 0, y: 10 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5 }}
@@ -348,7 +349,7 @@ function StatCounter({ value, suffix = '', label }: { value: number; suffix?: st
           </motion.span>
         ) : '—'}
       </motion.div>
-      <p className="text-slate-400 text-xs mt-1 font-mono uppercase tracking-widest">{label}</p>
+      <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 font-mono uppercase tracking-widest">{label}</p>
     </div>
   );
 }
@@ -358,6 +359,8 @@ function TimelineItem({ commit, index, isZh }: { commit: typeof commits[0]; inde
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
   const prefersReduced = useReducedMotion();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const isLeft = index % 2 === 0;
 
   return (
@@ -371,13 +374,13 @@ function TimelineItem({ commit, index, isZh }: { commit: typeof commits[0]; inde
       >
         <div className={`inline-block p-4 rounded-2xl border transition-all duration-300
           ${commit.highlight
-            ? 'bg-slate-800/80 border-cyan-500/30 shadow-lg shadow-cyan-500/5'
-            : 'bg-slate-800/40 border-slate-700/40'
+            ? 'bg-white dark:bg-slate-800/80 border-cyan-500/30 shadow-lg shadow-cyan-500/5'
+            : 'bg-white/80 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/40'
           }`}
         >
           {/* Label + date */}
           <div className={`flex items-center gap-2 mb-2 ${isLeft ? 'justify-end' : 'justify-start'}`}>
-            <span className="font-mono text-[10px] tracking-widest text-slate-500 uppercase">{commit.date}</span>
+            <span className="font-mono text-[10px] tracking-widest text-slate-400 dark:text-slate-500 uppercase">{commit.date}</span>
             {commit.milestone && (
               <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold tracking-wider uppercase"
                 style={{ background: commit.color + '20', color: commit.color }}>
@@ -387,19 +390,19 @@ function TimelineItem({ commit, index, isZh }: { commit: typeof commits[0]; inde
           </div>
 
           {/* Title */}
-          <h3 className="text-base font-bold text-white mb-1">
+          <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
             {isZh ? commit.titleZh : commit.title}
           </h3>
 
           {/* Desc */}
-          <p className="text-slate-400 text-xs leading-relaxed mb-3">
+          <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed mb-3">
             {isZh ? commit.descZh : commit.desc}
           </p>
 
           {/* Tags */}
           <div className={`flex flex-wrap gap-1.5 ${isLeft ? 'justify-end' : 'justify-start'}`}>
             {commit.tags.map(tag => (
-              <span key={tag} className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-700/60 text-slate-300 border border-slate-600/40">
+              <span key={tag} className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600/40">
                 {tag}
               </span>
             ))}
@@ -416,7 +419,7 @@ function TimelineItem({ commit, index, isZh }: { commit: typeof commits[0]; inde
                 <div className="text-[11px] font-mono font-bold" style={{ color: commit.color }}>
                   {s.icon} {s.val.toLocaleString()}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase tracking-wider">{s.label}</div>
+                <div className="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-wider">{s.label}</div>
               </div>
             ))}
           </div>
@@ -428,7 +431,7 @@ function TimelineItem({ commit, index, isZh }: { commit: typeof commits[0]; inde
         <motion.div
           className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-mono font-bold border-2 z-10"
           style={{
-            background: commit.highlight ? commit.color + '20' : '#1e293b',
+            background: commit.highlight ? commit.color + '20' : (isDark ? '#1e293b' : '#f1f5f9'),
             borderColor: commit.color,
             color: commit.color,
           }}
@@ -460,6 +463,8 @@ function TimelineItem({ commit, index, isZh }: { commit: typeof commits[0]; inde
 function GrowthChart() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <div ref={ref} className="space-y-10">
@@ -468,12 +473,12 @@ function GrowthChart() {
         initial={{ opacity: 0, y: 24 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6 }}
-        className="bg-slate-800/50 border border-slate-700/40 rounded-2xl p-6"
+        className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/40 rounded-2xl p-6"
       >
         <div className="flex items-center gap-3 mb-5">
           <div className="w-2 h-6 rounded-full bg-cyan-400" />
-          <h3 className="text-sm font-bold text-white">Lines of Code</h3>
-          <span className="text-slate-500 text-xs font-mono ml-auto">(.ts .tsx .css .json)</span>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Lines of Code</h3>
+          <span className="text-slate-400 dark:text-slate-500 text-xs font-mono ml-auto">(.ts .tsx .css .json)</span>
         </div>
         <ResponsiveContainer width="100%" height={220}>
           <AreaChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
@@ -483,7 +488,7 @@ function GrowthChart() {
                 <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#1e293b" : "#e2e8f0"} />
             <XAxis dataKey="shortLabel" tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'monospace' }} />
             <YAxis tick={{ fill: '#64748b', fontSize: 10 }} tickFormatter={v => `${(v/1000).toFixed(0)}k`} />
             <Tooltip content={<CustomTooltip />} />
@@ -500,14 +505,14 @@ function GrowthChart() {
         initial={{ opacity: 0, y: 24 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.15 }}
-        className="bg-slate-800/50 border border-slate-700/40 rounded-2xl p-6"
+        className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/40 rounded-2xl p-6"
       >
         <div className="flex items-center gap-4 mb-5">
           <div className="flex items-center gap-2">
             <div className="w-2 h-6 rounded-full bg-violet-400" />
-            <h3 className="text-sm font-bold text-white">Components & Files</h3>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Components & Files</h3>
           </div>
-          <div className="flex gap-4 ml-auto text-xs text-slate-400 font-mono">
+          <div className="flex gap-4 ml-auto text-xs text-slate-500 dark:text-slate-400 font-mono">
             <span><span className="text-violet-400">━</span> Components</span>
             <span><span className="text-amber-400">━</span> Total Files</span>
           </div>
@@ -524,7 +529,7 @@ function GrowthChart() {
                 <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#1e293b" : "#e2e8f0"} />
             <XAxis dataKey="shortLabel" tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'monospace' }} />
             <YAxis tick={{ fill: '#64748b', fontSize: 10 }} />
             <Tooltip content={<CustomTooltip />} />
@@ -548,7 +553,7 @@ export default function DevHistoryPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-[#080c14] text-slate-100 relative overflow-hidden">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#080c14] text-slate-800 dark:text-slate-100 relative overflow-hidden">
 
         {/* Ambient glow */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -574,12 +579,12 @@ export default function DevHistoryPage() {
               initial={prefersReduced ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.15, duration: 0.8 }}
-              className="font-mono text-[10px] tracking-[0.6em] text-cyan-500/40 uppercase mb-6"
+              className="font-mono text-[10px] tracking-[0.6em] text-cyan-600/50 dark:text-cyan-500/40 uppercase mb-6"
             >
               Dev · History · Map
             </motion.p>
 
-            <LineReveal className="text-[clamp(2.8rem,9vw,5.5rem)] font-black tracking-[-0.04em] leading-[0.92] text-white mb-6">
+            <LineReveal className="text-[clamp(2.8rem,9vw,5.5rem)] font-black tracking-[-0.04em] leading-[0.92] text-slate-900 dark:text-white mb-6">
               {isZh ? '开发历史图谱' : 'Development\nHistory'}
             </LineReveal>
 
@@ -587,7 +592,7 @@ export default function DevHistoryPage() {
               initial={prefersReduced ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-slate-400 text-base max-w-xl mx-auto leading-relaxed mb-8"
+              className="text-slate-500 dark:text-slate-400 text-base max-w-xl mx-auto leading-relaxed mb-8"
             >
               {isZh
                 ? '15 次提交 · 8 天 · 从一个空白模板到完整的数据可视化项目'
@@ -598,7 +603,7 @@ export default function DevHistoryPage() {
             {/* Lang toggle */}
             <motion.button
               onClick={() => setIsZh(z => !z)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-700/60 text-xs font-mono text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700/60 text-xs font-mono text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
             >
@@ -611,7 +616,7 @@ export default function DevHistoryPage() {
             initial={prefersReduced ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-700/30 rounded-2xl overflow-hidden border border-slate-700/30 mb-16"
+            className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-200 dark:bg-slate-700/30 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/30 mb-16"
           >
             {[
               { value: final.lines - initial.lines, suffix: '', label: isZh ? '新增代码行' : 'Lines Added' },
@@ -619,7 +624,7 @@ export default function DevHistoryPage() {
               { value: final.totalFiles - initial.totalFiles, suffix: '', label: isZh ? '新增文件数' : 'Files Created' },
               { value: commits.length - 1, suffix: '', label: isZh ? '有效提交' : 'Commits' },
             ].map(s => (
-              <div key={s.label} className="bg-slate-900/80 py-8 px-4">
+              <div key={s.label} className="bg-white dark:bg-slate-900/80 py-8 px-4">
                 <StatCounter value={s.value} suffix={s.suffix} label={s.label} />
               </div>
             ))}
@@ -627,7 +632,7 @@ export default function DevHistoryPage() {
 
           {/* ── Tab switcher ─────────────────────────────────────── */}
           <div className="flex justify-center mb-12">
-            <div className="inline-flex p-1 rounded-xl bg-slate-800/60 border border-slate-700/40 gap-1">
+            <div className="inline-flex p-1 rounded-xl bg-slate-200/80 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-700/40 gap-1">
               {[
                 { id: 'timeline', label: isZh ? '时间轴' : 'Timeline' },
                 { id: 'charts', label: isZh ? '增长曲线' : 'Growth Charts' },
@@ -637,14 +642,14 @@ export default function DevHistoryPage() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`relative px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                     activeTab === tab.id
-                      ? 'text-white'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'text-slate-900 dark:text-white'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                   }`}
                 >
                   {activeTab === tab.id && (
                     <motion.div
                       layoutId="tab-bg"
-                      className="absolute inset-0 rounded-lg bg-slate-700/80"
+                      className="absolute inset-0 rounded-lg bg-white dark:bg-slate-700/80"
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                   )}
@@ -658,7 +663,7 @@ export default function DevHistoryPage() {
           {activeTab === 'timeline' && (
             <div className="relative">
               {/* Vertical spine */}
-              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-500/20 via-slate-700/30 to-transparent -translate-x-1/2 pointer-events-none" />
+              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-500/30 dark:from-cyan-500/20 via-slate-300 dark:via-slate-700/30 to-transparent -translate-x-1/2 pointer-events-none" />
               {commits.map((commit, i) => (
                 <TimelineItem key={commit.hash} commit={commit} index={i} isZh={isZh} />
               ))}
@@ -675,9 +680,9 @@ export default function DevHistoryPage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="mt-10 p-5 rounded-2xl border border-slate-700/40 bg-slate-800/30"
+                className="mt-10 p-5 rounded-2xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30"
               >
-                <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-4">
+                <p className="text-xs font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">
                   {isZh ? '里程碑节点' : 'Milestone Commits'}
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -685,8 +690,8 @@ export default function DevHistoryPage() {
                     <div key={c.hash} className="flex items-start gap-2">
                       <div className="w-2 h-2 rounded-full mt-1 flex-none" style={{ background: c.color }} />
                       <div>
-                        <p className="text-xs font-bold text-slate-200">{isZh ? c.titleZh : c.title}</p>
-                        <p className="text-[10px] text-slate-500 font-mono">{c.date}</p>
+                        <p className="text-xs font-bold text-slate-700 dark:text-slate-200">{isZh ? c.titleZh : c.title}</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{c.date}</p>
                       </div>
                     </div>
                   ))}
@@ -701,12 +706,12 @@ export default function DevHistoryPage() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="mt-24 text-center border-t border-slate-800 pt-12"
+            className="mt-24 text-center border-t border-slate-200 dark:border-slate-800 pt-12"
           >
-            <p className="font-mono text-[10px] tracking-[0.4em] text-slate-600 uppercase mb-3">
+            <p className="font-mono text-[10px] tracking-[0.4em] text-slate-400 dark:text-slate-600 uppercase mb-3">
               {isZh ? '从第一行到最后一行' : 'From first line to last'}
             </p>
-            <p className="text-slate-500 text-sm">
+            <p className="text-slate-400 dark:text-slate-500 text-sm">
               {isZh
                 ? `${(final.lines - initial.lines).toLocaleString()} 行代码 · ${final.components} 个组件 · ${final.totalFiles} 个文件 · 5 天`
                 : `${(final.lines - initial.lines).toLocaleString()} lines · ${final.components} components · ${final.totalFiles} files · 5 days`
