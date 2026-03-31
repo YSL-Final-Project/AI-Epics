@@ -114,7 +114,7 @@ export default function StickyScrollNarrative() {
   const s3SubY  = useTransform(scrollYProgress, [0.76, 0.95], [25, -10]);
 
   // ── Shared ──
-  const bgOp       = useTransform(scrollYProgress, [0, 0.03, 0.97, 1], [0, 1, 1, 0]);
+  const bgOp       = useTransform(scrollYProgress, [0.97, 1], [1, 0]);
   const dot1       = useTransform(scrollYProgress, [0, 0.06, 0.32, 0.38], [0.2, 1, 1, 0.2]);
   const dot2       = useTransform(scrollYProgress, [0.33, 0.40, 0.64, 0.70], [0.2, 1, 1, 0.2]);
   const dot3       = useTransform(scrollYProgress, [0.65, 0.72, 0.96, 1.00], [0.2, 1, 1, 0.2]);
