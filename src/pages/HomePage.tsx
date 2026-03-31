@@ -108,10 +108,10 @@ export default function HomePage() {
         <section
           id="chapter-hero"
           ref={sectionRef}
-          className="relative py-16 sm:py-24 px-4 overflow-hidden min-h-[90vh] flex flex-col justify-center bg-black"
+          className="relative py-16 sm:py-24 px-4 overflow-hidden min-h-screen flex flex-col justify-center bg-black"
         >
           {/* Matrix rain — pure black bg + green glyphs */}
-          <MatrixRain color="#00ff41" density={14} speed={0.15} className="opacity-75" showPeek />
+          <MatrixRain color="#00ff41" density={16} speed={1} className="opacity-90" showPeek mouseRepelRadius={160} />
           <CyberGrid color="cyan" opacity={0.025} />
 
           {/* Subtle orbs for depth — very low opacity so black dominates */}
