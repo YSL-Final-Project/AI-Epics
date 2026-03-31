@@ -84,7 +84,7 @@ export default function TimelinePage() {
                 initial={prefersReduced ? false : { opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7, duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                className="text-[clamp(2.5rem,7vw,4.5rem)] font-black text-slate-200 dark:text-white/[0.06] tracking-tight tabular-nums"
+                className="text-[clamp(2.5rem,7vw,4.5rem)] font-black text-slate-900/[0.12] dark:text-white/[0.12] tracking-tight tabular-nums"
               >
                 2018
               </motion.span>
@@ -98,7 +98,7 @@ export default function TimelinePage() {
                 initial={prefersReduced ? false : { opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7, duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                className="text-[clamp(2.5rem,7vw,4.5rem)] font-black text-slate-200 dark:text-white/[0.06] tracking-tight tabular-nums"
+                className="text-[clamp(2.5rem,7vw,4.5rem)] font-black text-slate-900/[0.12] dark:text-white/[0.12] tracking-tight tabular-nums"
               >
                 2025
               </motion.span>

@@ -106,7 +106,7 @@ function YearGroup({
           style={prefersReduced ? {} : { opacity: yearOpacity }}
           className="flex items-baseline gap-4"
         >
-          <span className="text-[clamp(4rem,12vw,8rem)] font-black text-slate-100 dark:text-white/[0.04] leading-none tracking-[-0.04em] select-none">
+          <span className="text-[clamp(4rem,12vw,8rem)] font-black text-slate-900/[0.12] dark:text-white/[0.12] leading-none tracking-[-0.04em] select-none">
             {year}
           </span>
           <div className="h-px flex-1 bg-gradient-to-r from-slate-200/60 dark:from-white/[0.04] to-transparent" />
