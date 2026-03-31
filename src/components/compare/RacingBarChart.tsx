@@ -151,7 +151,7 @@ export default function RacingBarChart() {
           >
             {/* Year — Apple-style hero number */}
             <div className="relative mb-4">
-              <span className="text-[140px] sm:text-[200px] md:text-[240px] font-black leading-none tracking-tighter text-slate-100 dark:text-white/[0.04] select-none block text-center">
+              <span className="text-[140px] sm:text-[200px] md:text-[240px] font-black leading-none tracking-tighter text-slate-300 dark:text-white/[0.04] select-none block text-center">
                 {currentYear}
               </span>
               {/* #1 language badge overlaid on year */}
