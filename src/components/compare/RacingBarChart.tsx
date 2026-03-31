@@ -1,49 +1,29 @@
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import { useState, useRef, useCallback, useMemo } from 'react';
+import { motion, useScroll, useTransform, useMotionValueEvent, useSpring, AnimatePresence } from 'framer-motion';
 import CodePeek from '../shared/CodePeek';
 
-const PEEK_CODE = `// Scroll position drives which year is shown.
-// Three phases fade in/out: intro → chart → outro.
-
-useMotionValueEvent(scrollYProgress, 'change', (p) => {
-  // 0.00–0.10  intro text fades out
-  // 0.08–0.12  chart fades in
-  // 0.12–0.83  chart plays through all years
-  // 0.83–0.88  chart fades, outro fades in
-
-  // Intro opacity
-  if (p <= 0.06) setIntroOp(1);
-  else if (p <= 0.10) setIntroOp(1 - (p - 0.06) / 0.04);
-  else setIntroOp(0);
-
-  // Chart opacity
-  if (p <= 0.08) setChartOp(0);
-  else if (p <= 0.12) setChartOp((p - 0.08) / 0.04);
-  else if (p <= 0.83) setChartOp(1);
-  else if (p <= 0.88) setChartOp(1 - (p - 0.83) / 0.05);
-  else setChartOp(0);
-
-  // Map scroll range 0.12–0.83 → year index
-  if (p >= 0.12 && p <= 0.83) {
-    const t = (p - 0.12) / (0.83 - 0.12);
-    setYearIndex(Math.round(t * (TOTAL - 1)));
-  }
+const PEEK_CODE = `// useSpring smooths discrete Windows scroll into continuous motion.
+const smoothProgress = useSpring(scrollYProgress, {
+  stiffness: 120, damping: 25, restDelta: 0.0005,
 });
 
-// Framer Motion layoutId animates bars between rank positions
-<motion.div key={lang.name} layout layoutId={\`lang-row-\${lang.name}\`}
-  transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-/>
-<motion.div animate={{ width: \`\${(lang.score / 100) * 100}%\` }}
-  transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-/>`;
+// Continuous float t → interpolated scores between years.
+const score = scores[lo] + (scores[hi] - scores[lo]) * frac;
+
+// #1 bar gets a colored glow; all bars have glass highlight.
+boxShadow: rank === 0 ? \`0 0 20px \${color}40, 0 0 40px \${color}20\` : 'none'
+
+// Rank changes tracked: rising → green flash + ▲ indicator.
+// Score numbers use CSS translateY transition for rolling effect.
+// Background radial gradient follows #1 language color.`;
+
 import rankingsData from '../../data/language_rankings.json';
 import type { LanguageRankingsData } from '../../types';
 
 const data = rankingsData as LanguageRankingsData;
 const TOTAL = data.years.length;
+const ROW_H = 34;
 
-// Muted, refined palette
 const COLORS: Record<string, string> = {
   Python: '#5a7ec2',
   JavaScript: '#c4a24d',
@@ -57,63 +37,171 @@ const COLORS: Record<string, string> = {
   Swift: '#c4804e',
 };
 
+interface BarItem {
+  name: string;
+  score: number;
+  color: string;
+}
+
+interface FrameState {
+  displayYear: number;
+  sorted: BarItem[];
+  progress: number;
+}
+
+function interpolateFrame(t: number): FrameState {
+  const clamped = Math.max(0, Math.min(t, TOTAL - 1));
+  const lo = Math.floor(clamped);
+  const hi = Math.min(lo + 1, TOTAL - 1);
+  const frac = clamped - lo;
+
+  const sorted = data.languages
+    .map(lang => ({
+      name: lang.name,
+      score: lang.scores[lo] + (lang.scores[hi] - lang.scores[lo]) * frac,
+      color: COLORS[lang.name] || lang.color,
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  return {
+    displayYear: data.years[Math.round(clamped)],
+    sorted,
+    progress: clamped / (TOTAL - 1),
+  };
+}
+
+const INITIAL = interpolateFrame(0);
+
+/* ── Rolling number digit ── */
+function RollingScore({ value }: { value: number }) {
+  const display = Math.round(value);
+  return (
+    <span className="w-8 text-right text-xs font-bold tabular-nums text-slate-400 dark:text-white/25 inline-flex justify-end overflow-hidden">
+      <span className="relative h-[1.2em] inline-flex items-center">
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={display}
+            initial={{ y: 8, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -8, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="inline-block"
+          >
+            {display}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </span>
+  );
+}
+
+/* ── Intro particle burst ── */
+function IntroParticles({ active }: { active: boolean }) {
+  const particles = useMemo(() =>
+    Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      angle: (Math.PI * 2 * i) / 12,
+      distance: 80 + Math.random() * 120,
+      size: 2 + Math.random() * 3,
+      delay: Math.random() * 0.2,
+    })),
+  []);
+
+  return (
+    <AnimatePresence>
+      {active && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+          {particles.map(p => (
+            <motion.div
+              key={p.id}
+              className="absolute rounded-full bg-white/20 dark:bg-white/10"
+              style={{ width: p.size, height: p.size }}
+              initial={{ x: 0, y: 0, opacity: 0.6, scale: 1 }}
+              animate={{
+                x: Math.cos(p.angle) * p.distance,
+                y: Math.sin(p.angle) * p.distance,
+                opacity: 0,
+                scale: 0.3,
+              }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, delay: p.delay, ease: 'easeOut' }}
+            />
+          ))}
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function RacingBarChart() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [yearIndex, setYearIndex] = useState(0);
-  // phase: 0 = intro, 1 = chart visible, 2 = outro
-  const [introOp, setIntroOp] = useState(1);
-  const [chartOp, setChartOp] = useState(0);
-  const [outroOp, setOutroOp] = useState(0);
+  const [frame, setFrame] = useState<FrameState>(INITIAL);
+  const rafRef = useRef(0);
+  const prevRanksRef = useRef<Record<string, number>>({});
+  const [rankChanges, setRankChanges] = useState<Record<string, number>>({});
+  const [showParticles, setShowParticles] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
 
-  useMotionValueEvent(scrollYProgress, 'change', (p) => {
-    // 0.00–0.08: intro text visible
-    // 0.06–0.10: intro fades, chart fades in
-    // 0.10–0.85: chart plays through years
-    // 0.85–0.92: chart fades, outro fades in
-    // 0.92–1.00: outro visible
-
-    // Intro
-    if (p <= 0.06) setIntroOp(1);
-    else if (p <= 0.10) setIntroOp(1 - (p - 0.06) / 0.04);
-    else setIntroOp(0);
-
-    // Chart
-    if (p <= 0.08) setChartOp(0);
-    else if (p <= 0.12) setChartOp((p - 0.08) / 0.04);
-    else if (p <= 0.83) setChartOp(1);
-    else if (p <= 0.88) setChartOp(1 - (p - 0.83) / 0.05);
-    else setChartOp(0);
-
-    // Year index: map 0.12–0.83 to years
-    if (p >= 0.12 && p <= 0.83) {
-      const t = (p - 0.12) / (0.83 - 0.12);
-      setYearIndex(Math.round(t * (TOTAL - 1)));
-    }
-
-    // Outro
-    if (p <= 0.86) setOutroOp(0);
-    else if (p <= 0.92) setOutroOp((p - 0.86) / 0.06);
-    else setOutroOp(1);
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 25,
+    restDelta: 0.0005,
   });
 
-  const currentYear = data.years[yearIndex];
-  const maxScore = 100;
+  // --- Phase opacities ---
+  const introOp = useTransform(smoothProgress, [0, 0.06, 0.10], [1, 1, 0]);
+  const chartOp = useTransform(smoothProgress, [0.08, 0.12, 0.83, 0.88], [0, 1, 1, 0]);
+  const outroOp = useTransform(smoothProgress, [0.86, 0.92], [0, 1]);
 
-  const sortedLanguages = [...data.languages]
-    .map(lang => ({
-      ...lang,
-      score: lang.scores[yearIndex],
-      color: COLORS[lang.name] || lang.color,
-    }))
-    .sort((a, b) => b.score - a.score);
+  const introPointer = useTransform(introOp, v => (v < 0.1 ? 'none' : 'auto'));
+  const chartPointer = useTransform(chartOp, v => (v < 0.1 ? 'none' : 'auto'));
+  const outroPointer = useTransform(outroOp, v => (v < 0.1 ? 'none' : 'auto'));
 
-  const topLang = sortedLanguages[0];
-  const progress = yearIndex / (TOTAL - 1);
+  // Particle trigger: fires when intro fades and chart appears
+  const prevIntroVisible = useRef(true);
+  useMotionValueEvent(introOp, 'change', (v) => {
+    if (prevIntroVisible.current && v < 0.1) {
+      setShowParticles(true);
+      setTimeout(() => setShowParticles(false), 1000);
+    }
+    prevIntroVisible.current = v >= 0.1;
+  });
+
+  const progressWidth = useTransform(smoothProgress, [0.12, 0.83], ['0%', '100%']);
+
+  // --- Frame update with rank tracking ---
+  const updateFrame = useCallback((p: number) => {
+    if (p >= 0.12 && p <= 0.83) {
+      const t = ((p - 0.12) / (0.83 - 0.12)) * (TOTAL - 1);
+      const newFrame = interpolateFrame(t);
+
+      // Track rank changes
+      const newRanks: Record<string, number> = {};
+      const changes: Record<string, number> = {};
+      newFrame.sorted.forEach((lang, rank) => {
+        newRanks[lang.name] = rank;
+        const prevRank = prevRanksRef.current[lang.name];
+        if (prevRank !== undefined) {
+          changes[lang.name] = prevRank - rank; // positive = rose
+        }
+      });
+      prevRanksRef.current = newRanks;
+      setRankChanges(changes);
+
+      setFrame(newFrame);
+    }
+  }, []);
+
+  useMotionValueEvent(smoothProgress, 'change', (p) => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => updateFrame(p));
+  });
+
+  const topLang = frame.sorted[0];
 
   return (
     <div ref={containerRef} className="relative" style={{ height: '500vh' }}>
@@ -124,37 +212,67 @@ export default function RacingBarChart() {
         className="absolute top-5 right-5 z-10"
       />
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+        {/* 7A: Radial gradient background following #1 language */}
+        <div
+          className="absolute inset-0 transition-all duration-1000 ease-out"
+          style={{
+            background: `radial-gradient(ellipse 80% 60% at 50% 45%, ${topLang.color}08 0%, transparent 70%)`,
+          }}
+        />
+
         <div className="w-full max-w-4xl mx-auto px-6 sm:px-10 relative">
 
-          {/* ── Phase 1: Intro ── */}
-          <div
-            style={{ opacity: introOp, pointerEvents: introOp < 0.1 ? 'none' : 'auto' }}
+          {/* -- Phase 1: Intro with stagger reveal -- */}
+          <motion.div
+            style={{ opacity: introOp, pointerEvents: introPointer }}
             className="absolute inset-0 flex flex-col items-center justify-center"
           >
-            <p className="text-xs font-mono tracking-[0.5em] text-slate-400/40 dark:text-white/15 uppercase mb-6">
+            <IntroParticles active={showParticles} />
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+              className="text-xs font-mono tracking-[0.5em] text-slate-400/40 dark:text-white/15 uppercase mb-6"
+            >
               2015 — 2025
-            </p>
-            <h3 className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight text-center leading-tight">
+            </motion.p>
+            <motion.h3
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+              className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight text-center leading-tight"
+            >
               十年。
               <br />
               <span className="text-slate-400 dark:text-white/25">王座换了三次。</span>
-            </h3>
-            <p className="mt-6 text-sm text-slate-400 dark:text-white/20 font-light">
+            </motion.h3>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+              className="mt-6 text-sm text-slate-400 dark:text-white/20 font-light"
+            >
               向下滚动，见证每一次逆转。
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          {/* ── Phase 2: Chart ── */}
-          <div
-            style={{ opacity: chartOp, pointerEvents: chartOp < 0.1 ? 'none' : 'auto' }}
+          {/* -- Phase 2: Chart -- */}
+          <motion.div
+            style={{ opacity: chartOp, pointerEvents: chartPointer }}
             className="absolute inset-0 flex flex-col justify-center"
           >
-            {/* Year — Apple-style hero number */}
+            {/* Year */}
             <div className="relative mb-4">
               <span className="text-[140px] sm:text-[200px] md:text-[240px] font-black leading-none tracking-tighter text-slate-100 dark:text-white/[0.04] select-none block text-center">
-                {currentYear}
+                <motion.span
+                  key={frame.displayYear}
+                  initial={{ opacity: 0.7 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {frame.displayYear}
+                </motion.span>
               </span>
-              {/* #1 language badge overlaid on year */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
                   <span className="text-xs font-mono tracking-widest text-slate-400/50 dark:text-white/15 uppercase">#1</span>
@@ -168,56 +286,87 @@ export default function RacingBarChart() {
               </div>
             </div>
 
-            {/* Bars — compact, refined */}
-            <div className="space-y-1.5 -mt-8 relative max-w-2xl mx-auto w-full">
-              <AnimatePresence>
-                {sortedLanguages.map((lang, rank) => (
-                  <motion.div
+            {/* Bars */}
+            <div
+              className="relative -mt-8 max-w-2xl mx-auto w-full"
+              style={{ height: frame.sorted.length * ROW_H }}
+            >
+              {frame.sorted.map((lang, rank) => {
+                const isTop = rank === 0;
+                const change = rankChanges[lang.name] || 0;
+                const isRising = change > 0;
+
+                return (
+                  <div
                     key={lang.name}
-                    layout
-                    layoutId={`lang-row-${lang.name}`}
-                    transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-                    className="flex items-center gap-3"
+                    className="absolute left-0 right-0 flex items-center gap-3"
+                    style={{
+                      height: 28,
+                      transform: `translateY(${rank * ROW_H}px)`,
+                      transition: 'transform 0.35s cubic-bezier(0.23, 1, 0.32, 1)',
+                    }}
                     data-cursor-label={lang.name}
-                    data-cursor-value={`${lang.score} 分`}
+                    data-cursor-value={`${lang.score.toFixed(1)} 分`}
                     data-cursor-color={lang.color}
-                    data-cursor-sub={`#${rank + 1} · ${currentYear}`}
+                    data-cursor-sub={`#${rank + 1} · ${frame.displayYear}`}
                   >
-                    {/* Rank */}
-                    <span className="w-4 text-right text-[10px] font-mono text-slate-300 dark:text-white/10 tabular-nums shrink-0">
-                      {rank + 1}
+                    {/* Rank with change indicator */}
+                    <span className="w-4 text-right text-[10px] font-mono tabular-nums shrink-0 relative">
+                      <span className={isRising ? 'text-emerald-400/80' : 'text-slate-300 dark:text-white/10'}>
+                        {rank + 1}
+                      </span>
+                      {isRising && (
+                        <span className="absolute -right-1.5 -top-0.5 text-[7px] text-emerald-400/70">
+                          ▲
+                        </span>
+                      )}
                     </span>
                     {/* Name */}
-                    <span className="w-[88px] text-right text-[13px] font-semibold text-slate-500 dark:text-slate-400 shrink-0 tracking-tight">
+                    <span className={`w-[88px] text-right text-[13px] font-semibold shrink-0 tracking-tight transition-colors duration-300 ${
+                      isTop ? 'text-slate-700 dark:text-white/70' : 'text-slate-500 dark:text-slate-400'
+                    }`}>
                       {lang.name}
                     </span>
-                    {/* Bar */}
+                    {/* Bar with glow + glass effects */}
                     <div className="flex-1 h-7 bg-slate-100/80 dark:bg-white/[0.02] rounded overflow-hidden">
-                      <motion.div
-                        className="h-full rounded relative overflow-hidden"
-                        style={{ backgroundColor: lang.color }}
-                        animate={{ width: `${(lang.score / maxScore) * 100}%` }}
-                        transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+                      <div
+                        className="h-full rounded relative overflow-hidden transition-shadow duration-500"
+                        style={{
+                          backgroundColor: lang.color,
+                          width: `${(lang.score / 100) * 100}%`,
+                          boxShadow: isTop
+                            ? `0 0 16px ${lang.color}40, 0 0 32px ${lang.color}20, inset 0 1px 0 rgba(255,255,255,0.15)`
+                            : 'inset 0 1px 0 rgba(255,255,255,0.08)',
+                        }}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.08] to-white/0" />
-                      </motion.div>
+                        {/* Glass highlight */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.18] via-transparent to-black/[0.05]" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.1] to-white/0" />
+                        {/* Rising flash */}
+                        {isRising && (
+                          <motion.div
+                            initial={{ opacity: 0.5 }}
+                            animate={{ opacity: 0 }}
+                            transition={{ duration: 0.4 }}
+                            className="absolute inset-0 bg-white/20"
+                          />
+                        )}
+                      </div>
                     </div>
-                    {/* Score */}
-                    <span className="w-8 text-right text-xs font-bold tabular-nums text-slate-400 dark:text-white/25">
-                      {lang.score}
-                    </span>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                    {/* Rolling score */}
+                    <RollingScore value={lang.score} />
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Minimal progress line */}
+            {/* Progress line */}
             <div className="mt-8 max-w-2xl mx-auto w-full">
               <div className="relative h-px">
                 <div className="absolute inset-0 bg-slate-200/50 dark:bg-white/[0.04]" />
-                <div
-                  className="absolute top-0 left-0 h-full bg-slate-400 dark:bg-white/20 transition-all duration-500 ease-out"
-                  style={{ width: `${progress * 100}%` }}
+                <motion.div
+                  className="absolute top-0 left-0 h-full bg-slate-400 dark:bg-white/20"
+                  style={{ width: progressWidth }}
                 />
               </div>
               <div className="flex justify-between mt-2">
@@ -225,37 +374,54 @@ export default function RacingBarChart() {
                 <span className="text-[9px] font-mono text-slate-300 dark:text-white/[0.08]">{data.years[TOTAL - 1]}</span>
               </div>
 
-              {/* Annotations */}
-              {yearIndex >= 5 && yearIndex <= 7 && (
+              {frame.displayYear >= 2020 && frame.displayYear <= 2022 && (
                 <div className="flex items-center gap-1.5 mt-3 justify-center transition-opacity duration-300">
                   <div className="w-4 h-px bg-cyan-400/50" />
                   <span className="text-[10px] text-cyan-500/60 font-mono">Python 首次登顶</span>
                 </div>
               )}
-              {yearIndex >= 8 && (
+              {frame.displayYear >= 2023 && (
                 <div className="flex items-center gap-1.5 mt-3 justify-center transition-opacity duration-300">
                   <div className="w-4 h-px bg-cyan-400/50" />
                   <span className="text-[10px] text-cyan-500/60 font-mono">AI 浪潮推动 Python 一骑绝尘</span>
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
 
-          {/* ── Phase 3: Outro ── */}
-          <div
-            style={{ opacity: outroOp, pointerEvents: outroOp < 0.1 ? 'none' : 'auto' }}
+          {/* -- Phase 3: Outro with scale-blur entrance -- */}
+          <motion.div
+            style={{ opacity: outroOp, pointerEvents: outroPointer }}
             className="absolute inset-0 flex flex-col items-center justify-center text-center"
           >
-            <p className="text-6xl sm:text-8xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
+            <motion.p
+              initial={{ scale: 0.85, opacity: 0, filter: 'blur(8px)' }}
+              whileInView={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+              className="text-6xl sm:text-8xl font-black tracking-tight text-slate-900 dark:text-white mb-4"
+            >
               Python.
-            </p>
-            <p className="text-xl sm:text-2xl font-light text-slate-400 dark:text-white/30">
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15, duration: 0.5 }}
+              className="text-xl sm:text-2xl font-light text-slate-400 dark:text-white/30"
+            >
               从第七，到唯一。
-            </p>
-            <p className="text-sm text-slate-300 dark:text-white/15 mt-3 font-light leading-relaxed">
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="text-sm text-slate-300 dark:text-white/15 mt-3 font-light leading-relaxed"
+            >
               不是它变强了。是世界选择了它。
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
         </div>
       </div>
