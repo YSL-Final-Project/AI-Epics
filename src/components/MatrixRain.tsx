@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import CodePeek from './shared/CodePeek';
+import { useTheme } from '../context/ThemeContext';
 
 const PEEK_CODE = `// Classic Matrix digital rain
 // Every column filled with characters, multiple streams
@@ -61,6 +62,8 @@ export default function MatrixRain({
 }: MatrixRainProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prefersReduced = useReducedMotion();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     if (prefersReduced) return;
@@ -117,16 +120,18 @@ export default function MatrixRain({
     resize();
     window.addEventListener('resize', resize);
 
-    // Pre-fill: paint the entire canvas with dim green characters
+    // Pre-fill: paint the entire canvas with dim characters
     const preFill = () => {
-      ctx.fillStyle = '#000';
+      ctx.fillStyle = isDark ? '#000' : '#0050A0';
       ctx.fillRect(0, 0, w, h);
       ctx.font = `${fontSize}px "Courier New", monospace`;
       ctx.textBaseline = 'top';
       const rowCount = Math.ceil(h / fontSize);
       for (let c = 0; c < colCount; c++) {
         for (let r = 0; r < rowCount; r++) {
-          ctx.fillStyle = `rgba(0, 255, 65, ${0.03 + Math.random() * 0.12})`;
+          ctx.fillStyle = isDark
+            ? `rgba(0, 255, 65, ${0.03 + Math.random() * 0.12})`
+            : `rgba(255, 255, 255, ${0.03 + Math.random() * 0.10})`;
           ctx.fillText(randChar(), c * fontSize, r * fontSize);
         }
       }
@@ -154,27 +159,33 @@ export default function MatrixRain({
         const repel = getRepel(x + fontSize / 2, y + fontSize / 2);
 
         if (repel > 0.05) {
-          // Head character — bright white
-          ctx.fillStyle = `rgba(180, 255, 180, ${(0.95 * brightness) * repel})`;
+          // Head character — bright
+          ctx.fillStyle = isDark
+            ? `rgba(180, 255, 180, ${(0.95 * brightness) * repel})`
+            : `rgba(255, 255, 255, ${(0.95 * brightness) * repel})`;
           ctx.fillText(randChar(), x, y);
 
-          // Second char — bright green
+          // Second char
           if (dropsArr[i] > 0) {
             const repel2 = getRepel(x + fontSize / 2, y - fontSize + fontSize / 2);
             if (repel2 > 0.05) {
-              ctx.fillStyle = `rgba(0, 255, 65, ${(0.8 * brightness) * repel2})`;
+              ctx.fillStyle = isDark
+                ? `rgba(0, 255, 65, ${(0.8 * brightness) * repel2})`
+                : `rgba(255, 255, 255, ${(0.8 * brightness) * repel2})`;
               ctx.fillText(randChar(), x, y - fontSize);
             }
           }
         }
 
-        // Random flicker — replace a random char in this column with fresh green
+        // Random flicker — replace a random char in this column
         if (Math.random() < 0.03) {
           const ry = Math.floor(Math.random() * Math.ceil(h / fontSize));
           const fy = ry * fontSize;
           const repelF = getRepel(x + fontSize / 2, fy + fontSize / 2);
           if (repelF > 0.05) {
-            ctx.fillStyle = `rgba(0, 255, 65, ${(0.25 + Math.random() * 0.35) * repelF})`;
+            ctx.fillStyle = isDark
+              ? `rgba(0, 255, 65, ${(0.25 + Math.random() * 0.35) * repelF})`
+              : `rgba(255, 255, 255, ${(0.25 + Math.random() * 0.35) * repelF})`;
             ctx.fillText(randChar(), x, fy);
           }
         }
@@ -196,16 +207,21 @@ export default function MatrixRain({
       if (now - lastTime < FRAME_INTERVAL) return;
       lastTime = now;
 
-      // Semi-transparent black overlay — creates the fade trail
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      // Semi-transparent overlay — creates the fade trail
+      ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.05)' : 'rgba(0, 80, 160, 0.05)';
       ctx.fillRect(0, 0, w, h);
 
       // Extra fade around mouse
       if (repelR > 0 && mouseX > -9000) {
         ctx.save();
         const grad = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, repelR);
-        grad.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
-        grad.addColorStop(0.7, 'rgba(0, 0, 0, 0.1)');
+        if (isDark) {
+          grad.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
+          grad.addColorStop(0.7, 'rgba(0, 0, 0, 0.1)');
+        } else {
+          grad.addColorStop(0, 'rgba(0, 80, 160, 0.3)');
+          grad.addColorStop(0.7, 'rgba(0, 80, 160, 0.1)');
+        }
         grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = grad;
         ctx.fillRect(mouseX - repelR, mouseY - repelR, repelR * 2, repelR * 2);
@@ -231,7 +247,7 @@ export default function MatrixRain({
         window.removeEventListener('mouseleave', onMouseLeave);
       }
     };
-  }, [prefersReduced, color, density, speed, mouseRepelRadius]);
+  }, [prefersReduced, color, density, speed, mouseRepelRadius, isDark]);
 
   if (prefersReduced) return null;
 
