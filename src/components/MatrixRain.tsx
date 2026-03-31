@@ -2,43 +2,35 @@ import { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import CodePeek from './shared/CodePeek';
 
-const PEEK_CODE = `// Canvas-based Matrix rain — Claude Code keywords
-const randChar = () => CHAR_POOL[Math.floor(Math.random() * CHAR_POOL.length)];
+const PEEK_CODE = `// Classic Matrix digital rain
+// Every column filled with characters, multiple streams
+// Head = bright white, trail fades green → dark
 
 const draw = () => {
-  // Fade trail — slower fade = longer tails
-  const fadeAlpha = speed < 0.5 ? 0.03 : 0.06;
-  ctx.fillStyle = \`rgba(0, 0, 0, \${fadeAlpha})\`;
+  // Semi-transparent black overlay for trail fade
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
   ctx.fillRect(0, 0, w, h);
 
-  ctx.font = \`\${fontSize}px "Courier New", monospace\`;
+  for (let i = 0; i < drops.length; i++) {
+    const x = i * fontSize;
+    const y = drops[i] * fontSize;
 
-  for (let i = 0; i < columns.length; i++) {
-    const x = i * density;
-    const y = columns[i];
-
-    // Head glyph — white-green flash
+    // Bright head
     ctx.fillStyle = '#fff';
-    ctx.globalAlpha = 0.85;
     ctx.fillText(randChar(), x, y);
 
-    // Main color trail
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.7;
-    ctx.fillText(randChar(), x, y - fontSize);
+    // Trail chars randomly flicker
+    if (Math.random() < 0.02) {
+      const ry = Math.floor(Math.random() * rows);
+      ctx.fillStyle = 'rgba(0,255,65,0.6)';
+      ctx.fillText(randChar(), x, ry * fontSize);
+    }
 
-    // Dimmer ghost trail
-    ctx.globalAlpha = 0.25;
-    ctx.fillText(randChar(), x, y - fontSize * 2);
-    ctx.globalAlpha = 1;
-
-    // Reset column when off-screen (stagger re-entry)
-    if (y > h + 50 && Math.random() > 0.98)
-      columns[i] = -Math.random() * h * 0.5;
-
-    columns[i] += fontSize * 0.65 * speed;
+    // Advance or reset
+    if (drops[i] * fontSize > h && Math.random() > 0.975)
+      drops[i] = 0;
+    drops[i]++;
   }
-  animId = requestAnimationFrame(draw);
 };`;
 
 interface MatrixRainProps {
@@ -47,24 +39,17 @@ interface MatrixRainProps {
   density?: number;
   speed?: number;
   showPeek?: boolean;
+  mouseRepelRadius?: number;
 }
 
-// Claude Code CLI keywords + symbols
-const WORDS = [
-  'claude','code','commit','push','pull','diff','merge','rebase','init','deploy',
-  'build','test','lint','fmt','run','exec','scan','eval','parse','compile',
-  'async','await','yield','import','export','return','const','let','function',
-  'npm','npx','git','ssh','curl','grep','sed','awk','pipe','fork',
-  'model','prompt','token','agent','tool','hook','skill','plan','edit','read',
-  'write','bash','glob','grep','spawn','kill','debug','trace','log','error',
-  '$','>>','&&','||','|>','->','<=','!=','===','/**','*/','//','=>',
-  '{}','[]','()','</>','...','::','##','%%','@@','~~',
-  'API','CLI','SDK','LLM','RAG','MCP','TCP','SSH','GPT','AI',
-  '0x0F','0xFF','null','void','true','NaN','EOF','SIGTERM','STDOUT',
-];
-// Pick random characters from the word pool
-const CHAR_POOL = WORDS.join(' ').split('');
-const randChar = () => CHAR_POOL[Math.floor(Math.random() * CHAR_POOL.length)];
+// Techy character set — hex, binary, operators, unicode blocks
+const HEX = '0123456789ABCDEF';
+const BINARY = '01';
+const OPERATORS = '<>=!&|^~+-*/%@#$:;?.';
+const BLOCKS = '█▓▒░▐▌▄▀■□▪▫●○◆◇◈⬡⬢';
+const BRACKETS = '{}[]()<>/\\';
+const TECH = HEX + HEX + BINARY + BINARY + BINARY + OPERATORS + BLOCKS + BRACKETS;
+const randChar = () => TECH[Math.floor(Math.random() * TECH.length)];
 
 export default function MatrixRain({
   className = '',
@@ -72,6 +57,7 @@ export default function MatrixRain({
   density = 18,
   speed = 1,
   showPeek = false,
+  mouseRepelRadius = 0,
 }: MatrixRainProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prefersReduced = useReducedMotion();
@@ -84,9 +70,34 @@ export default function MatrixRain({
     if (!ctx) return;
 
     let animId: number;
-    let columns: number[] = [];
     let w = 0;
     let h = 0;
+
+    const fontSize = density;
+    // drops[i] = current row position of stream head for column i
+    let drops: number[] = [];
+    // Secondary streams for extra density
+    let drops2: number[] = [];
+    let drops3: number[] = [];
+    let colCount = 0;
+
+    // Mouse
+    let mouseX = -9999;
+    let mouseY = -9999;
+    const repelR = mouseRepelRadius;
+    const repelR2 = repelR * repelR;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    };
+    const onMouseLeave = () => { mouseX = -9999; mouseY = -9999; };
+
+    if (repelR > 0) {
+      window.addEventListener('mousemove', onMouseMove, { passive: true });
+      window.addEventListener('mouseleave', onMouseLeave);
+    }
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio, 2);
@@ -95,55 +106,119 @@ export default function MatrixRain({
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const colCount = Math.floor(w / density);
-      columns = Array.from({ length: colCount }, () => Math.random() * h);
+
+      colCount = Math.ceil(w / fontSize);
+      // Initialize drops at random rows so screen is already full
+      drops = Array.from({ length: colCount }, () => Math.floor(Math.random() * (h / fontSize)));
+      drops2 = Array.from({ length: colCount }, () => Math.floor(Math.random() * (h / fontSize)));
+      drops3 = Array.from({ length: colCount }, () => Math.floor(Math.random() * (h / fontSize)));
     };
 
     resize();
     window.addEventListener('resize', resize);
 
-    const fontSize = Math.max(density * 0.85, 10);
+    // Pre-fill: paint the entire canvas with dim green characters
+    const preFill = () => {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, w, h);
+      ctx.font = `${fontSize}px "Courier New", monospace`;
+      ctx.textBaseline = 'top';
+      const rowCount = Math.ceil(h / fontSize);
+      for (let c = 0; c < colCount; c++) {
+        for (let r = 0; r < rowCount; r++) {
+          ctx.fillStyle = `rgba(0, 255, 65, ${0.03 + Math.random() * 0.12})`;
+          ctx.fillText(randChar(), c * fontSize, r * fontSize);
+        }
+      }
+    };
+    preFill();
 
     let lastTime = 0;
-    const FRAME_INTERVAL = 1000 / 24; // Cap at 24fps for performance
+    const FRAME_INTERVAL = 1000 / 30;
+
+    const getRepel = (px: number, py: number): number => {
+      if (repelR <= 0 || mouseX < -9000) return 1;
+      const dx = px - mouseX;
+      const dy = py - mouseY;
+      const d2 = dx * dx + dy * dy;
+      if (d2 >= repelR2) return 1;
+      const t = Math.sqrt(d2) / repelR;
+      return t * t * (3 - 2 * t);
+    };
+
+    const drawStream = (dropsArr: number[], baseSpeed: number, brightness: number) => {
+      for (let i = 0; i < dropsArr.length; i++) {
+        const x = i * fontSize;
+        const y = dropsArr[i] * fontSize;
+
+        const repel = getRepel(x + fontSize / 2, y + fontSize / 2);
+
+        if (repel > 0.05) {
+          // Head character — bright white
+          ctx.fillStyle = `rgba(180, 255, 180, ${(0.95 * brightness) * repel})`;
+          ctx.fillText(randChar(), x, y);
+
+          // Second char — bright green
+          if (dropsArr[i] > 0) {
+            const repel2 = getRepel(x + fontSize / 2, y - fontSize + fontSize / 2);
+            if (repel2 > 0.05) {
+              ctx.fillStyle = `rgba(0, 255, 65, ${(0.8 * brightness) * repel2})`;
+              ctx.fillText(randChar(), x, y - fontSize);
+            }
+          }
+        }
+
+        // Random flicker — replace a random char in this column with fresh green
+        if (Math.random() < 0.03) {
+          const ry = Math.floor(Math.random() * Math.ceil(h / fontSize));
+          const fy = ry * fontSize;
+          const repelF = getRepel(x + fontSize / 2, fy + fontSize / 2);
+          if (repelF > 0.05) {
+            ctx.fillStyle = `rgba(0, 255, 65, ${(0.25 + Math.random() * 0.35) * repelF})`;
+            ctx.fillText(randChar(), x, fy);
+          }
+        }
+
+        // Advance drop
+        dropsArr[i] += baseSpeed;
+
+        // Reset when off screen — staggered re-entry
+        if (dropsArr[i] * fontSize > h) {
+          if (Math.random() > 0.975) {
+            dropsArr[i] = 0;
+          }
+        }
+      }
+    };
 
     const draw = (now: number) => {
       animId = requestAnimationFrame(draw);
-
-      // Throttle frame rate
       if (now - lastTime < FRAME_INTERVAL) return;
       lastTime = now;
 
-      // Fade trail — slower fade = longer tails
-      const fadeAlpha = speed < 0.5 ? 0.04 : 0.07;
-      ctx.fillStyle = `rgba(0, 0, 0, ${fadeAlpha})`;
+      // Semi-transparent black overlay — creates the fade trail
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, w, h);
 
-      ctx.font = `${fontSize}px "Courier New", monospace`;
-
-      for (let i = 0; i < columns.length; i++) {
-        const x = i * density;
-        const y = columns[i];
-
-        // Head glyph — bright
-        ctx.fillStyle = '#fff';
-        ctx.globalAlpha = 0.8;
-        ctx.fillText(randChar(), x, y);
-
-        // Trail glyph — main color (single trail instead of two)
-        ctx.fillStyle = color;
-        ctx.globalAlpha = 0.5;
-        ctx.fillText(randChar(), x, y - fontSize);
-
-        ctx.globalAlpha = 1;
-
-        // Reset column when it goes off screen
-        if (y > h + 50 && Math.random() > 0.98) {
-          columns[i] = -Math.random() * h * 0.5;
-        }
-
-        columns[i] += fontSize * 0.65 * speed;
+      // Extra fade around mouse
+      if (repelR > 0 && mouseX > -9000) {
+        ctx.save();
+        const grad = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, repelR);
+        grad.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
+        grad.addColorStop(0.7, 'rgba(0, 0, 0, 0.1)');
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(mouseX - repelR, mouseY - repelR, repelR * 2, repelR * 2);
+        ctx.restore();
       }
+
+      ctx.font = `${fontSize}px "Courier New", monospace`;
+      ctx.textBaseline = 'top';
+
+      // Three overlapping stream layers at different speeds for density
+      drawStream(drops, 1.0 * speed, 1.0);
+      drawStream(drops2, 0.6 * speed, 0.7);
+      drawStream(drops3, 0.35 * speed, 0.5);
     };
 
     animId = requestAnimationFrame(draw);
@@ -151,8 +226,12 @@ export default function MatrixRain({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      if (repelR > 0) {
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseleave', onMouseLeave);
+      }
     };
-  }, [prefersReduced, color, density, speed]);
+  }, [prefersReduced, color, density, speed, mouseRepelRadius]);
 
   if (prefersReduced) return null;
 
@@ -166,7 +245,7 @@ export default function MatrixRain({
         />
         <CodePeek
           code={PEEK_CODE}
-          title="Matrix Rain"
+          title="Matrix Digital Rain"
           fileName="MatrixRain.tsx"
           className="absolute bottom-5 right-5 z-10"
         />
