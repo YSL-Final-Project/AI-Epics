@@ -91,18 +91,18 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-0.5 p-1 rounded-xl bg-slate-100/80 dark:bg-slate-800/50">
+          <div className="hidden md:flex items-center gap-1 p-1.5 rounded-xl bg-slate-200/80 dark:bg-slate-800/50">
             {navLinks.map(link => (
               <Link
                 key={link.path}
                 to={link.path}
                 viewTransition
-                className="relative px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                className="relative px-4 py-2 rounded-lg text-base font-semibold transition-colors"
               >
                 {location.pathname === link.path && (
                   <motion.div
                     layoutId="nav-indicator"
-                    className="absolute inset-0 rounded-lg bg-white dark:bg-slate-700 shadow-sm"
+                    className="absolute inset-0 rounded-lg bg-slate-100 dark:bg-slate-700 shadow-sm"
                     transition={{ type: 'spring', stiffness: 420, damping: 30 }}
                   />
                 )}
@@ -128,12 +128,12 @@ export default function Navbar() {
             {/* Language Toggle */}
             <motion.button
               onClick={toggleLang}
-              className="relative px-2.5 py-1 rounded-lg text-xs font-mono font-semibold tracking-wide border border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all duration-200"
+              className="relative px-4 py-2 rounded-lg text-lg font-mono font-semibold tracking-wide border border-slate-200/60 dark:border-white/10 bg-slate-200/80 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all duration-200"
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.94 }}
               aria-label="Toggle language"
             >
-              {lang === 'zh' ? 'EN' : '中文'}
+              {lang === 'zh' ? '🇺🇸 EN' : '🇨🇳 中文'}
             </motion.button>
 
             {/* Theme Toggle */}
