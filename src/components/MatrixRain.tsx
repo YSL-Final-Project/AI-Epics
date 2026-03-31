@@ -218,11 +218,12 @@ export default function MatrixRain({
         if (isDark) {
           grad.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
           grad.addColorStop(0.7, 'rgba(0, 0, 0, 0.1)');
+          grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         } else {
           grad.addColorStop(0, 'rgba(0, 80, 160, 0.3)');
           grad.addColorStop(0.7, 'rgba(0, 80, 160, 0.1)');
+          grad.addColorStop(1, 'rgba(0, 80, 160, 0)');
         }
-        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = grad;
         ctx.fillRect(mouseX - repelR, mouseY - repelR, repelR * 2, repelR * 2);
         ctx.restore();
