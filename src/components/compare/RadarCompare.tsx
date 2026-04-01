@@ -130,7 +130,7 @@ export default function RadarCompare() {
           >
             {/* Watermark language name */}
             <span
-              className="absolute text-[100px] sm:text-[160px] font-black leading-none tracking-tighter text-slate-100 dark:text-white/[0.03] select-none pointer-events-none transition-all duration-500"
+              className="absolute text-[100px] sm:text-[160px] font-black leading-none tracking-tighter text-slate-300 dark:text-white/[0.13] select-none pointer-events-none transition-all duration-500"
               style={{ color: showAll ? undefined : undefined }}
             >
               {showAll ? '全景' : activeLang.name}

@@ -108,7 +108,7 @@ export default function HomePage() {
         <section
           id="chapter-hero"
           ref={sectionRef}
-          className="relative py-16 sm:py-24 px-4 overflow-hidden min-h-screen flex flex-col justify-center bg-black"
+          className="relative py-16 sm:py-24 px-4 overflow-hidden min-h-screen flex flex-col justify-center bg-[#0050A0] dark:bg-black"
         >
           {/* Matrix rain — pure black bg + green glyphs */}
           <MatrixRain color="#00ff41" density={16} speed={1} className="opacity-90" showPeek mouseRepelRadius={160} />
@@ -142,7 +142,7 @@ export default function HomePage() {
 
             {/* Main title — char-by-char rotateX reveal */}
             <h1
-              className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white mb-6 leading-[1.1] tracking-tight"
+              className="text-5xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-[1.1] tracking-tight"
               style={{ perspective: '600px' }}
             >
               <SplitChars text={t.home.titleLine1} baseDelay={0.15} stagger={0.045} />
@@ -156,10 +156,12 @@ export default function HomePage() {
             </h1>
 
             {/* Subtitle — one clean line */}
-            <div className="mb-14">
-              <LineReveal delay={0.7} className="text-base sm:text-lg text-slate-400 dark:text-slate-500 tracking-wide">
-                {t.home.subtitle}
-              </LineReveal>
+            <div className="mb-14 inline-block">
+              <div className="px-5 py-2 rounded-full backdrop-blur-md bg-white/20 dark:bg-white/5 border border-white/30 dark:border-white/10">
+                <LineReveal delay={0.7} className="text-base sm:text-lg text-white tracking-wide">
+                  {t.home.subtitle}
+                </LineReveal>
+              </div>
             </div>
 
             <HeroTerminal />

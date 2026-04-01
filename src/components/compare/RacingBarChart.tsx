@@ -263,15 +263,8 @@ export default function RacingBarChart() {
           >
             {/* Year */}
             <div className="relative mb-4">
-              <span className="text-[140px] sm:text-[200px] md:text-[240px] font-black leading-none tracking-tighter text-slate-100 dark:text-white/[0.04] select-none block text-center">
-                <motion.span
-                  key={frame.displayYear}
-                  initial={{ opacity: 0.7 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  {frame.displayYear}
-                </motion.span>
+              <span className="text-[140px] sm:text-[200px] md:text-[240px] font-black leading-none tracking-tighter text-slate-300 dark:text-white/[0.13] select-none block text-center">
+                {currentYear}
               </span>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
@@ -370,8 +363,8 @@ export default function RacingBarChart() {
                 />
               </div>
               <div className="flex justify-between mt-2">
-                <span className="text-[9px] font-mono text-slate-300 dark:text-white/[0.08]">{data.years[0]}</span>
-                <span className="text-[9px] font-mono text-slate-300 dark:text-white/[0.08]">{data.years[TOTAL - 1]}</span>
+                <span className="text-[9px] font-mono text-slate-300 dark:text-white/[0.13]">{data.years[0]}</span>
+                <span className="text-[9px] font-mono text-slate-300 dark:text-white/[0.13]">{data.years[TOTAL - 1]}</span>
               </div>
 
               {frame.displayYear >= 2020 && frame.displayYear <= 2022 && (

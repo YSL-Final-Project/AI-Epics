@@ -1,9 +1,12 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
 import { useI18n } from '../i18n';
+import { useTheme } from '../context/ThemeContext';
 
 /* ── Animated SVG ring — auto-plays from 0→target when triggered ── */
 function ProgressRing({ active, target = 0.46, size = 260 }: { active: boolean; target?: number; size?: number }) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const r = (size - 20) / 2;
   const circumference = 2 * Math.PI * r;
   const [value, setValue] = useState(0);
@@ -20,7 +23,7 @@ function ProgressRing({ active, target = 0.46, size = 260 }: { active: boolean; 
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="3" />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.08)"} strokeWidth="3" />
       {/* Glow */}
       <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="url(#ringGrad)" strokeWidth="10" strokeLinecap="round"
         strokeDasharray={circumference} strokeDashoffset={offset} opacity={glowOp} filter="url(#ringBlur)"
@@ -32,7 +35,7 @@ function ProgressRing({ active, target = 0.46, size = 260 }: { active: boolean; 
         style={{ transition: 'stroke-dashoffset 2s cubic-bezier(0.32,0.72,0,1)' }}
       />
       {/* Leading dot */}
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="white" strokeWidth="6" strokeLinecap="round"
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={isDark ? "white" : "rgba(0,0,0,0.8)"} strokeWidth="6" strokeLinecap="round"
         strokeDasharray={`2 ${circumference - 2}`} strokeDashoffset={offset} opacity={0.9}
         style={{ transition: 'stroke-dashoffset 2s cubic-bezier(0.32,0.72,0,1)' }}
       />
@@ -114,7 +117,7 @@ export default function StickyScrollNarrative() {
   const s3SubY  = useTransform(scrollYProgress, [0.76, 0.95], [25, -10]);
 
   // ── Shared ──
-  const bgOp       = useTransform(scrollYProgress, [0, 0.03, 0.97, 1], [0, 1, 1, 0]);
+  const bgOp       = useTransform(scrollYProgress, [0.97, 1], [1, 0]);
   const dot1       = useTransform(scrollYProgress, [0, 0.06, 0.32, 0.38], [0.2, 1, 1, 0.2]);
   const dot2       = useTransform(scrollYProgress, [0.33, 0.40, 0.64, 0.70], [0.2, 1, 1, 0.2]);
   const dot3       = useTransform(scrollYProgress, [0.65, 0.72, 0.96, 1.00], [0.2, 1, 1, 0.2]);
@@ -132,10 +135,10 @@ export default function StickyScrollNarrative() {
 
   if (prefersReduced) {
     return (
-      <section className="py-24 px-6 bg-[#060612] text-center space-y-20">
-        <div><h2 className="text-4xl sm:text-6xl font-black text-white">{scene1Main}</h2></div>
-        <div><h2 className="text-8xl font-black text-white">46<span className="text-white/50">%</span></h2></div>
-        <div><h2 className="text-4xl sm:text-6xl font-black text-white">{scene3Main}</h2></div>
+      <section className="py-24 px-6 bg-slate-50 dark:bg-[#060612] text-center space-y-20">
+        <div><h2 className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white">{scene1Main}</h2></div>
+        <div><h2 className="text-8xl font-black text-slate-900 dark:text-white">46<span className="text-slate-400 dark:text-white/50">%</span></h2></div>
+        <div><h2 className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white">{scene3Main}</h2></div>
       </section>
     );
   }
@@ -144,11 +147,11 @@ export default function StickyScrollNarrative() {
     <div ref={containerRef} style={{ height: '400vh', position: 'relative' }}>
       <div className="sticky top-0 overflow-hidden" style={{ height: '100vh' }}>
 
-        <motion.div style={{ opacity: bgOp }} className="absolute inset-0 bg-[#060612]" />
+        <motion.div style={{ opacity: bgOp }} className="absolute inset-0 bg-slate-50 dark:bg-[#060612]" />
 
         {/* Left progress */}
-        <div className="absolute left-6 top-0 bottom-0 w-px bg-white/5 overflow-hidden">
-          <motion.div style={{ scaleY: progressY }} className="absolute inset-x-0 top-0 h-full bg-white/40 origin-top" />
+        <div className="absolute left-6 top-0 bottom-0 w-px bg-slate-900/5 dark:bg-white/5 overflow-hidden">
+          <motion.div style={{ scaleY: progressY }} className="absolute inset-x-0 top-0 h-full bg-slate-900/40 dark:bg-white/40 origin-top" />
         </div>
 
         {/* ═══ Scene 1: The Confession ═══ */}
@@ -156,19 +159,19 @@ export default function StickyScrollNarrative() {
           style={{ opacity: s1Op, scale: s1Scale, filter: s1Fil }}
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 will-change-transform"
         >
-          <div className="w-8 h-px bg-white/20 mb-12" />
-          <h2 className="text-[clamp(2.2rem,6vw,4.5rem)] font-extralight text-white/90 tracking-tight leading-[1.15] max-w-3xl">
+          <div className="w-8 h-px bg-slate-900/20 dark:bg-white/20 mb-12" />
+          <h2 className="text-[clamp(2.2rem,6vw,4.5rem)] font-extralight text-slate-800 dark:text-white/90 tracking-tight leading-[1.15] max-w-3xl">
             {scene1Main}
           </h2>
           <motion.p
             style={{ y: s1SubY, opacity: s1SubOp }}
-            className="mt-8 text-[clamp(1rem,2.5vw,1.5rem)] text-white/25 font-light tracking-wide max-w-xl"
+            className="mt-8 text-[clamp(1rem,2.5vw,1.5rem)] text-slate-500 dark:text-white/25 font-light tracking-wide max-w-xl"
           >
             {scene1Sub}
           </motion.p>
           <motion.div
             style={{ opacity: s1SubOp }}
-            className="mt-14 font-mono text-[11px] text-white/[0.08] tracking-wider select-none"
+            className="mt-14 font-mono text-[11px] text-slate-500/30 dark:text-white/[0.08] tracking-wider select-none"
           >
             {'{ human: true, ai: false }  →  { human: true, ai: true }'}
           </motion.div>
@@ -179,7 +182,7 @@ export default function StickyScrollNarrative() {
           style={{ opacity: s2Op, scale: s2Scale, filter: s2Fil }}
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 will-change-transform"
         >
-          <p className="text-sm sm:text-base font-light text-white/25 mb-10 max-w-md tracking-wide">
+          <p className="text-sm sm:text-base font-light text-slate-500 dark:text-white/25 mb-10 max-w-md tracking-wide">
             {scene2Pre}
           </p>
 
@@ -187,21 +190,21 @@ export default function StickyScrollNarrative() {
             <ProgressRing active={scene2Active} target={0.46} size={260} />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="flex items-start leading-none">
-                <AnimCounter active={scene2Active} target={46} duration={2000} className="text-[clamp(3.5rem,12vw,6rem)] font-black text-white tracking-tighter tabular-nums" />
-                <span className="text-[clamp(1.2rem,4vw,2.5rem)] font-black text-white/40 mt-2 ml-0.5">%</span>
+                <AnimCounter active={scene2Active} target={46} duration={2000} className="text-[clamp(3.5rem,12vw,6rem)] font-black text-slate-900 dark:text-white tracking-tighter tabular-nums" />
+                <span className="text-[clamp(1.2rem,4vw,2.5rem)] font-black text-slate-400 dark:text-white/40 mt-2 ml-0.5">%</span>
               </div>
             </div>
           </motion.div>
 
           <motion.p
             style={{ opacity: s2CapOp }}
-            className="mt-8 text-[clamp(1rem,2.5vw,1.4rem)] text-white/40 font-light tracking-wide"
+            className="mt-8 text-[clamp(1rem,2.5vw,1.4rem)] text-slate-500 dark:text-white/40 font-light tracking-wide"
           >
             {scene2Post}
           </motion.p>
           <motion.p
             style={{ opacity: s2CapOp }}
-            className="mt-6 font-mono text-[9px] tracking-[0.4em] text-white/[0.12] uppercase"
+            className="mt-6 font-mono text-[9px] tracking-[0.4em] text-slate-400/50 dark:text-white/[0.12] uppercase"
           >
             GitHub · 2024
           </motion.p>
@@ -212,15 +215,15 @@ export default function StickyScrollNarrative() {
           style={{ opacity: s3Op, scale: s3Scale, filter: s3Fil }}
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 will-change-transform"
         >
-          <h2 className="text-[clamp(2rem,5.5vw,4rem)] font-extralight text-white/70 tracking-tight leading-[1.2] max-w-2xl">
+          <h2 className="text-[clamp(2rem,5.5vw,4rem)] font-extralight text-slate-700 dark:text-white/70 tracking-tight leading-[1.2] max-w-2xl">
             {scene3Main}
           </h2>
-          <h2 className="mt-2 text-[clamp(2rem,5.5vw,4rem)] font-black text-white tracking-tight leading-[1.2] max-w-2xl">
+          <h2 className="mt-2 text-[clamp(2rem,5.5vw,4rem)] font-black text-slate-900 dark:text-white tracking-tight leading-[1.2] max-w-2xl">
             {scene3Sub}
           </h2>
           <motion.div style={{ y: s3SubY, opacity: s3SubOp }}>
-            <div className="w-6 h-px bg-white/15 mx-auto mt-14 mb-8" />
-            <p className="text-sm sm:text-base text-white/20 font-light tracking-wide max-w-md italic">
+            <div className="w-6 h-px bg-slate-900/15 dark:bg-white/15 mx-auto mt-14 mb-8" />
+            <p className="text-sm sm:text-base text-slate-500 dark:text-white/20 font-light tracking-wide max-w-md italic">
               {scene3Coda}
             </p>
           </motion.div>
@@ -229,7 +232,7 @@ export default function StickyScrollNarrative() {
         {/* Scene dots */}
         <div className="absolute right-7 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-20">
           {[dot1, dot2, dot3].map((d, i) => (
-            <motion.div key={i} style={{ opacity: d }} className="w-1 h-1 rounded-full bg-white" />
+            <motion.div key={i} style={{ opacity: d }} className="w-1 h-1 rounded-full bg-slate-900 dark:bg-white" />
           ))}
         </div>
 
@@ -238,9 +241,9 @@ export default function StickyScrollNarrative() {
           style={{ opacity: hintOp }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="font-mono text-[9px] tracking-[0.4em] text-white/30 uppercase">Scroll</span>
+          <span className="font-mono text-[9px] tracking-[0.4em] text-slate-400 dark:text-white/30 uppercase">Scroll</span>
           <motion.div
-            className="w-px bg-white/25"
+            className="w-px bg-slate-900/25 dark:bg-white/25"
             animate={{ height: ['0px', '28px', '0px'] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
           />

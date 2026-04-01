@@ -149,15 +149,15 @@ function TerminalDemo({ text, color, playing }: { text: string; color: string; p
   const done = displayedChars >= text.length;
 
   return (
-    <div className="rounded-xl overflow-hidden border border-white/[0.06] bg-[#0d1117]">
+    <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-white/[0.06] bg-slate-50 dark:bg-[#0d1117]">
       {/* Terminal header */}
-      <div className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border-b border-white/[0.04]">
+      <div className="flex items-center gap-2 px-3 py-2 bg-slate-100/50 dark:bg-white/[0.03] border-b border-slate-200 dark:border-white/[0.04]">
         <div className="flex gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
           <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
           <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
         </div>
-        <span className="text-[10px] font-mono text-white/20 ml-1">ai-time-machine</span>
+        <span className="text-[10px] font-mono text-slate-400 dark:text-white/20 ml-1">ai-time-machine</span>
       </div>
       {/* Terminal body */}
       <pre className="p-4 text-[12px] font-mono leading-relaxed h-[180px] overflow-y-auto" style={{ color }}>
@@ -204,7 +204,7 @@ export default function AITimeMachine() {
           max={timeline.length - 1}
           value={yearIdx}
           onChange={e => { setYearIdx(Number(e.target.value)); setIsPlaying(false); }}
-          className="w-full h-1 appearance-none bg-white/[0.06] rounded-full cursor-pointer
+          className="w-full h-1 appearance-none bg-slate-200 dark:bg-white/[0.06] rounded-full cursor-pointer
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:shadow-[0_0_12px_rgba(6,182,212,0.5)]
             [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:active:cursor-grabbing"
@@ -216,7 +216,7 @@ export default function AITimeMachine() {
               key={y.year}
               onClick={() => { setYearIdx(i); setIsPlaying(false); }}
               className={`text-[9px] font-mono transition-all ${
-                i === yearIdx ? 'text-cyan-400 scale-110 font-bold' : 'text-white/15 hover:text-white/30'
+                i === yearIdx ? 'text-cyan-400 scale-110 font-bold' : 'text-slate-400/50 dark:text-white/15 hover:text-slate-500 dark:hover:text-white/30'
               }`}
             >
               {y.year}
@@ -239,14 +239,14 @@ export default function AITimeMachine() {
             <div className="flex items-center gap-3">
               <span className="text-3xl">{current.icon}</span>
               <div>
-                <p className="text-2xl font-black text-white tabular-nums">{current.year}</p>
-                <p className="text-xs font-mono text-white/30">{current.era}</p>
+                <p className="text-2xl font-black text-slate-900 dark:text-white tabular-nums">{current.year}</p>
+                <p className="text-xs font-mono text-slate-400 dark:text-white/30">{current.era}</p>
               </div>
             </div>
             {/* Power level bar */}
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-mono text-white/20 uppercase">AI Power</span>
-              <div className="w-24 h-2 bg-white/[0.04] rounded-full overflow-hidden">
+              <span className="text-[9px] font-mono text-slate-400/70 dark:text-white/20 uppercase">AI Power</span>
+              <div className="w-24 h-2 bg-slate-200 dark:bg-white/[0.04] rounded-full overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
                   style={{ background: current.color }}
@@ -262,7 +262,7 @@ export default function AITimeMachine() {
           </div>
 
           {/* Capability description */}
-          <p className="text-sm text-white/50 mb-4 leading-relaxed">{current.aiCapability}</p>
+          <p className="text-sm text-slate-600 dark:text-white/50 mb-4 leading-relaxed">{current.aiCapability}</p>
 
           {/* Terminal demo */}
           <TerminalDemo text={current.demo} color={current.color} playing={true} />
@@ -273,7 +273,7 @@ export default function AITimeMachine() {
       <div className="flex justify-center mt-4">
         <button
           onClick={() => setIsPlaying(p => !p)}
-          className="text-[10px] font-mono text-white/20 hover:text-white/40 transition-colors flex items-center gap-1.5"
+          className="text-[10px] font-mono text-slate-400 dark:text-white/20 hover:text-slate-600 dark:hover:text-white/40 transition-colors flex items-center gap-1.5"
         >
           {isPlaying ? (
             <>
@@ -282,7 +282,7 @@ export default function AITimeMachine() {
             </>
           ) : (
             <>
-              <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-white/20" />
               已暂停 · 点击继续
             </>
           )}

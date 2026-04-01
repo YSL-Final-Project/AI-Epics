@@ -135,7 +135,7 @@ export default function IDEMarketChart() {
             className="absolute inset-0 flex flex-col items-center justify-center"
           >
             {/* Year watermark */}
-            <span className="absolute text-[140px] sm:text-[200px] font-black leading-none tracking-tighter text-slate-100 dark:text-white/[0.03] select-none pointer-events-none">
+            <span className="absolute text-[140px] sm:text-[200px] font-black leading-none tracking-tighter text-slate-300 dark:text-white/[0.13] select-none pointer-events-none">
               {currentYear}
             </span>
 

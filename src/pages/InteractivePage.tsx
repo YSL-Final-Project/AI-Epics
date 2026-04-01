@@ -67,7 +67,7 @@ export default function InteractivePage() {
               <ScaleReveal delay={i * 0.05 + 0.1}>
                 <div className={`rounded-2xl p-5 sm:p-8 border ${
                   section.dark
-                    ? 'dark bg-[#0a0a1a] border-white/[0.06]'
+                    ? 'bg-slate-100 dark:bg-[#0a0a1a] border-slate-200 dark:border-white/[0.06]'
                     : 'bg-slate-50/50 dark:bg-white/[0.015] border-slate-200/30 dark:border-white/[0.03]'
                 }`}>
                   <section.Component />
