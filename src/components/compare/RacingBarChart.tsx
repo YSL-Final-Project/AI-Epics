@@ -264,7 +264,7 @@ export default function RacingBarChart() {
             {/* Year */}
             <div className="relative mb-4">
               <span className="text-[140px] sm:text-[200px] md:text-[240px] font-black leading-none tracking-tighter text-slate-300 dark:text-white/[0.13] select-none block text-center">
-                {currentYear}
+                {frame.displayYear}
               </span>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
