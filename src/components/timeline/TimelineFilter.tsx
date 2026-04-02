@@ -38,14 +38,14 @@ export default function TimelineFilter({
           placeholder="搜索..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full px-0 py-2 bg-transparent border-0 border-b border-slate-200/60 dark:border-white/[0.08] text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-white/15 focus:outline-none focus:border-slate-400 dark:focus:border-white/25 transition-colors text-sm font-light tracking-wide"
+          className="w-full px-0 py-2 bg-transparent border-0 border-b border-slate-200/60 dark:border-white/[0.08] text-black dark:text-white placeholder-black/70 dark:placeholder-white/70 focus:outline-none focus:border-slate-400 dark:focus:border-white/25 transition-colors text-sm font-light tracking-wide"
         />
         {/* Animated underline on focus */}
         <div className="absolute bottom-0 left-0 right-0 h-px">
           <div className="h-full bg-slate-800 dark:bg-white/50 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500 ease-out origin-left" />
         </div>
         <svg
-          className="absolute right-0 top-2.5 w-4 h-4 text-slate-300 dark:text-white/15 group-focus-within:text-slate-500 dark:group-focus-within:text-white/40 transition-colors"
+          className="absolute right-0 top-2.5 w-4 h-4 text-slate-800 dark:text-white/50 transition-colors"
           fill="none" stroke="currentColor" viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -72,7 +72,7 @@ export default function TimelineFilter({
               <span className={`relative z-10 font-medium transition-colors duration-200 ${
                 isActive
                   ? 'text-white dark:text-white'
-                  : 'text-slate-400 dark:text-white/25 hover:text-slate-700 dark:hover:text-white/50'
+                  : 'text-slate-600 dark:text-white/60 hover:text-slate-900 dark:hover:text-white/90'
               }`}>
                 {cat.label}
               </span>
