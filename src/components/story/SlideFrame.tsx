@@ -12,18 +12,28 @@ export default function SlideFrame({
   return (
     <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden>
 
-      {/* ── Top edge ── */}
-      <div className="absolute top-0 left-0 right-0 h-[2px]"
-        style={{ background: 'linear-gradient(90deg, transparent, #06b6d4 30%, #8b5cf6 70%, transparent)' }} />
-      {/* ── Bottom edge ── */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px]"
-        style={{ background: 'linear-gradient(90deg, transparent, #8b5cf6 30%, #06b6d4 70%, transparent)' }} />
-      {/* ── Left edge ── */}
-      <div className="absolute left-0 top-0 bottom-0 w-[2px]"
-        style={{ background: 'linear-gradient(180deg, transparent, #06b6d4 30%, #8b5cf6 70%, transparent)' }} />
-      {/* ── Right edge ── */}
-      <div className="absolute right-0 top-0 bottom-0 w-[2px]"
-        style={{ background: 'linear-gradient(180deg, transparent, #8b5cf6 30%, #06b6d4 70%, transparent)' }} />
+      {/* ── Primary border ── */}
+      <div
+        className="absolute inset-0"
+        style={{
+          border: '5px solid transparent',
+          borderImage:
+            'conic-gradient(from var(--frame-angle, 0deg), #06b6d4, transparent 25%, #8b5cf6, transparent 75%, #06b6d4) 1',
+          animation: 'slideFrameSpin 4s linear infinite',
+        }}
+      />
+
+      {/* ── Bloom layer ── */}
+      <div
+        className="absolute inset-0"
+        style={{
+          border: '8px solid transparent',
+          borderImage:
+            'conic-gradient(from var(--frame-angle, 0deg), rgba(6,182,212,0.35), transparent 25%, rgba(139,92,246,0.35), transparent 75%, rgba(6,182,212,0.35)) 1',
+          animation: 'slideFrameSpin 4s linear infinite',
+          filter: 'blur(12px)',
+        }}
+      />
 
       {/* ── Corner brackets ── */}
       {[
