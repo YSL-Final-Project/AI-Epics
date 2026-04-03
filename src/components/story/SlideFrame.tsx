@@ -12,34 +12,26 @@ export default function SlideFrame({
   return (
     <div className="fixed inset-0 z-40 pointer-events-none" aria-hidden>
 
-      {/* ── Primary border — thick, elegant 2-color flow ── */}
+      {/* ── Primary border ── */}
       <div
         className="absolute inset-0"
         style={{
-          padding: 5,
-          background:
-            'conic-gradient(from var(--frame-angle, 0deg), #06b6d4, transparent 25%, #8b5cf6, transparent 75%, #06b6d4)',
+          border: '5px solid transparent',
+          borderImage:
+            'conic-gradient(from var(--frame-angle, 0deg), #06b6d4, transparent 25%, #8b5cf6, transparent 75%, #06b6d4) 1',
           animation: 'slideFrameSpin 4s linear infinite',
-          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          maskComposite: 'exclude',
-          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          WebkitMaskComposite: 'xor',
         }}
       />
 
-      {/* ── Bloom layer — soft wide glow that breathes ── */}
+      {/* ── Bloom layer ── */}
       <div
         className="absolute inset-0"
         style={{
-          padding: 8,
-          background:
-            'conic-gradient(from var(--frame-angle, 0deg), rgba(6,182,212,0.35), transparent 25%, rgba(139,92,246,0.35), transparent 75%, rgba(6,182,212,0.35))',
+          border: '8px solid transparent',
+          borderImage:
+            'conic-gradient(from var(--frame-angle, 0deg), rgba(6,182,212,0.35), transparent 25%, rgba(139,92,246,0.35), transparent 75%, rgba(6,182,212,0.35)) 1',
           animation: 'slideFrameSpin 4s linear infinite',
           filter: 'blur(12px)',
-          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          maskComposite: 'exclude',
-          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          WebkitMaskComposite: 'xor',
         }}
       />
 
