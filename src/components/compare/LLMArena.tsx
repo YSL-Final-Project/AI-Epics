@@ -132,14 +132,13 @@ function TypingDots({ color }: { color: string }) {
 function ModelColumn({
   model,
   playing,
-  speedMultiplier,
   onDone,
 }: {
   model: ArenaModel;
   playing: boolean;
-  speedMultiplier: number;
   onDone: () => void;
 }) {
+  const speedMultiplier = 1;
   const [displayedChars, setDisplayedChars] = useState(0);
   const [started, setStarted] = useState(false);
   const [done, setDone] = useState(false);
@@ -258,9 +257,7 @@ export default function LLMArena() {
   const { lang } = useI18n();
   const [activeQ, setActiveQ] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [speedIdx, setSpeedIdx] = useState(0);
   const [doneCount, setDoneCount] = useState(0);
-  const speeds = [1, 2, 4];
   const question = arenaQuestions[activeQ];
 
   const handleModelDone = useCallback(() => {
@@ -354,41 +351,8 @@ export default function LLMArena() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-3 mb-8">
-        {/* Replay */}
-        <button
-          onClick={startPlay}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-black/[0.03] dark:bg-white/[0.03] border border-black/20 dark:border-white/[0.06] text-xs font-mono text-black/60 dark:text-white/40 hover:text-black/80 dark:hover:text-white/70 hover:border-black/30 dark:hover:border-white/15 transition-all"
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M1 6a5 5 0 019.5-1.5M11 1v3.5H7.5" />
-            <path d="M11 6a5 5 0 01-9.5 1.5M1 11V7.5h3.5" />
-          </svg>
-          {lang === 'zh' ? '重新播放' : 'Replay'}
-        </button>
-
-        {/* Speed */}
-        <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06]">
-          <span className="text-[10px] font-mono text-black/50 dark:text-white/20 mr-1">
-            {lang === 'zh' ? '速度' : 'Speed'}
-          </span>
-          {speeds.map((s, i) => (
-            <button
-              key={s}
-              onClick={() => setSpeedIdx(i)}
-              className={`px-2 py-0.5 rounded text-[10px] font-mono transition-all ${
-                speedIdx === i
-                  ? 'bg-cyan-500/15 text-cyan-400'
-                  : 'text-black/55 dark:text-white/25 hover:text-black/80 dark:hover:text-white/50'
-              }`}
-            >
-              {s}x
-            </button>
-          ))}
-        </div>
-
-        {/* Status */}
+      {/* Status */}
+      <div className="flex items-center justify-center mb-8 h-8">
         {allDone && (
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }}
@@ -410,7 +374,6 @@ export default function LLMArena() {
             key={`${question.id}-${model.name}`}
             model={model}
             playing={playing}
-            speedMultiplier={speeds[speedIdx]}
             onDone={handleModelDone}
           />
         ))}
