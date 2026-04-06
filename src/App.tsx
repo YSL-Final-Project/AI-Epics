@@ -19,6 +19,7 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const StoryPage = lazy(() => import('./pages/StoryPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const DevHistoryPage = lazy(() => import('./pages/DevHistoryPage'));
+const ToolEvolutionPage = lazy(() => import('./pages/ToolEvolutionPage'));
 
 function AppLayout() {
   const location = useLocation();
@@ -54,6 +55,7 @@ function AppLayout() {
               <Route path="/interactive" element={<InteractivePage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/dev-history" element={<DevHistoryPage />} />
+              <Route path="/tool-evolution" element={<ToolEvolutionPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </AnimatePresence>

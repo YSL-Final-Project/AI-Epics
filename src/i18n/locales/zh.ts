@@ -9,6 +9,7 @@ const zh = {
     story: '故事',
     about: '关于',
     devHistory: '开发日志',
+    toolEvolution: '进化史',
   },
 
   // ── Footer ──
@@ -269,6 +270,42 @@ const zh = {
     exploreData: '探索完整数据 →',
     browseTimeline: '浏览时间线 →',
     epilogueByline: 'AI Code Era — 一个关于编程如何被永远改变的故事',
+  },
+
+  // ── ToolEvolutionPage ──
+  toolEvolution: {
+    heroTitle1: '工具',
+    heroTitle2: '进化史',
+    subtitle: '从自动补全到自主 Agent——7 年间，AI 如何重塑我们写代码的方式。',
+    heroStats: [
+      { value: '4', label: '时代' },
+      { value: '50+', label: '工具' },
+      { value: '7', label: '年' },
+      { value: '40%', label: 'AI 代码' },
+    ],
+    startExploring: '开始探索',
+    sectionNames: {
+      hero: '概览',
+      autocomplete: '自动补全',
+      copilot: '副驾驶',
+      chat: '对话',
+      agent: '代理',
+    },
+    eras: {
+      autocomplete: '自动补全时代',
+      copilot: '副驾驶时代',
+      chat: '对话助手时代',
+      agent: '自主代理时代',
+    },
+    descriptions: {
+      autocomplete: 'AI 预测下一个 token。开发者敲代码，AI 猜余下的——像一个更聪明的输入法。',
+      copilot: 'AI 从注释和上下文生成整个函数。开发者掌舵，副驾驶负责实现。',
+      chat: '开发者用自然语言描述问题。AI 解释、建议、教学——不只是写代码。',
+      agent: 'AI 阅读代码库、编辑多个文件、运行测试、创建 PR。开发者设定目标并审查。',
+    },
+    toolsLabel: '代表工具',
+    statsLabel: '关键指标',
+    insightText: '从逐字敲代码到审查 AI 的输出——仅仅 7 年，开发者的角色已被根本性地改变。问题不再是"AI 能不能写代码"，而是"人类还做什么"？',
   },
 
   // ── Language toggle ──

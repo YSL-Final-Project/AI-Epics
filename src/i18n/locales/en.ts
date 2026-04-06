@@ -11,6 +11,7 @@ const en: Translations = {
     story: 'Story',
     about: 'About',
     devHistory: 'Dev Log',
+    toolEvolution: 'Evolution',
   },
 
   // ── Footer ──
@@ -260,6 +261,42 @@ const en: Translations = {
     exploreData: 'Explore Full Data →',
     browseTimeline: 'Browse Timeline →',
     epilogueByline: 'AI Code Era — A story about how coding was changed forever',
+  },
+
+  // ── ToolEvolutionPage ──
+  toolEvolution: {
+    heroTitle1: 'Tool',
+    heroTitle2: 'Evolution',
+    subtitle: 'From autocomplete to autonomous agents — how AI reshaped the way we write code in 7 years.',
+    heroStats: [
+      { value: '4', label: 'Eras' },
+      { value: '50+', label: 'Tools' },
+      { value: '7', label: 'Years' },
+      { value: '40%', label: 'AI Code' },
+    ],
+    startExploring: 'Start Exploring',
+    sectionNames: {
+      hero: 'Overview',
+      autocomplete: 'Autocomplete',
+      copilot: 'Copilot',
+      chat: 'Chat',
+      agent: 'Agent',
+    },
+    eras: {
+      autocomplete: 'The Autocomplete Era',
+      copilot: 'The Copilot Era',
+      chat: 'The Chat Era',
+      agent: 'The Agent Era',
+    },
+    descriptions: {
+      autocomplete: 'AI predicts the next token. Developers type code, AI guesses the rest — like a smarter input method.',
+      copilot: 'AI generates entire functions from comments and context. The developer steers, the copilot implements.',
+      chat: 'Developers describe problems in natural language. AI explains, suggests, and teaches — not just writes.',
+      agent: 'AI reads codebases, edits multiple files, runs tests, and creates PRs. The developer sets goals and reviews.',
+    },
+    toolsLabel: 'Key Tools',
+    statsLabel: 'Key Metrics',
+    insightText: 'From typing every character to reviewing AI\'s output — in just 7 years, the developer\'s role has been fundamentally transformed. The question is no longer "can AI code?" but "what does the human still do?"',
   },
 
   // ── Language toggle ──
