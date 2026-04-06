@@ -308,6 +308,20 @@ const zh = {
     insightText: '从逐字敲代码到审查 AI 的输出——仅仅 7 年，开发者的角色已被根本性地改变。问题不再是"AI 能不能写代码"，而是"人类还做什么"？',
   },
 
+  // ── AgentLoop ──
+  agentLoop: {
+    title: '代理循环',
+    subtitle: '从按键到渲染响应，逐步了解 Claude Code 的源代码。',
+    watchHappens: '观看发送消息到 Claude Code 时发生的事情',
+    startSimulation: '开始模拟',
+    step: '步骤',
+    playSimulation: '播放模拟',
+    pauseSimulation: '暂停模拟',
+    previousStep: '上一步',
+    nextStep: '下一步',
+    speed: '速度',
+  },
+
   // ── Language toggle ──
   lang: {
     label: '中文',

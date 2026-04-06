@@ -299,6 +299,20 @@ const en: Translations = {
     insightText: 'From typing every character to reviewing AI\'s output — in just 7 years, the developer\'s role has been fundamentally transformed. The question is no longer "can AI code?" but "what does the human still do?"',
   },
 
+  // ── AgentLoop ──
+  agentLoop: {
+    title: 'The Agent Loop',
+    subtitle: 'From keypress to rendered response, step by step through the source.',
+    watchHappens: 'Watch what happens when you send a message to Claude Code',
+    startSimulation: 'Start simulation',
+    step: 'Step',
+    playSimulation: 'Play simulation',
+    pauseSimulation: 'Pause simulation',
+    previousStep: 'Previous step',
+    nextStep: 'Next step',
+    speed: 'speed',
+  },
+
   // ── Language toggle ──
   lang: {
     label: 'EN',
