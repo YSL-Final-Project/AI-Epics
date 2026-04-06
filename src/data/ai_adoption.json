@@ -15,19 +15,30 @@
     {"month": "2025-03", "copilot": 2.8, "chatgpt": 6.0, "cursor": 2.5, "claudeCode": 0.6}
   ],
   "usageFrequency": [
-    {"frequency": "每天多次", "percentage": 22},
-    {"frequency": "每天一次", "percentage": 18},
-    {"frequency": "每周几次", "percentage": 25},
-    {"frequency": "每周一次", "percentage": 12},
-    {"frequency": "偶尔使用", "percentage": 15},
-    {"frequency": "从不使用", "percentage": 8}
+    {"frequency": "Multiple times daily", "percentage": 22},
+    {"frequency": "Once daily", "percentage": 18},
+    {"frequency": "Few times weekly", "percentage": 25},
+    {"frequency": "Once weekly", "percentage": 12},
+    {"frequency": "Occasionally", "percentage": 15},
+    {"frequency": "Never", "percentage": 8}
   ],
   "useCases": [
-    {"name": "代码生成", "value": 38},
-    {"name": "代码调试", "value": 22},
-    {"name": "代码解释", "value": 15},
-    {"name": "文档编写", "value": 10},
-    {"name": "测试生成", "value": 8},
-    {"name": "代码审查", "value": 7}
+    {"name": "Code Generation", "value": 38},
+    {"name": "Code Debugging", "value": 22},
+    {"name": "Code Explanation", "value": 15},
+    {"name": "Documentation", "value": 10},
+    {"name": "Test Generation", "value": 8},
+    {"name": "Code Review", "value": 7}
+  ],
+  "sentimentTrend": [
+    {"year": 2023, "favorable": 77, "trust": 70, "adoption": 70},
+    {"year": 2024, "favorable": 72, "trust": 40, "adoption": 76},
+    {"year": 2025, "favorable": 60, "trust": 29, "adoption": 84}
+  ],
+  "topFrustrations": [
+    {"issue": "More time fixing AI code", "percentage": 66},
+    {"issue": "Lack of trust in accuracy", "percentage": 46},
+    {"issue": "Almost right output", "percentage": 45},
+    {"issue": "Bad at complex tasks", "percentage": 45}
   ]
 }

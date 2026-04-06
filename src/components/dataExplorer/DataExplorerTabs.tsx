@@ -4,17 +4,16 @@ import AdoptionTab from './AdoptionTab';
 import StackOverflowTab from './StackOverflowTab';
 import CodeGenTab from './CodeGenTab';
 import SalaryTab from './SalaryTab';
+import { useI18n } from '../../i18n';
 
-const tabs = [
-  { key: 'adoption', label: 'Adoption' },
-  { key: 'stackoverflow', label: 'Stack Overflow' },
-  { key: 'codegen', label: 'Code Gen' },
-  { key: 'salary', label: 'Salary' },
-];
+const TAB_KEYS = ['adoption', 'stackoverflow', 'codegen', 'salary'] as const;
 
 export default function DataExplorerTabs() {
-  const [activeTab, setActiveTab] = useState('adoption');
+  const [activeTab, setActiveTab] = useState<string>('adoption');
   const prefersReduced = useReducedMotion();
+  const { t } = useI18n();
+  const tabLabels = t.dataExplorer.tabs;
+  const tabs = TAB_KEYS.map(key => ({ key, label: (tabLabels as Record<string, string>)[key] ?? key }));
 
   return (
     <div>

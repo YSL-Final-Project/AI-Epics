@@ -1,13 +1,13 @@
 {
   "overallPercentage": 40,
   "industryComparison": [
-    {"industry": "Web 前端开发", "percentage": 52},
-    {"industry": "移动端开发", "percentage": 38},
-    {"industry": "数据科学", "percentage": 45},
-    {"industry": "DevOps/云", "percentage": 35},
-    {"industry": "嵌入式/IoT", "percentage": 18},
-    {"industry": "游戏开发", "percentage": 28},
-    {"industry": "企业后端", "percentage": 42}
+    {"industry": "Web Frontend", "percentage": 52},
+    {"industry": "Mobile", "percentage": 38},
+    {"industry": "Data Science", "percentage": 45},
+    {"industry": "DevOps/Cloud", "percentage": 35},
+    {"industry": "Embedded/IoT", "percentage": 18},
+    {"industry": "Game Dev", "percentage": 28},
+    {"industry": "Enterprise Backend", "percentage": 42}
   ],
   "acceptanceRate": [
     {"month": "2023-01", "rate": 22},
@@ -22,5 +22,17 @@
     {"month": "2024-12", "rate": 40},
     {"month": "2025-01", "rate": 41},
     {"month": "2025-03", "rate": 43}
+  ],
+  "productivityImpact": {
+    "taskSpeedup": 55.8,
+    "feltProductive": 88,
+    "stayInFlow": 73,
+    "preserveMentalEffort": 87
+  },
+  "codeQuality": [
+    {"metric": "AI vs Human issues", "value": 1.7, "unit": "x"},
+    {"metric": "Code churn since 2021", "value": 2.0, "unit": "x"},
+    {"metric": "Refactoring share 2024", "value": 10, "unit": "%"},
+    {"metric": "Refactoring share 2021", "value": 25, "unit": "%"}
   ]
 }

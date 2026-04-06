@@ -27,5 +27,16 @@
     {"proficiency": 80, "salary": 145000, "label": "AI 工具链专家"},
     {"proficiency": 85, "salary": 160000, "label": "AI 应用架构师"},
     {"proficiency": 95, "salary": 185000, "label": "AI 基础设施工程师"}
+  ],
+  "premiumTrend": [
+    {"year": 2022, "premium": 15},
+    {"year": 2023, "premium": 25},
+    {"year": 2024, "premium": 56}
+  ],
+  "hotSkills": [
+    {"skill": "Prompt Engineering", "demandGrowth": 135.8},
+    {"skill": "LLM/NLP", "avgSalary": 206000},
+    {"skill": "AI Infrastructure", "avgSalary": 300000},
+    {"skill": "Multimodal AI", "premiumRange": "25-40%"}
   ]
 }
