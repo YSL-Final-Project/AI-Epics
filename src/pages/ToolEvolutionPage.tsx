@@ -9,6 +9,7 @@ import AutocompleteDemo from '../components/toolEvolution/AutocompleteDemo';
 import CopilotDemo from '../components/toolEvolution/CopilotDemo';
 import ChatDemo from '../components/toolEvolution/ChatDemo';
 import AgentDemo from '../components/toolEvolution/AgentDemo';
+import AgentLoop from '../components/agentLoop/AgentLoop';
 import PageTransition from '../components/layout/PageTransition';
 
 const sections = [
@@ -254,6 +255,19 @@ export default function ToolEvolutionPage() {
                 </motion.div>
               </div>
             </div>
+
+            {/* Agent Loop — only in the agent era section */}
+            {era.key === 'agent' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="mt-12"
+              >
+                <AgentLoop />
+              </motion.div>
+            )}
           </section>
         );
       })}

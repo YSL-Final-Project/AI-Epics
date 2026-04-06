@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ── Hide scrollbar utility ──────────────────────────────────────────── */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
 /* ── Slide Frame spin ──────────────────────────────────────────────────── */
 @property --frame-angle {
   syntax: '<angle>';
