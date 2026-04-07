@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 import ideData from '../../data/ide_market.json';
+import { useI18n } from '../../i18n';
 
 const { marketShare, ecosystem } = ideData;
 const YEARS = marketShare.map(d => d.year);
@@ -51,6 +52,8 @@ const BUBBLE_COLORS: Record<string, string> = {
 };
 
 export default function IDEMarketChart() {
+  const { t } = useI18n();
+  const tc = t.compare.ideMarket;
   const containerRef = useRef<HTMLDivElement>(null);
   const [introOp, setIntroOp] = useState(1);
   const [chartOp, setChartOp] = useState(0);
@@ -117,15 +120,15 @@ export default function IDEMarketChart() {
             className="absolute inset-0 flex flex-col items-center justify-center"
           >
             <p className="text-xs font-mono tracking-[0.5em] text-slate-400/40 dark:text-white/15 uppercase mb-6">
-              2019 — 2025
+              {tc.period}
             </p>
             <h3 className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight text-center leading-tight">
-              VS Code 统治了六年。
+              {tc.heading1}
               <br />
-              <span className="text-slate-400 dark:text-white/25">然后 Cursor 来了。</span>
+              <span className="text-slate-400 dark:text-white/25">{tc.heading2}</span>
             </h3>
             <p className="mt-6 text-sm text-slate-400 dark:text-white/20 font-light">
-              一场正在发生的颠覆。
+              {tc.introSubtitle}
             </p>
           </div>
 
@@ -213,7 +216,7 @@ export default function IDEMarketChart() {
                     data-cursor-label={s.label}
                     data-cursor-value={`${val}%`}
                     data-cursor-color={s.color}
-                    data-cursor-sub={`${currentYear} 市占率`}
+                    data-cursor-sub={`${currentYear} ${tc.marketShareLabel}`}
                   >
                     {/* Hit area */}
                     <circle cx={playheadX} cy={yOf(val)} r={16} fill="transparent" />
@@ -243,22 +246,22 @@ export default function IDEMarketChart() {
             {currentYearIdx === 3 && (
               <div className="absolute top-[22%] left-[48%] z-10 flex items-center gap-1.5">
                 <div className="w-4 h-px bg-[#5a7ec2]/50" />
-                <span className="text-[10px] text-[#5a7ec2]/60 font-mono">VS Code 峰值 68%</span>
+                <span className="text-[10px] text-[#5a7ec2]/60 font-mono">{tc.annotation1}</span>
               </div>
             )}
 
             {/* Cursor entrance callout */}
             {cursorAppeared && currentYearIdx === 4 && (
               <div className="absolute bottom-[25%] right-[15%] text-right z-10">
-                <p className="text-sm font-bold text-purple-500/80">新玩家。</p>
-                <p className="text-[10px] text-slate-400 dark:text-white/15">Cursor · 2% 起步</p>
+                <p className="text-sm font-bold text-purple-500/80">{tc.newPlayer}</p>
+                <p className="text-[10px] text-slate-400 dark:text-white/15">{tc.cursorStart}</p>
               </div>
             )}
 
             {/* VS Code decline annotation */}
             {currentYearIdx === 5 && (
               <div className="absolute top-[25%] right-[20%] z-10 flex items-center gap-1.5">
-                <span className="text-[10px] text-[#5a7ec2]/50 font-mono">六年来首次下跌</span>
+                <span className="text-[10px] text-[#5a7ec2]/50 font-mono">{tc.annotation2}</span>
                 <div className="w-4 h-px bg-[#5a7ec2]/40" />
               </div>
             )}
@@ -279,7 +282,7 @@ export default function IDEMarketChart() {
                   <p className="text-[10px] text-slate-400 dark:text-white/15">Cursor</p>
                 </div>
               </div>
-              <p className="text-[10px] text-slate-400 dark:text-white/15 mt-1">三倍差距。但在缩小。</p>
+              <p className="text-[10px] text-slate-400 dark:text-white/15 mt-1">{tc.comparison}</p>
             </div>
           </div>
 
@@ -289,13 +292,13 @@ export default function IDEMarketChart() {
             className="absolute inset-0 flex flex-col items-center justify-center"
           >
             <p className="text-sm font-light text-slate-400 dark:text-white/20 mb-8 text-center">
-              插件多不代表赢。AI 集成深度才是分水岭。
+              {tc.bubbleCaption}
             </p>
 
             <div className="relative w-full max-w-[600px] h-[300px]">
               <div className="absolute bottom-0 left-0 right-0 flex justify-between px-4">
-                <span className="text-[9px] text-slate-300 dark:text-white/10">低 AI 集成</span>
-                <span className="text-[9px] text-slate-300 dark:text-white/10">高 AI 集成</span>
+                <span className="text-[9px] text-slate-300 dark:text-white/10">{tc.lowAI}</span>
+                <span className="text-[9px] text-slate-300 dark:text-white/10">{tc.highAI}</span>
               </div>
 
               {ecosystem.map((ide, i) => {
@@ -313,7 +316,7 @@ export default function IDEMarketChart() {
                     data-cursor-label={ide.name}
                     data-cursor-value={`${ide.marketShare}%`}
                     data-cursor-color={color}
-                    data-cursor-sub={`AI 集成 ${ide.aiIntegration}% · ${ide.plugins.toLocaleString()} 插件`}
+                    data-cursor-sub={`${tc.aiIntegrationLabel} ${ide.aiIntegration}% · ${ide.plugins.toLocaleString()} ${tc.pluginsLabel}`}
                     style={{
                       left: `${left}%`,
                       top: `${top}%`,
@@ -346,10 +349,10 @@ export default function IDEMarketChart() {
               0% → 18%
             </p>
             <p className="text-xl sm:text-2xl font-light text-slate-400 dark:text-white/30 mb-3">
-              三年。一个从零开始的 IDE。
+              {tc.outro2}
             </p>
             <p className="text-sm text-slate-300 dark:text-white/15 font-light leading-relaxed max-w-md mx-auto">
-              不是更好的编辑器赢了。是更懂 AI 的编辑器赢了。
+              {tc.outro3}
             </p>
           </div>
         </div>

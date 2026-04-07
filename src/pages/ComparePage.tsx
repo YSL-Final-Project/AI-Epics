@@ -46,13 +46,11 @@ export default function ComparePage() {
         {/* Section 02: Radar Compare — 250vh scroll-driven */}
         <RadarCompare />
 
-        {/* Section 03: Tool Compare — viewport-triggered */}
-        <div className="max-w-5xl mx-auto px-6">
-          <ToolCompareTable />
-        </div>
-
-        {/* Section 04: IDE Market Chart — 300vh scroll-driven */}
+        {/* Section 03: IDE Market Chart — 300vh scroll-driven */}
         <IDEMarketChart />
+
+        {/* Section 04: Tool Compare — scroll-driven */}
+        <ToolCompareTable />
 
         {/* Section 05: LLM Arena — chatbot comparison */}
         <div className="bg-slate-100 dark:bg-[#0a0a1a] rounded-3xl mx-2 sm:mx-4 my-8 overflow-hidden border border-slate-300 dark:border-transparent">

@@ -13,6 +13,9 @@ export interface ArenaQuestion {
   question: string;
   questionEn: string;
   models: ArenaModel[];
+  // Per-model quality scores [0–100] for: [completeness, codeQuality]
+  // Speed is auto-computed from model.delay + answer.length / speed
+  qualityScores: [number, number][];
 }
 
 const arenaQuestions: ArenaQuestion[] = [
@@ -20,6 +23,8 @@ const arenaQuestions: ArenaQuestion[] = [
     id: 'quicksort',
     question: '用 Python 写一个快速排序算法',
     questionEn: 'Write a quicksort algorithm in Python',
+    // [completeness, codeQuality] per model — speed auto-computed from animation
+    qualityScores: [[82, 80], [85, 92], [75, 72]],
     models: [
       {
         name: 'Claude 3.5 Sonnet',
@@ -132,6 +137,8 @@ print(sorted_data)  # [3, 9, 10, 27, 38, 43, 82]
     id: 'react-hooks',
     question: '解释什么是 React Hooks，给一个实际例子',
     questionEn: 'Explain React Hooks with a practical example',
+    // [completeness, codeQuality]
+    qualityScores: [[90, 88], [85, 82], [78, 70]],
     models: [
       {
         name: 'Claude 3.5 Sonnet',
@@ -271,6 +278,8 @@ function Counter() {
     id: 'sql-optimize',
     question: '帮我优化这段慢查询 SQL',
     questionEn: 'Help me optimize this slow SQL query',
+    // [completeness, codeQuality]
+    qualityScores: [[80, 78], [92, 90], [72, 65]],
     models: [
       {
         name: 'Claude 3.5 Sonnet',

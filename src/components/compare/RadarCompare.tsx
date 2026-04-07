@@ -1,23 +1,23 @@
 import { useRef, useState, useMemo } from 'react';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
+import { useI18n } from '../../i18n';
 
 /* ── data ── */
 const languages = [
-  { name: 'Python',     color: '#5a7ec2', highlight: '什么都能写，什么都写不坏',  metrics: [98, 85, 95, 90, 92] },
-  { name: 'Rust',       color: '#b8604f', highlight: '最难学，但薪资最高',      metrics: [55, 95, 60, 35, 70] },
-  { name: 'TypeScript', color: '#5186cc', highlight: 'JavaScript 的进化形态',   metrics: [82, 88, 90, 65, 80] },
-  { name: 'JavaScript', color: '#c4a24d', highlight: '社区 95 分，无人能及',     metrics: [88, 78, 85, 75, 95] },
-  { name: 'Go',         color: '#4db0ba', highlight: 'Google 的云端利器',       metrics: [60, 92, 70, 72, 65] },
-  { name: 'Java',       color: '#a86d3f', highlight: '20 年老兵，仍在阵中',     metrics: [65, 82, 80, 55, 85] },
+  { name: 'Python',     color: '#5a7ec2', metrics: [98, 85, 95, 90, 92] },
+  { name: 'Rust',       color: '#b8604f', metrics: [55, 95, 60, 35, 70] },
+  { name: 'TypeScript', color: '#5186cc', metrics: [82, 88, 90, 65, 80] },
+  { name: 'JavaScript', color: '#c4a24d', metrics: [88, 78, 85, 75, 95] },
+  { name: 'Go',         color: '#4db0ba', metrics: [60, 92, 70, 72, 65] },
+  { name: 'Java',       color: '#a86d3f', metrics: [65, 82, 80, 55, 85] },
 ];
 
-const dims = ['流行度', '薪资水平', 'AI 兼容性', '学习曲线', '社区规模'];
-const N = dims.length;
+const N = 5;
 const LANG_COUNT = languages.length;
 
 /* ── geometry helpers ── */
 const CX = 200, CY = 200, R = 150;
-const angles = dims.map((_, i) => (Math.PI * 2 * i) / N - Math.PI / 2);
+const angles = Array.from({ length: N }, (_, i) => (Math.PI * 2 * i) / N - Math.PI / 2);
 
 function vertex(i: number, r: number) {
   return { x: CX + r * Math.cos(angles[i]), y: CY + r * Math.sin(angles[i]) };
@@ -33,7 +33,7 @@ function polygonPath(metrics: number[], scale = 1) {
 }
 
 function ringPath(r: number) {
-  return dims.map((_, i) => {
+  return Array.from({ length: N }, (_, i) => {
     const p = vertex(i, r);
     return `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`;
   }).join(' ') + ' Z';
@@ -41,6 +41,9 @@ function ringPath(r: number) {
 
 /* ── component ── */
 export default function RadarCompare() {
+  const { t } = useI18n();
+  const tc = t.compare.radar;
+  const dims = tc.dims;
   const containerRef = useRef<HTMLDivElement>(null);
   const [introOp, setIntroOp] = useState(1);
   const [chartOp, setChartOp] = useState(0);
@@ -111,15 +114,15 @@ export default function RadarCompare() {
             className="absolute inset-0 flex flex-col items-center justify-center"
           >
             <p className="text-xs font-mono tracking-[0.5em] text-slate-400/40 dark:text-white/15 uppercase mb-6">
-              5 Dimensions
+              {tc.dimensionLabel}
             </p>
             <h3 className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight text-center leading-tight">
-              每种语言都有软肋。
+              {tc.heading1}
               <br />
-              <span className="text-slate-400 dark:text-white/25">谁最接近完美？</span>
+              <span className="text-slate-400 dark:text-white/25">{tc.heading2}</span>
             </h3>
             <p className="mt-6 text-sm text-slate-400 dark:text-white/20 font-light">
-              流行度 · 薪资 · AI 兼容 · 学习曲线 · 社区
+              {tc.dimensionsList}
             </p>
           </div>
 
@@ -133,7 +136,7 @@ export default function RadarCompare() {
               className="absolute text-[100px] sm:text-[160px] font-black leading-none tracking-tighter text-slate-300 dark:text-white/[0.13] select-none pointer-events-none transition-all duration-500"
               style={{ color: showAll ? undefined : undefined }}
             >
-              {showAll ? '全景' : activeLang.name}
+              {showAll ? tc.allLabel : activeLang.name}
             </span>
 
             {/* SVG Radar */}
@@ -250,16 +253,16 @@ export default function RadarCompare() {
                     {activeLang.name}
                   </span>
                   <span className="text-sm text-slate-400 dark:text-white/20 ml-3">
-                    {activeLang.highlight}
+                    {tc.highlights[activeLang.name] || ''}
                   </span>
                 </div>
               ) : (
                 <div>
                   <span className="text-lg font-bold text-slate-900 dark:text-white">
-                    综合排名 #1
+                    {tc.overallRank}
                   </span>
                   <span className="text-sm ml-3" style={{ color: languages[0].color }}>
-                    Python — 均分 {avgScores[0].avg.toFixed(0)}
+                    Python — {tc.avgLabel} {avgScores[0].avg.toFixed(0)}
                   </span>
                 </div>
               )}
@@ -275,10 +278,10 @@ export default function RadarCompare() {
               Python.
             </p>
             <p className="text-xl sm:text-2xl font-light text-slate-400 dark:text-white/30">
-              没有短板，就是最大的长板。
+              {tc.outro2}
             </p>
             <p className="text-sm text-slate-300 dark:text-white/15 mt-3 font-light leading-relaxed">
-              五个维度，全部 85 分以上。没有第二种语言做到了。
+              {tc.outro3}
             </p>
           </div>
         </div>
