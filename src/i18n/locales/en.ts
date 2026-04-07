@@ -10,7 +10,7 @@ const en: Translations = {
     interactive: 'Lab',
     story: 'Story',
     about: 'About',
-    devHistory: 'Dev Log',
+    devHistory: 'Log',
     toolEvolution: 'Evolution',
   },
 

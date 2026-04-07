@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { useI18n } from '../../i18n';
 
@@ -14,6 +14,8 @@ const languages = [
 
 const N = 5;
 const LANG_COUNT = languages.length;
+const ALL_IDX = LANG_COUNT; // tab index for "All"
+const ANIM_DURATION = 700; // ms
 
 /* ── geometry helpers ── */
 const CX = 200, CY = 200, R = 150;
@@ -39,18 +41,48 @@ function ringPath(r: number) {
   }).join(' ') + ' Z';
 }
 
+/* ── easing ── */
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
 /* ── component ── */
 export default function RadarCompare() {
   const { t } = useI18n();
   const tc = t.compare.radar;
   const dims = tc.dims;
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // scroll-driven visibility
   const [introOp, setIntroOp] = useState(1);
   const [chartOp, setChartOp] = useState(0);
   const [outroOp, setOutroOp] = useState(0);
-  const [activeIdx, setActiveIdx] = useState(0);
+
+  // tab + animation state
+  const [tabIdx, setTabIdx] = useState(0);
   const [pathProgress, setPathProgress] = useState(0);
-  const [showAll, setShowAll] = useState(false);
+  const rafRef = useRef<number | null>(null);
+
+  const showAll = tabIdx === ALL_IDX;
+  const activeIdx = showAll ? 0 : tabIdx;
+  const activeLang = languages[activeIdx];
+
+  /* play-once animation whenever tab changes */
+  useEffect(() => {
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    setPathProgress(0);
+    let start: number | null = null;
+
+    function animate(ts: number) {
+      if (start === null) start = ts;
+      const raw = Math.min((ts - start) / ANIM_DURATION, 1);
+      setPathProgress(easeOutCubic(raw));
+      if (raw < 1) rafRef.current = requestAnimationFrame(animate);
+    }
+
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current !== null) cancelAnimationFrame(rafRef.current); };
+  }, [tabIdx]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -70,32 +102,12 @@ export default function RadarCompare() {
     else if (p <= 0.88) setChartOp(1 - (p - 0.83) / 0.05);
     else setChartOp(0);
 
-    // Languages: 0.14–0.72 → cycle through 6 languages
-    if (p >= 0.14 && p <= 0.72) {
-      const t = (p - 0.14) / (0.72 - 0.14);
-      const segLen = 1 / LANG_COUNT;
-      const idx = Math.min(Math.floor(t / segLen), LANG_COUNT - 1);
-      const within = (t - idx * segLen) / segLen;
-      setActiveIdx(idx);
-      setPathProgress(Math.min(within * 1.5, 1)); // draw faster, hold at 1
-      setShowAll(false);
-    }
-
-    // Show all overlay: 0.72–0.83
-    if (p > 0.72 && p <= 0.83) {
-      setShowAll(true);
-      setPathProgress(1);
-    }
-
     // Outro
     if (p <= 0.86) setOutroOp(0);
     else if (p <= 0.92) setOutroOp((p - 0.86) / 0.06);
     else setOutroOp(1);
   });
 
-  const activeLang = languages[activeIdx];
-
-  // compute average score for outro
   const avgScores = useMemo(() =>
     languages.map(l => ({
       name: l.name,
@@ -103,9 +115,11 @@ export default function RadarCompare() {
     })).sort((a, b) => b.avg - a.avg),
   []);
 
+  const tabs = [...languages.map((l, i) => ({ label: l.name, idx: i })), { label: tc.allLabel, idx: ALL_IDX }];
+
   return (
-    <div ref={containerRef} className="relative" style={{ height: '250vh' }}>
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+    <div ref={containerRef} className="relative mt-16 mb-4" style={{ height: '250vh' }}>
+      <div className="sticky top-16 h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
         <div className="w-full max-w-3xl mx-auto px-6 relative h-full">
 
           {/* ── Intro ── */}
@@ -131,11 +145,39 @@ export default function RadarCompare() {
             style={{ opacity: chartOp, pointerEvents: chartOp < 0.1 ? 'none' : 'auto' }}
             className="absolute inset-0 flex flex-col items-center justify-center"
           >
+            {/* ── Tab bar ── */}
+            <div className="flex items-center gap-1 mb-6 p-1 rounded-xl bg-slate-100/80 dark:bg-white/[0.04] border border-slate-200/60 dark:border-white/[0.06]">
+              {tabs.map(({ label, idx }) => {
+                const isActive = tabIdx === idx;
+                const color = idx < LANG_COUNT ? languages[idx].color : '#eab308';
+                return (
+                  <button
+                    key={label}
+                    onClick={() => setTabIdx(idx)}
+                    className="relative px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+                    style={{
+                      color: isActive ? (color ?? '#fff') : undefined,
+                      background: isActive ? (color ? `${color}22` : 'rgba(255,255,255,0.08)') : undefined,
+                    }}
+                  >
+                    {isActive && (
+                      <span
+                        className="absolute inset-0 rounded-lg"
+                        style={{
+                          boxShadow: color ? `0 0 0 1px ${color}55` : '0 0 0 1px rgba(255,255,255,0.15)',
+                        }}
+                      />
+                    )}
+                    <span className={`relative z-10 ${isActive ? '' : 'text-slate-400 dark:text-white/30 hover:text-slate-600 dark:hover:text-white/50'}`}>
+                      {label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
             {/* Watermark language name */}
-            <span
-              className="absolute text-[100px] sm:text-[160px] font-black leading-none tracking-tighter text-slate-300 dark:text-white/[0.13] select-none pointer-events-none transition-all duration-500"
-              style={{ color: showAll ? undefined : undefined }}
-            >
+            <span className="absolute text-[100px] sm:text-[160px] font-black leading-none tracking-tighter text-slate-300 dark:text-white/[0.13] select-none pointer-events-none transition-all duration-500">
               {showAll ? tc.allLabel : activeLang.name}
             </span>
 
@@ -176,7 +218,7 @@ export default function RadarCompare() {
                 );
               })}
 
-              {/* Ghost shapes (previous languages) */}
+              {/* Ghost shapes (previous languages, single-lang mode) */}
               {!showAll && languages.slice(0, activeIdx).map((lang) => (
                 <path
                   key={`ghost-${lang.name}`}
@@ -190,17 +232,21 @@ export default function RadarCompare() {
               ))}
 
               {/* All overlay */}
-              {showAll && languages.map((lang) => (
-                <path
-                  key={`all-${lang.name}`}
-                  d={polygonPath(lang.metrics)}
-                  fill={lang.color}
-                  fillOpacity={0.08}
-                  stroke={lang.color}
-                  strokeWidth={1.5}
-                  strokeOpacity={0.5}
-                />
-              ))}
+              {showAll && languages.map((lang) => {
+                const isPython = lang.name === 'Python';
+                return (
+                  <path
+                    key={`all-${lang.name}`}
+                    d={polygonPath(lang.metrics, pathProgress)}
+                    fill={lang.color}
+                    fillOpacity={0}
+                    stroke={lang.color}
+                    strokeWidth={isPython ? 3 : 1.2}
+                    strokeOpacity={pathProgress > 0.1 ? (isPython ? 0.9 : 0.35) : 0}
+                    className="transition-none"
+                  />
+                );
+              })}
 
               {/* Active language shape — scale reveal */}
               {!showAll && (
@@ -212,9 +258,9 @@ export default function RadarCompare() {
                     stroke={activeLang.color}
                     strokeWidth={2}
                     strokeOpacity={pathProgress > 0.1 ? 0.8 : 0}
-                    className="transition-all duration-300"
+                    className="transition-none"
                   />
-                  {/* Vertex dots — enlarged hit area */}
+                  {/* Vertex dots */}
                   {activeLang.metrics.map((v, i) => {
                     const pt = vertex(i, (v / 100) * R * pathProgress);
                     return (
@@ -224,9 +270,7 @@ export default function RadarCompare() {
                         data-cursor-color={activeLang.color}
                         data-cursor-sub={dims[i]}
                       >
-                        {/* Invisible hit area */}
                         <circle cx={pt.x} cy={pt.y} r={14} fill="transparent" />
-                        {/* Visible dot */}
                         <circle
                           cx={pt.x}
                           cy={pt.y}
@@ -241,6 +285,39 @@ export default function RadarCompare() {
                 </>
               )}
             </svg>
+
+            {/* All — legend */}
+            {showAll && (
+              <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mb-2 relative z-10">
+                {languages.map((lang) => {
+                  const isPython = lang.name === 'Python';
+                  return (
+                    <div key={lang.name} className="flex items-center gap-1.5">
+                      <span
+                        className="inline-block rounded-sm"
+                        style={{
+                          width: isPython ? 16 : 12,
+                          height: isPython ? 4 : 3,
+                          background: lang.color,
+                          opacity: isPython ? 1 : 0.6,
+                        }}
+                      />
+                      <span
+                        className="font-mono"
+                        style={{
+                          fontSize: isPython ? 13 : 11,
+                          fontWeight: isPython ? 800 : 500,
+                          color: isPython ? lang.color : undefined,
+                          opacity: isPython ? 1 : 0.55,
+                        }}
+                      >
+                        {lang.name}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Active language callout */}
             <div className="mt-4 text-center relative z-10 h-12">

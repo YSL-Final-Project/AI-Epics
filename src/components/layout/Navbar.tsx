@@ -134,7 +134,7 @@ export default function Navbar() {
               whileTap={{ scale: 0.94 }}
               aria-label="Toggle language"
             >
-              {lang === 'zh' ? '🇺🇸 EN' : '🇨🇳 中文'}
+              {lang === 'zh' ? 'EN' : <span className="text-sm">中文</span>}
             </motion.button>
 
             {/* Theme Toggle */}
