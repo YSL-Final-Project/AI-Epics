@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent, useSpring, AnimatePresence } from 'framer-motion';
 import CodePeek from '../shared/CodePeek';
+import { useI18n } from '../../i18n';
 
 const PEEK_CODE = `// useSpring smooths discrete Windows scroll into continuous motion.
 const smoothProgress = useSpring(scrollYProgress, {
@@ -134,6 +135,8 @@ function IntroParticles({ active }: { active: boolean }) {
 }
 
 export default function RacingBarChart() {
+  const { t } = useI18n();
+  const tc = t.compare.racingBar;
   const containerRef = useRef<HTMLDivElement>(null);
   const [frame, setFrame] = useState<FrameState>(INITIAL);
   const rafRef = useRef(0);
@@ -234,7 +237,7 @@ export default function RacingBarChart() {
               transition={{ delay: 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
               className="text-xs font-mono tracking-[0.5em] text-slate-400/40 dark:text-white/15 uppercase mb-6"
             >
-              2015 — 2025
+              {tc.period}
             </motion.p>
             <motion.h3
               initial={{ opacity: 0, y: 30 }}
@@ -242,9 +245,9 @@ export default function RacingBarChart() {
               transition={{ delay: 0.25, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
               className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight text-center leading-tight"
             >
-              十年。
+              {tc.heading1}
               <br />
-              <span className="text-slate-400 dark:text-white/25">王座换了三次。</span>
+              <span className="text-slate-400 dark:text-white/25">{tc.heading2}</span>
             </motion.h3>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -252,7 +255,7 @@ export default function RacingBarChart() {
               transition={{ delay: 0.45, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
               className="mt-6 text-sm text-slate-400 dark:text-white/20 font-light"
             >
-              向下滚动，见证每一次逆转。
+              {tc.scrollHint}
             </motion.p>
           </motion.div>
 
@@ -299,7 +302,7 @@ export default function RacingBarChart() {
                       transition: 'transform 0.35s cubic-bezier(0.23, 1, 0.32, 1)',
                     }}
                     data-cursor-label={lang.name}
-                    data-cursor-value={`${lang.score.toFixed(1)} 分`}
+                    data-cursor-value={`${lang.score.toFixed(1)} ${tc.scoreUnit}`}
                     data-cursor-color={lang.color}
                     data-cursor-sub={`#${rank + 1} · ${frame.displayYear}`}
                   >
@@ -370,13 +373,13 @@ export default function RacingBarChart() {
               {frame.displayYear >= 2020 && frame.displayYear <= 2022 && (
                 <div className="flex items-center gap-1.5 mt-3 justify-center transition-opacity duration-300">
                   <div className="w-4 h-px bg-cyan-400/50" />
-                  <span className="text-[10px] text-cyan-500/60 font-mono">Python 首次登顶</span>
+                  <span className="text-[10px] text-cyan-500/60 font-mono">{tc.annotation1}</span>
                 </div>
               )}
               {frame.displayYear >= 2023 && (
                 <div className="flex items-center gap-1.5 mt-3 justify-center transition-opacity duration-300">
                   <div className="w-4 h-px bg-cyan-400/50" />
-                  <span className="text-[10px] text-cyan-500/60 font-mono">AI 浪潮推动 Python 一骑绝尘</span>
+                  <span className="text-[10px] text-cyan-500/60 font-mono">{tc.annotation2}</span>
                 </div>
               )}
             </div>
@@ -403,7 +406,7 @@ export default function RacingBarChart() {
               transition={{ delay: 0.15, duration: 0.5 }}
               className="text-xl sm:text-2xl font-light text-slate-400 dark:text-white/30"
             >
-              从第七，到唯一。
+              {tc.outro2}
             </motion.p>
             <motion.p
               initial={{ opacity: 0, y: 12 }}
@@ -412,7 +415,7 @@ export default function RacingBarChart() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="text-sm text-slate-300 dark:text-white/15 mt-3 font-light leading-relaxed"
             >
-              不是它变强了。是世界选择了它。
+              {tc.outro3}
             </motion.p>
           </motion.div>
 
