@@ -29,10 +29,24 @@ export interface UseCase {
   value: number;
 }
 
+export interface SentimentPoint {
+  year: number;
+  favorable: number;
+  trust: number;
+  adoption: number;
+}
+
+export interface FrustrationItem {
+  issue: string;
+  percentage: number;
+}
+
 export interface AIAdoptionData {
   userGrowth: UserGrowthPoint[];
   usageFrequency: UsageFrequency[];
   useCases: UseCase[];
+  sentimentTrend: SentimentPoint[];
+  topFrustrations: FrustrationItem[];
 }
 
 // Stack Overflow
@@ -51,10 +65,25 @@ export interface SOSurveyData {
 }
 
 // Code Generation
+export interface ProductivityImpact {
+  taskSpeedup: number;
+  feltProductive: number;
+  stayInFlow: number;
+  preserveMentalEffort: number;
+}
+
+export interface CodeQualityItem {
+  metric: string;
+  value: number;
+  unit: string;
+}
+
 export interface CodeGenData {
   overallPercentage: number;
   industryComparison: { industry: string; percentage: number }[];
   acceptanceRate: { month: string; rate: number }[];
+  productivityImpact: ProductivityImpact;
+  codeQuality: CodeQualityItem[];
 }
 
 // Developer Salary
@@ -75,10 +104,24 @@ export interface AIProficiencySalary {
   label: string;
 }
 
+export interface PremiumTrendPoint {
+  year: number;
+  premium: number;
+}
+
+export interface HotSkillItem {
+  skill: string;
+  demandGrowth?: number;
+  avgSalary?: number;
+  premiumRange?: string;
+}
+
 export interface DeveloperSalaryData {
   salaryComparison: SalaryComparison[];
   jobTrends: JobTrend[];
   proficiencyVsSalary: AIProficiencySalary[];
+  premiumTrend: PremiumTrendPoint[];
+  hotSkills: HotSkillItem[];
 }
 
 // Language Rankings
