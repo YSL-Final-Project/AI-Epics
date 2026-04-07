@@ -577,6 +577,26 @@ const en: Translations = {
     speed: 'speed',
   },
 
+  // ── DevHistoryPage ──
+  devHistory: {
+    heroLabel:    'Dev · History · Map',
+    heroTitle:    'Development\nHistory',
+    heroSubtitle: '15 commits · 8 days · From a blank template to a full data visualization project',
+    stats: {
+      linesAdded:   'Lines Added',
+      components:   'Components',
+      filesCreated: 'Files Created',
+      commits:      'Commits',
+    },
+    tabs: {
+      timeline:     'Timeline',
+      charts:       'Growth Charts',
+      architecture: 'Architecture',
+    },
+    milestones:  'Milestone Commits',
+    footerLabel: 'From first line to last',
+  },
+
   // ── Language toggle ──
   lang: {
     label: 'EN',
