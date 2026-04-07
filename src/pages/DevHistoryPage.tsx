@@ -1,12 +1,14 @@
 import { useState, useRef } from 'react';
 import { motion, useReducedMotion, useInView } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
+import { useI18n } from '../i18n';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, ReferenceLine,
 } from 'recharts';
 import PageTransition from '../components/layout/PageTransition';
 import LineReveal from '../components/animations/LineReveal';
+import ArchitectureMap from '../components/devHistory/ArchitectureMap';
 
 // ─── Raw commit data ───────────────────────────────────────────────────────────
 const commits = [
@@ -545,8 +547,9 @@ function GrowthChart() {
 // ─── Page ──────────────────────────────────────────────────────────────────────
 export default function DevHistoryPage() {
   const prefersReduced = useReducedMotion();
-  const [isZh, setIsZh] = useState(false);
-  const [activeTab, setActiveTab] = useState<'timeline' | 'charts'>('timeline');
+  const [activeTab, setActiveTab] = useState<'timeline' | 'charts' | 'architecture'>('timeline');
+  const { t, lang } = useI18n();
+  const isZh = lang === 'zh';
 
   const final = commits[commits.length - 1];
   const initial = commits[0];
@@ -581,34 +584,21 @@ export default function DevHistoryPage() {
               transition={{ delay: 0.15, duration: 0.8 }}
               className="font-mono text-[10px] tracking-[0.6em] text-cyan-600/50 dark:text-cyan-500/40 uppercase mb-6"
             >
-              Dev · History · Map
+              {t.devHistory.heroLabel}
             </motion.p>
 
             <LineReveal className="text-[clamp(2.8rem,9vw,5.5rem)] font-black tracking-[-0.04em] leading-[0.92] text-slate-900 dark:text-white mb-6">
-              {isZh ? '开发历史图谱' : 'Development\nHistory'}
+              {t.devHistory.heroTitle}
             </LineReveal>
 
             <motion.p
               initial={prefersReduced ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-slate-500 dark:text-slate-400 text-base max-w-xl mx-auto leading-relaxed mb-8"
+              className="text-slate-500 dark:text-slate-400 text-base max-w-xl mx-auto leading-relaxed"
             >
-              {isZh
-                ? '15 次提交 · 8 天 · 从一个空白模板到完整的数据可视化项目'
-                : '15 commits · 8 days · From a blank template to a full data visualization project'
-              }
+              {t.devHistory.heroSubtitle}
             </motion.p>
-
-            {/* Lang toggle */}
-            <motion.button
-              onClick={() => setIsZh(z => !z)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700/60 text-xs font-mono text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-            >
-              {isZh ? '🌐 Switch to EN' : '🌐 切换中文'}
-            </motion.button>
           </div>
 
           {/* ── Key Stats ────────────────────────────────────────── */}
@@ -619,10 +609,10 @@ export default function DevHistoryPage() {
             className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-200 dark:bg-slate-700/30 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/30 mb-16"
           >
             {[
-              { value: final.lines - initial.lines, suffix: '', label: isZh ? '新增代码行' : 'Lines Added' },
-              { value: final.components, suffix: '', label: isZh ? '组件总数' : 'Components' },
-              { value: final.totalFiles - initial.totalFiles, suffix: '', label: isZh ? '新增文件数' : 'Files Created' },
-              { value: commits.length - 1, suffix: '', label: isZh ? '有效提交' : 'Commits' },
+              { value: final.lines - initial.lines, suffix: '', label: t.devHistory.stats.linesAdded   },
+              { value: final.components,             suffix: '', label: t.devHistory.stats.components   },
+              { value: final.totalFiles - initial.totalFiles, suffix: '', label: t.devHistory.stats.filesCreated },
+              { value: commits.length - 1,           suffix: '', label: t.devHistory.stats.commits      },
             ].map(s => (
               <div key={s.label} className="bg-white dark:bg-slate-900/80 py-8 px-4">
                 <StatCounter value={s.value} suffix={s.suffix} label={s.label} />
@@ -634,8 +624,9 @@ export default function DevHistoryPage() {
           <div className="flex justify-center mb-12">
             <div className="inline-flex p-1 rounded-xl bg-slate-200/80 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-700/40 gap-1">
               {[
-                { id: 'timeline', label: isZh ? '时间轴' : 'Timeline' },
-                { id: 'charts', label: isZh ? '增长曲线' : 'Growth Charts' },
+                { id: 'timeline',     label: t.devHistory.tabs.timeline     },
+                { id: 'charts',       label: t.devHistory.tabs.charts       },
+                { id: 'architecture', label: t.devHistory.tabs.architecture },
               ].map(tab => (
                 <button
                   key={tab.id}
@@ -683,7 +674,7 @@ export default function DevHistoryPage() {
                 className="mt-10 p-5 rounded-2xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30"
               >
                 <p className="text-xs font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">
-                  {isZh ? '里程碑节点' : 'Milestone Commits'}
+                  {t.devHistory.milestones}
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {commits.filter(c => c.milestone).map(c => (
@@ -700,6 +691,11 @@ export default function DevHistoryPage() {
             </div>
           )}
 
+          {/* ── Architecture View ─────────────────────────────────── */}
+          {activeTab === 'architecture' && (
+            <ArchitectureMap isZh={isZh} />
+          )}
+
           {/* ── Footer coda ───────────────────────────────────────── */}
           <motion.div
             initial={prefersReduced ? false : { opacity: 0 }}
@@ -709,7 +705,7 @@ export default function DevHistoryPage() {
             className="mt-24 text-center border-t border-slate-200 dark:border-slate-800 pt-12"
           >
             <p className="font-mono text-[10px] tracking-[0.4em] text-slate-400 dark:text-slate-600 uppercase mb-3">
-              {isZh ? '从第一行到最后一行' : 'From first line to last'}
+              {t.devHistory.footerLabel}
             </p>
             <p className="text-slate-400 dark:text-slate-500 text-sm">
               {isZh
