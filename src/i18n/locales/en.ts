@@ -343,6 +343,7 @@ const en: Translations = {
       metricSpeed: 'Speed',
       metricCompleteness: 'Completeness',
       metricCodeQuality: 'Code Quality',
+      metricBest: 'best',
       changeVote: 'Change vote',
       voteThank: 'Great taste! You picked',
       voteEncourage: 'Many devs agree with you',
