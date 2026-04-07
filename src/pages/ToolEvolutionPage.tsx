@@ -272,43 +272,6 @@ export default function ToolEvolutionPage() {
         );
       })}
 
-      {/* ═══════════════════════════════════════════
-          CLOSING SECTION
-          ═══════════════════════════════════════════ */}
-      <section className="py-32 px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-3xl mx-auto space-y-6"
-        >
-          <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#d4a853]/50 to-transparent mx-auto" />
-
-          {/* Role evolution summary */}
-          <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-            {['🚗 → ⌨️', '🧑‍✈️ → 🤖', '❓ → 💬', '🔍 → 🧠'].map((pair, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0 }}
-                transition={{ delay: i * 0.15 }}
-                className="px-3 py-1.5 rounded-full bg-[#1a1a1a]/50 border border-[#2a2520] text-base"
-              >
-                {pair}
-              </motion.span>
-            ))}
-          </div>
-
-          <p
-            className="text-[#8a8580] leading-relaxed max-w-xl mx-auto"
-            style={{ fontFamily: '"Source Serif 4", Georgia, serif' }}
-          >
-            {te.insightText}
-          </p>
-        </motion.div>
-      </section>
     </PageTransition>
     </>
 
