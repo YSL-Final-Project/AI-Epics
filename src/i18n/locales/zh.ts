@@ -465,6 +465,26 @@ const zh = {
     speed: '速度',
   },
 
+  // ── DevHistoryPage ──
+  devHistory: {
+    heroLabel:    'Dev · History · Map',
+    heroTitle:    '开发历史图谱',
+    heroSubtitle: '15 次提交 · 8 天 · 从一个空白模板到完整的数据可视化项目',
+    stats: {
+      linesAdded:   '新增代码行',
+      components:   '组件总数',
+      filesCreated: '新增文件数',
+      commits:      '有效提交',
+    },
+    tabs: {
+      timeline:     '时间轴',
+      charts:       '增长曲线',
+      architecture: '架构图',
+    },
+    milestones:  '里程碑节点',
+    footerLabel: '从第一行到最后一行',
+  },
+
   // ── Language toggle ──
   lang: {
     label: '中文',
