@@ -3,7 +3,7 @@ import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 import ideData from '../../data/ide_market.json';
 import { useI18n } from '../../i18n';
 
-const { marketShare, ecosystem } = ideData;
+const { marketShare } = ideData;
 const YEARS = marketShare.map(d => d.year);
 const YEAR_COUNT = YEARS.length;
 
@@ -28,22 +28,6 @@ const SERIES: { key: SeriesKey; label: string; color: string; ghost?: boolean }[
   { key: 'cursor',  label: 'Cursor',  color: '#a855f7' },
 ];
 
-/* ── bubble geometry ── */
-function bubbleX(aiIntegration: number) { return 10 + ((aiIntegration - 30) / 70) * 80; }
-function bubbleY(idx: number) {
-  const rows = [30, 55, 75, 35, 60, 45];
-  return rows[idx] ?? 50;
-}
-function bubbleR(marketShareVal: number) { return Math.max(16, Math.sqrt(marketShareVal) * 12); }
-
-const BUBBLE_COLORS: Record<string, string> = {
-  'VS Code':    '#5a7ec2',
-  JetBrains:    '#a86d3f',
-  Cursor:       '#a855f7',
-  'Vim/Neovim': '#5f8f64',
-  Windsurf:     '#4db0ba',
-  Zed:          '#c4a24d',
-};
 
 const LINE_ANIM_DURATION = 2200;
 
@@ -59,7 +43,6 @@ export default function IDEMarketChart() {
   // scroll-driven visibility
   const [introOp, setIntroOp] = useState(1);
   const [chartOp, setChartOp] = useState(0);
-  const [bubbleOp, setBubbleOp] = useState(0);
   const [outroOp, setOutroOp] = useState(0);
   const [holdOp, setHoldOp] = useState(0);
   const [calloutVisible, setCalloutVisible] = useState(false);
@@ -118,13 +101,6 @@ export default function IDEMarketChart() {
     // Hold at 2025 callout: 0.62–0.72
     if (p >= 0.62 && p <= 0.72) setHoldOp(Math.min((p - 0.62) / 0.03, 1));
     else setHoldOp(0);
-
-    // Bubble
-    if (p <= 0.74) setBubbleOp(0);
-    else if (p <= 0.78) setBubbleOp((p - 0.74) / 0.04);
-    else if (p <= 0.86) setBubbleOp(1);
-    else if (p <= 0.90) setBubbleOp(1 - (p - 0.86) / 0.04);
-    else setBubbleOp(0);
 
     // Outro
     if (p <= 0.88) setOutroOp(0);
@@ -303,56 +279,6 @@ export default function IDEMarketChart() {
                 <p className="text-2xl font-black text-purple-500">18%</p>
                 <p className="text-[10px] font-mono text-purple-500/50">Cursor</p>
               </div>
-            </div>
-          </div>
-
-          {/* ── Bubble Ecosystem ── */}
-          <div
-            style={{ opacity: bubbleOp, pointerEvents: bubbleOp < 0.1 ? 'none' : 'auto' }}
-            className="absolute inset-0 flex flex-col items-center justify-center"
-          >
-            <p className="text-sm font-light text-slate-400 dark:text-white/20 mb-8 text-center">
-              {tc.bubbleCaption}
-            </p>
-            <div className="relative w-full max-w-[600px] h-[300px]">
-              <div className="absolute bottom-0 left-0 right-0 flex justify-between px-4">
-                <span className="text-[9px] text-slate-300 dark:text-white/10">{tc.lowAI}</span>
-                <span className="text-[9px] text-slate-300 dark:text-white/10">{tc.highAI}</span>
-              </div>
-              {ecosystem.map((ide, i) => {
-                const left = bubbleX(ide.aiIntegration);
-                const top = bubbleY(i);
-                const r = bubbleR(ide.marketShare);
-                const color = BUBBLE_COLORS[ide.name] || '#888';
-                return (
-                  <motion.div
-                    key={ide.name}
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={bubbleOp > 0.5 ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-                    transition={{ delay: i * 0.08, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                    className="absolute flex flex-col items-center justify-center rounded-full cursor-default"
-                    data-cursor-label={ide.name}
-                    data-cursor-value={`${ide.marketShare}%`}
-                    data-cursor-color={color}
-                    data-cursor-sub={`${tc.aiIntegrationLabel} ${ide.aiIntegration}% · ${ide.plugins.toLocaleString()} ${tc.pluginsLabel}`}
-                    style={{
-                      left: `${left}%`, top: `${top}%`,
-                      width: r * 2, height: r * 2,
-                      transform: 'translate(-50%, -50%)',
-                      backgroundColor: color,
-                      opacity: 0.15,
-                      border: `1.5px solid ${color}`,
-                    }}
-                  >
-                    <span className="text-[9px] font-bold text-slate-700 dark:text-white/50 whitespace-nowrap">
-                      {ide.name}
-                    </span>
-                    <span className="text-[8px] text-slate-400 dark:text-white/20">
-                      {ide.marketShare}%
-                    </span>
-                  </motion.div>
-                );
-              })}
             </div>
           </div>
 
