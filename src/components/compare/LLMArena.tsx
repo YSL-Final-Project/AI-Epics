@@ -171,11 +171,13 @@ function JudgingAnimation({ models, onComplete }: { models: ArenaModel[]; onComp
 function QualityMetrics({
   models,
   scores,
+  userVote,
   labels,
 }: {
   models: ArenaModel[];
-  scores: [number, number][];  // per model: [completeness, codeQuality]
-  labels: { speed: string; completeness: string; codeQuality: string; title: string };
+  scores: [number, number][];
+  userVote: number | null;
+  labels: { speed: string; completeness: string; codeQuality: string; title: string; best: string };
 }) {
   // Auto-compute speed from animation: lower finish time = higher score
   // finish time = delay(ms) + (answer.length / speed) * 16.67ms per RAF frame
@@ -214,9 +216,10 @@ function QualityMetrics({
               {models.map((m, mi) => {
                 const val = allScores[mi][row.key];
                 const isBest = val === Math.max(...allScores.map(s => s[row.key]));
+                const isVoted = userVote === mi;
                 return (
                   <div key={m.name} className="flex items-center gap-2">
-                    <span className="w-20 text-[10px] text-right text-black/40 dark:text-white/35 truncate shrink-0">
+                    <span className={`w-20 text-[10px] text-right truncate shrink-0 transition-colors duration-300 ${isVoted ? 'font-bold text-black/70 dark:text-white/70' : 'text-black/40 dark:text-white/35'}`}>
                       {m.name.replace(' 3.5 Sonnet', '').replace(' Pro', '')}
                     </span>
                     <div className="flex-1 h-4 bg-black/[0.05] dark:bg-white/[0.05] rounded overflow-hidden">
@@ -225,11 +228,11 @@ function QualityMetrics({
                         animate={{ width: `${val}%` }}
                         transition={{ delay: 0.4 + ri * 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                         className="h-full rounded"
-                        style={{ backgroundColor: m.color, opacity: isBest ? 0.9 : 0.55 }}
+                        style={{ backgroundColor: m.color, opacity: isVoted ? 1 : 0.6 }}
                       />
                     </div>
-                    <span className={`text-[10px] tabular-nums w-8 text-right ${isBest ? 'font-bold text-black/60 dark:text-white/60' : 'text-black/30 dark:text-white/25'}`}>
-                      {val}
+                    <span className={`w-20 shrink-0 text-[10px] tabular-nums text-right transition-colors duration-300 ${isVoted ? 'font-bold text-black/70 dark:text-white/70' : 'text-black/30 dark:text-white/25'}`}>
+                      {val}{isBest && <span className="ml-1 text-[9px] font-mono text-black/30 dark:text-white/25">({labels.best})</span>}
                     </span>
                   </div>
                 );
@@ -319,8 +322,6 @@ function ModelColumn({
   const visibleText = model.answer.slice(0, displayedChars);
   const tokensPerSec = Math.round(model.speed * speedMultiplier * 60);
 
-  const showVoteOverlay = phase === 'voted' && !isVoted;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.96, filter: 'blur(6px)' }}
@@ -391,33 +392,6 @@ function ModelColumn({
           {started ? `~${tokensPerSec} tok/s` : '—'}
         </span>
       </div>
-
-      {/* Vote Overlay */}
-      <AnimatePresence>
-        {showVoteOverlay && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0 flex items-center justify-center bg-black/[0.03] dark:bg-black/20 backdrop-blur-[2px] cursor-pointer z-10"
-            onClick={onVote}
-          >
-            <motion.div
-              whileHover={{ scale: 1.08, backgroundColor: `${model.color}20` }}
-              whileTap={{ scale: 0.95 }}
-              className="px-5 py-2.5 rounded-lg border-2 text-sm font-bold transition-colors"
-              style={{
-                borderColor: model.color,
-                color: model.color,
-                backgroundColor: `${model.color}10`,
-              }}
-            >
-              Vote
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Voted indicator */}
       {isVoted && (
@@ -645,6 +619,39 @@ export default function LLMArena() {
         </motion.div>
       </AnimatePresence>
 
+      {/* Vote buttons — one per column, below the grid */}
+      <AnimatePresence>
+        {phase === 'voted' && (
+          <motion.div
+            key="vote-buttons"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3"
+          >
+            {question.models.map((model, i) => {
+              const isSelected = userVote === i;
+              return (
+                <button
+                  key={model.name}
+                  onClick={() => handleVote(i)}
+                  className="py-2 rounded-lg border text-sm font-bold transition-all duration-200"
+                  style={{
+                    borderColor: isSelected ? model.color : `${model.color}40`,
+                    color: model.color,
+                    backgroundColor: isSelected ? `${model.color}25` : `${model.color}0d`,
+                    boxShadow: isSelected ? `0 0 12px ${model.color}30` : 'none',
+                  }}
+                >
+                  {isSelected ? '✓ Voted' : 'Vote'}
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Quality Metrics (shown after voting) */}
       <AnimatePresence>
         {phase === 'voted' && userVote !== null && (
@@ -658,11 +665,13 @@ export default function LLMArena() {
             <QualityMetrics
               models={question.models}
               scores={question.qualityScores}
+              userVote={userVote}
               labels={{
                 title: tc.metricsTitle,
                 speed: tc.metricSpeed,
                 completeness: tc.metricCompleteness,
                 codeQuality: tc.metricCodeQuality,
+                best: tc.metricBest,
               }}
             />
           </motion.div>

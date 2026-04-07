@@ -343,6 +343,7 @@ const zh = {
       metricSpeed: '生成速度',
       metricCompleteness: '内容完整度',
       metricCodeQuality: '代码质量',
+      metricBest: '最佳',
       changeVote: '重新选择',
       voteThank: '好眼光！你选择了',
       voteEncourage: '和很多开发者想法一致',

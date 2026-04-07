@@ -10,7 +10,7 @@ const en: Translations = {
     interactive: 'Lab',
     story: 'Story',
     about: 'About',
-    devHistory: 'Dev Log',
+    devHistory: 'Log',
     toolEvolution: 'Evolution',
   },
 
@@ -343,6 +343,7 @@ const en: Translations = {
       metricSpeed: 'Speed',
       metricCompleteness: 'Completeness',
       metricCodeQuality: 'Code Quality',
+      metricBest: 'best',
       changeVote: 'Change vote',
       voteThank: 'Great taste! You picked',
       voteEncourage: 'Many devs agree with you',
