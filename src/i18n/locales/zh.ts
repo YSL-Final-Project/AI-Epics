@@ -72,6 +72,17 @@ const zh = {
   timeline: {
     title: '进化之路',
     subtitle: 'AI 编程革命的 25 个瞬间',
+    searchPlaceholder: '搜索...',
+    noResults: '没有找到匹配的事件',
+    catAll: '全部',
+    catLabels: {
+      tool_release: '工具',
+      company: '公司',
+      open_source: '开源',
+      policy: '政策',
+    },
+    impact: 'IMPACT',
+    close: 'Close ×',
   },
 
   // ── DataExplorerPage ──

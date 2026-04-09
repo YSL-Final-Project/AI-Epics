@@ -72,6 +72,17 @@ const en: Translations = {
   timeline: {
     title: 'Path of Evolution',
     subtitle: '25 Moments of the AI Coding Revolution',
+    searchPlaceholder: 'Search...',
+    noResults: 'No matching events found',
+    catAll: 'All',
+    catLabels: {
+      tool_release: 'Tool',
+      company: 'Industry',
+      open_source: 'Open Source',
+      policy: 'Policy',
+    },
+    impact: 'IMPACT',
+    close: 'Close ×',
   },
 
   // ── DataExplorerPage ──

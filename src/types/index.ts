@@ -3,10 +3,12 @@ export interface TimelineEvent {
   id: number;
   date: string;
   title: string;
+  titleEn?: string;
   description: string;
+  descriptionEn?: string;
   category: 'tool_release' | 'company' | 'open_source' | 'policy';
   impactScore: number;
-  relatedLinks: { label: string; url: string }[];
+  relatedLinks: { label: string; labelEn?: string; url: string }[];
   imageUrl?: string;
 }
 
