@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { PagePreview } from '../../types';
 import ScrambleText from '../ScrambleText';
+import { useI18n } from '../../i18n';
 
 interface PagePreviewCardProps {
   preview: PagePreview;
@@ -10,6 +11,7 @@ interface PagePreviewCardProps {
 }
 
 export default function PagePreviewCard({ preview, index }: PagePreviewCardProps) {
+  const { t } = useI18n();
   const prefersReduced = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
@@ -112,7 +114,7 @@ export default function PagePreviewCard({ preview, index }: PagePreviewCardProps
 
             {/* Arrow */}
             <div className="mt-4 flex items-center gap-1 text-sm font-medium text-slate-400 dark:text-slate-500 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-all duration-300">
-              <span>探索</span>
+              <span>{t.home.chapterExplore}</span>
               <motion.svg
                 className="w-4 h-4"
                 fill="none"
