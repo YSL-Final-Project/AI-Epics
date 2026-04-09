@@ -86,42 +86,42 @@ export default function StickyScrollNarrative() {
   });
 
   // Track if scene 2 is active (for auto-playing ring)
+  // Container is now 500vh. Layout: S1 0→0.30, S2 0.28→0.56, S3 0.54→1.00
   const [scene2Active, setScene2Active] = useState(false);
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    // Scene 2 is visible roughly between 0.40 and 0.65
-    setScene2Active(v > 0.38 && v < 0.68);
+    setScene2Active(v > 0.30 && v < 0.54);
   });
 
-  // ── Scene 1: 0 → 0.38 ──
-  const s1Op    = useTransform(scrollYProgress, [0, 0.06, 0.26, 0.38], [0, 1, 1, 0]);
-  const s1Scale = useTransform(scrollYProgress, [0, 0.10, 0.26, 0.38], [0.7, 1, 1, 1.15]);
-  const s1Blur  = useTransform(scrollYProgress, [0, 0.08, 0.26, 0.38], [24, 0, 0, 16]);
+  // ── Scene 1: 0 → 0.30  (≈150vh, same feel as before) ──
+  const s1Op    = useTransform(scrollYProgress, [0, 0.05, 0.21, 0.30], [0, 1, 1, 0]);
+  const s1Scale = useTransform(scrollYProgress, [0, 0.08, 0.21, 0.30], [0.7, 1, 1, 1.15]);
+  const s1Blur  = useTransform(scrollYProgress, [0, 0.06, 0.21, 0.30], [24, 0, 0, 16]);
   const s1Fil   = useTransform(s1Blur, v => `blur(${v}px)`);
-  const s1SubY  = useTransform(scrollYProgress, [0.05, 0.35], [30, -20]);
-  const s1SubOp = useTransform(scrollYProgress, [0.08, 0.14, 0.26, 0.35], [0, 1, 1, 0]);
+  const s1SubY  = useTransform(scrollYProgress, [0.04, 0.28], [30, -20]);
+  const s1SubOp = useTransform(scrollYProgress, [0.06, 0.11, 0.21, 0.28], [0, 1, 1, 0]);
 
-  // ── Scene 2: 0.35 → 0.70 ──
-  const s2Op    = useTransform(scrollYProgress, [0.35, 0.43, 0.60, 0.70], [0, 1, 1, 0]);
-  const s2Scale = useTransform(scrollYProgress, [0.35, 0.45, 0.60, 0.70], [0.7, 1, 1, 1.12]);
-  const s2Blur  = useTransform(scrollYProgress, [0.35, 0.42, 0.60, 0.70], [24, 0, 0, 14]);
+  // ── Scene 2: 0.28 → 0.56  (≈140vh, same feel as before) ──
+  const s2Op    = useTransform(scrollYProgress, [0.28, 0.34, 0.48, 0.56], [0, 1, 1, 0]);
+  const s2Scale = useTransform(scrollYProgress, [0.28, 0.36, 0.48, 0.56], [0.7, 1, 1, 1.12]);
+  const s2Blur  = useTransform(scrollYProgress, [0.28, 0.34, 0.48, 0.56], [24, 0, 0, 14]);
   const s2Fil   = useTransform(s2Blur, v => `blur(${v}px)`);
-  const s2NumY  = useTransform(scrollYProgress, [0.38, 0.65], [40, -15]);
-  const s2CapOp = useTransform(scrollYProgress, [0.46, 0.52, 0.58, 0.66], [0, 1, 1, 0]);
+  const s2NumY  = useTransform(scrollYProgress, [0.30, 0.52], [40, -15]);
+  const s2CapOp = useTransform(scrollYProgress, [0.37, 0.42, 0.46, 0.53], [0, 1, 1, 0]);
 
-  // ── Scene 3: 0.67 → 1.00 ──
-  const s3Op    = useTransform(scrollYProgress, [0.67, 0.76, 0.92, 1.00], [0, 1, 1, 0]);
-  const s3Scale = useTransform(scrollYProgress, [0.67, 0.78, 0.92, 1.00], [0.72, 1, 1, 1.08]);
-  const s3Blur  = useTransform(scrollYProgress, [0.67, 0.75, 0.92, 1.00], [24, 0, 0, 12]);
+  // ── Scene 3: 0.54 → 1.00  (≈230vh — the extra scroll the user needs) ──
+  const s3Op    = useTransform(scrollYProgress, [0.54, 0.63, 0.97, 1.00], [0, 1, 1, 0]);
+  const s3Scale = useTransform(scrollYProgress, [0.54, 0.65], [0.72, 1]);
+  const s3Blur  = useTransform(scrollYProgress, [0.54, 0.62], [24, 0]);
   const s3Fil   = useTransform(s3Blur, v => `blur(${v}px)`);
-  const s3SubOp = useTransform(scrollYProgress, [0.78, 0.84, 0.90, 0.98], [0, 1, 1, 0]);
-  const s3SubY  = useTransform(scrollYProgress, [0.76, 0.95], [25, -10]);
+  const s3SubOp = useTransform(scrollYProgress, [0.65, 0.73], [0, 1]);
+  const s3SubY  = useTransform(scrollYProgress, [0.63, 0.95], [25, -10]);
 
   // ── Shared ──
   const bgOp       = useTransform(scrollYProgress, [0.97, 1], [1, 0]);
-  const dot1       = useTransform(scrollYProgress, [0, 0.06, 0.32, 0.38], [0.2, 1, 1, 0.2]);
-  const dot2       = useTransform(scrollYProgress, [0.33, 0.40, 0.64, 0.70], [0.2, 1, 1, 0.2]);
-  const dot3       = useTransform(scrollYProgress, [0.65, 0.72, 0.96, 1.00], [0.2, 1, 1, 0.2]);
-  const hintOp     = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
+  const dot1       = useTransform(scrollYProgress, [0, 0.05, 0.25, 0.30], [0.2, 1, 1, 0.2]);
+  const dot2       = useTransform(scrollYProgress, [0.26, 0.32, 0.51, 0.56], [0.2, 1, 1, 0.2]);
+  const dot3       = useTransform(scrollYProgress, [0.52, 0.60, 0.96, 1.00], [0.2, 1, 1, 0.2]);
+  const hintOp     = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
   const progressY  = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   const isZh = lang === 'zh';
@@ -144,7 +144,7 @@ export default function StickyScrollNarrative() {
   }
 
   return (
-    <div ref={containerRef} style={{ height: '400vh', position: 'relative' }}>
+    <div ref={containerRef} style={{ height: '500vh', position: 'relative' }}>
       <div className="sticky top-0 overflow-hidden" style={{ height: '100vh' }}>
 
         <motion.div style={{ opacity: bgOp }} className="absolute inset-0 bg-slate-50 dark:bg-[#060612]" />
