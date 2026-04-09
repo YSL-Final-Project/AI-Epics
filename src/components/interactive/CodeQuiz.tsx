@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import snippetsData from '../../data/code_snippets.json';
 import type { CodeSnippet } from '../../types';
 import CodeSnippetCard from './CodeSnippetCard';
+import { useI18n } from '../../i18n';
 
 const snippets = snippetsData as CodeSnippet[];
 
@@ -13,6 +14,8 @@ const slideVariants = {
 };
 
 export default function CodeQuiz() {
+  const { t } = useI18n();
+  const tq = t.interactive.quiz;
   const prefersReduced = useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -90,7 +93,7 @@ export default function CodeQuiz() {
               {accuracy}%
             </motion.span>
             <span className="font-mono text-[8px] tracking-[0.2em] text-slate-400/50 dark:text-white/15 uppercase">
-              Accuracy
+              {tq.accuracy}
             </span>
           </div>
         </div>
@@ -102,7 +105,7 @@ export default function CodeQuiz() {
             transition={{ delay: 0.6, duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
             className="font-mono text-[10px] tracking-[0.3em] text-slate-400/50 dark:text-white/15 uppercase"
           >
-            {correctCount} / {snippets.length} Correct
+            {correctCount} / {snippets.length} {tq.correct}
           </motion.p>
         </div>
 
@@ -116,7 +119,7 @@ export default function CodeQuiz() {
           whileTap={prefersReduced ? {} : { scale: 0.95 }}
         >
           <div className="absolute inset-0 rounded-full bg-slate-900 dark:bg-white/15 transition-transform duration-300 group-hover:scale-105" />
-          <span className="relative z-10 text-white tracking-wide">Restart</span>
+          <span className="relative z-10 text-white tracking-wide">{tq.restart}</span>
         </motion.button>
       </motion.div>
     );
@@ -168,8 +171,8 @@ export default function CodeQuiz() {
             className="flex gap-3 justify-center mt-6"
           >
             {[
-              { answer: 'human' as const, label: 'Human' },
-              { answer: 'ai' as const, label: 'AI' },
+              { answer: 'human' as const, label: tq.human },
+              { answer: 'ai' as const, label: tq.ai },
             ].map((btn, i) => (
               <motion.button
                 key={btn.answer}
@@ -218,7 +221,7 @@ export default function CodeQuiz() {
                   transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
                   className="text-sm font-bold text-slate-800 dark:text-white/80 mb-1"
                 >
-                  {feedbackState === 'correct' ? '✓ Correct' : '✗ Wrong'} — {currentSnippet.source === 'human' ? 'Human' : 'AI'}
+                  {feedbackState === 'correct' ? tq.feedbackCorrect : tq.feedbackWrong} — {currentSnippet.source === 'human' ? tq.human : tq.ai}
                 </motion.p>
               </div>
             </motion.div>
@@ -235,7 +238,7 @@ export default function CodeQuiz() {
               >
                 <div className="absolute inset-0 rounded-full bg-slate-900 dark:bg-white/15" />
                 <span className="relative z-10 text-white tracking-wide">
-                  {isFinished ? 'Results →' : 'Next →'}
+                  {isFinished ? tq.results : tq.next}
                 </span>
               </motion.button>
             </div>

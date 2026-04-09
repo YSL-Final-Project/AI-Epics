@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useI18n } from '../../i18n';
 
 /**
  * AI Time Machine — drag a slider through 2015→2030.
@@ -176,6 +177,8 @@ function TerminalDemo({ text, color, playing }: { text: string; color: string; p
 }
 
 export default function AITimeMachine() {
+  const { t, lang } = useI18n();
+  const tm = t.interactive.timeMachine;
   const [yearIdx, setYearIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const current = timeline[yearIdx];
@@ -192,8 +195,7 @@ export default function AITimeMachine() {
   return (
     <div>
       <p className="text-center text-xs text-slate-400 dark:text-white/20 mb-6 font-light">
-        {/* Instruction */}
-        拖动时间轴，穿越 AI 编程的进化史
+        {tm.instruction}
       </p>
 
       {/* Year Slider */}
@@ -240,12 +242,12 @@ export default function AITimeMachine() {
               <span className="text-3xl">{current.icon}</span>
               <div>
                 <p className="text-2xl font-black text-slate-900 dark:text-white tabular-nums">{current.year}</p>
-                <p className="text-xs font-mono text-slate-400 dark:text-white/30">{current.era}</p>
+                <p className="text-xs font-mono text-slate-400 dark:text-white/30">{lang === 'en' ? current.eraEn : current.era}</p>
               </div>
             </div>
             {/* Power level bar */}
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-mono text-slate-400/70 dark:text-white/20 uppercase">AI Power</span>
+              <span className="text-[9px] font-mono text-slate-400/70 dark:text-white/20 uppercase">{tm.aiPower}</span>
               <div className="w-24 h-2 bg-slate-200 dark:bg-white/[0.04] rounded-full overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
@@ -262,7 +264,7 @@ export default function AITimeMachine() {
           </div>
 
           {/* Capability description */}
-          <p className="text-sm text-slate-600 dark:text-white/50 mb-4 leading-relaxed">{current.aiCapability}</p>
+          <p className="text-sm text-slate-600 dark:text-white/50 mb-4 leading-relaxed">{lang === 'en' ? current.aiCapabilityEn : current.aiCapability}</p>
 
           {/* Terminal demo */}
           <TerminalDemo text={current.demo} color={current.color} playing={true} />
@@ -278,12 +280,12 @@ export default function AITimeMachine() {
           {isPlaying ? (
             <>
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              自动播放中 · 点击暂停
+              {tm.playing}
             </>
           ) : (
             <>
               <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-white/20" />
-              已暂停 · 点击继续
+              {tm.paused}
             </>
           )}
         </button>

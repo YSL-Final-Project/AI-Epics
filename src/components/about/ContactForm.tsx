@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { IconCheck } from '../icons/TechIcons';
+import { useI18n } from '../../i18n';
 
 export default function ContactForm() {
+  const { t } = useI18n();
+  const tc = t.about.contact;
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
 
@@ -19,13 +22,13 @@ export default function ContactForm() {
         className="text-center py-10"
       >
         <div className="mb-3"><IconCheck size={40} className="text-emerald-400 mx-auto" /></div>
-        <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">感谢你的反馈！</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">我们会尽快查看并回复。</p>
+        <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{tc.thankYou}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{tc.replyNote}</p>
         <button
           onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', message: '' }); }}
           className="mt-4 text-sm text-cyan-500 hover:underline"
         >
-          发送另一条
+          {tc.sendAnother}
         </button>
       </motion.div>
     );
@@ -34,7 +37,7 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">姓名</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{tc.labelName}</label>
         <input
           type="text"
           required
@@ -44,7 +47,7 @@ export default function ContactForm() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">邮箱</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{tc.labelEmail}</label>
         <input
           type="email"
           required
@@ -54,7 +57,7 @@ export default function ContactForm() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">留言</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{tc.labelMessage}</label>
         <textarea
           required
           rows={4}
@@ -67,7 +70,7 @@ export default function ContactForm() {
         type="submit"
         className="w-full py-2.5 rounded-lg bg-cyan-500 text-white font-medium hover:bg-cyan-600 transition-colors shadow-lg shadow-cyan-500/25"
       >
-        提交反馈
+        {tc.submit}
       </button>
     </form>
   );

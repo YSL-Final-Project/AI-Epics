@@ -366,10 +366,51 @@ const en: Translations = {
   // ── InteractivePage ──
   interactive: {
     title: 'Creative Lab',
+    badge: 'Interactive',
+    sections: {
+      timeMachine: { title: 'AI Time Machine', subtitle: 'Travel Through AI Coding History' },
+      dna:         { title: 'Developer DNA',   subtitle: 'Discover Your Developer Archetype' },
+      quiz:        { title: 'Code Quiz',        subtitle: 'Human or AI?' },
+      vote:        { title: 'Predict',          subtitle: 'Predict the Future of AI Coding' },
+      recommend:   { title: 'Recommend',        subtitle: 'Find Your Perfect AI Tool' },
+    },
+    quiz: {
+      accuracy: 'Accuracy',
+      human: 'Human',
+      ai: 'AI',
+      feedbackCorrect: '✓ Correct',
+      feedbackWrong: '✗ Wrong',
+      writtenBy: 'Written by: ',
+      restart: 'Restart',
+      next: 'Next →',
+      results: 'Results →',
+      correct: 'Correct',
+    },
+    vote: {
+      votes: 'votes',
+    },
+    recommend: {
+      languageLabel: 'Language',
+      experienceLabel: 'Experience',
+      expBeginner: 'Beginner',
+      expIntermediate: 'Intermediate',
+      expAdvanced: 'Advanced',
+    },
+    timeMachine: {
+      instruction: 'Drag the timeline to travel through AI coding history',
+      aiPower: 'AI Power',
+      playing: 'Auto-playing · Click to pause',
+      paused: 'Paused · Click to resume',
+    },
+    dna: {
+      yourDna: 'Your Developer DNA',
+      restart: 'Try Again',
+    },
   },
 
   // ── AboutPage ──
   about: {
+    badge: 'About',
     title: 'About the Project',
     background: 'Background',
     backgroundP1: 'Since ChatGPT launched in late 2022, AI coding tools have seen explosive growth. GitHub Copilot surpassed one million users, Cursor emerged to challenge traditional IDEs, and Stack Overflow traffic dropped sharply — the software industry is undergoing an unprecedented transformation.',
@@ -381,6 +422,21 @@ const en: Translations = {
     dataCleaningDesc: 'Standardized processing, outlier removal, ensuring comparability',
     visualization: 'Visualization',
     visualizationDesc: 'Recharts + custom animations, matched to optimal chart forms',
+    contact: {
+      thankYou: 'Thanks for your feedback!',
+      replyNote: 'We\'ll review and reply as soon as possible.',
+      sendAnother: 'Send another',
+      labelName: 'Name',
+      labelEmail: 'Email',
+      labelMessage: 'Message',
+      submit: 'Submit',
+    },
+    dataSourceCategories: {
+      industryReports: 'Industry Reports',
+      indices: 'Indices & Rankings',
+      traffic: 'Traffic & Market Data',
+      official: 'Official Data',
+    },
     contactUs: 'Contact Us',
     teamMembers: 'Team Members',
     dataSources: 'Data Sources',

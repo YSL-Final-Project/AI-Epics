@@ -183,7 +183,9 @@ export interface CodeSnippet {
 export interface QuizQuestion {
   id: number;
   question: string;
+  questionEn?: string;
   options: string[];
+  optionsEn?: string[];
   mockResults: number[];
 }
 
@@ -193,6 +195,7 @@ export interface ToolRecommendation {
   experienceLevel: string;
   tool: string;
   reason: string;
+  reasonEn?: string;
 }
 
 // Page preview card

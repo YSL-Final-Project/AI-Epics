@@ -9,17 +9,17 @@ import LineReveal from '../components/animations/LineReveal';
 import ScaleReveal from '../components/animations/ScaleReveal';
 import { useI18n } from '../i18n';
 
-const sections = [
-  { id: 'time-machine', label: '01', title: 'AI Time Machine', subtitle: '穿越 AI 编程进化史', Component: AITimeMachine, dark: true },
-  { id: 'dna', label: '02', title: 'Developer DNA', subtitle: '测测你的开发者基因', Component: DeveloperDNA, dark: true },
-  { id: 'quiz', label: '03', title: 'Code Quiz', subtitle: 'AI 写的还是人写的？', Component: CodeQuiz, dark: false },
-  { id: 'vote', label: '04', title: 'Predict', subtitle: '预测 AI 编程的未来', Component: PredictionVote, dark: false },
-  { id: 'recommend', label: '05', title: 'Recommend', subtitle: '找到最适合你的 AI 工具', Component: ToolRecommender, dark: false },
-];
-
 export default function InteractivePage() {
   const { t } = useI18n();
   const prefersReduced = useReducedMotion();
+
+  const sections = [
+    { id: 'time-machine', label: '01', title: t.interactive.sections.timeMachine.title, subtitle: t.interactive.sections.timeMachine.subtitle, Component: AITimeMachine, dark: true },
+    { id: 'dna',          label: '02', title: t.interactive.sections.dna.title,         subtitle: t.interactive.sections.dna.subtitle,         Component: DeveloperDNA,  dark: true },
+    { id: 'quiz',         label: '03', title: t.interactive.sections.quiz.title,        subtitle: t.interactive.sections.quiz.subtitle,        Component: CodeQuiz,      dark: false },
+    { id: 'vote',         label: '04', title: t.interactive.sections.vote.title,        subtitle: t.interactive.sections.vote.subtitle,        Component: PredictionVote,dark: false },
+    { id: 'recommend',    label: '05', title: t.interactive.sections.recommend.title,   subtitle: t.interactive.sections.recommend.subtitle,   Component: ToolRecommender,dark: false },
+  ];
 
   return (
     <PageTransition>
@@ -33,7 +33,7 @@ export default function InteractivePage() {
               transition={{ delay: 0.2, duration: 0.8 }}
               className="font-mono text-[10px] tracking-[0.6em] text-slate-400/50 dark:text-white/20 uppercase mb-6"
             >
-              Interactive
+              {t.interactive.badge}
             </motion.p>
             <LineReveal className="text-[clamp(2.5rem,8vw,4.5rem)] font-black text-slate-900 dark:text-white tracking-[-0.03em] leading-[0.95]">
               {t.interactive.title}
