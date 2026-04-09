@@ -358,6 +358,8 @@ const zh = {
       changeVote: '重新选择',
       voteThank: '好眼光！你选择了',
       voteEncourage: '和很多开发者想法一致',
+      vote: '投票',
+      voted: '✓ 已投票',
     },
   },
 

@@ -358,6 +358,8 @@ const en: Translations = {
       changeVote: 'Change vote',
       voteThank: 'Great taste! You picked',
       voteEncourage: 'Many devs agree with you',
+      vote: 'Vote',
+      voted: '✓ Voted',
     },
   },
 
