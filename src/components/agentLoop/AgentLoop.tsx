@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
+﻿import { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../../i18n';
 import agentLoopSteps from '../../data/agent_loop_steps';
@@ -7,7 +7,7 @@ const TOTAL_STEPS = agentLoopSteps.length;
 const SPEEDS = [0.5, 1, 2] as const;
 const ACCENT = '#d4a853';
 
-/* ── Render text with |code| badges ── */
+/* 鈹€鈹€ Render text with |code| badges 鈹€鈹€ */
 function RichText({ text, className }: { text: string; className?: string }) {
   const parts = text.split(/\|([^|]+)\|/);
   return (
@@ -25,9 +25,9 @@ function RichText({ text, className }: { text: string; className?: string }) {
   );
 }
 
-/* ════════════════════════════════════════════════
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
    Step-specific visualizations
-   ════════════════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
 
 function TerminalVis({ lines, color = '#10b981' }: { lines: string[]; color?: string }) {
   return (
@@ -59,7 +59,7 @@ function TerminalVis({ lines, color = '#10b981' }: { lines: string[]; color?: st
 function MessageCreationVis({ lang }: { lang: 'en' | 'zh' }) {
   const [phase, setPhase] = useState(0);
   const inputText = lang === 'zh'
-    ? '"查找 src/ 中所有 TODO 注释并创建摘要"'
+    ? '查找 src/ 中所有 TODO 注释并创建摘要'
     : '"Find all TODO comments in src/ and create a summary"';
 
   useEffect(() => {
@@ -127,8 +127,8 @@ function MessageCreationVis({ lang }: { lang: 'en' | 'zh' }) {
 function HistoryAppendVis({ lang }: { lang: 'en' | 'zh' }) {
   const history = lang === 'zh'
     ? [
-        { role: 'user', text: '搭建项目结构' },
-        { role: 'assistant', text: '我来创建目录布局...' },
+        { role: 'user', text: '鎼缓椤圭洰缁撴瀯' },
+        { role: 'assistant', text: '鎴戞潵鍒涘缓鐩綍甯冨眬...' },
         { role: 'user', text: '现在添加数据库模型' },
       ]
     : [
@@ -222,7 +222,7 @@ function SystemAssemblyVis() {
   );
 }
 
-/* Step 5: API Streaming — dot teleports between machines, SSE lines appear */
+/* Step 5: API Streaming 鈥?dot teleports between machines, SSE lines appear */
 function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
   const [lines, setLines] = useState<string[]>([]);
   const [dotVisible, setDotVisible] = useState(false);
@@ -248,7 +248,7 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
 
     const run = async () => {
       try {
-        // ─── Sending phase: dot goes left→right 3 times ───
+        // 鈹€鈹€鈹€ Sending phase: dot goes left鈫抮ight 3 times 鈹€鈹€鈹€
         for (let i = 0; i < 3; i++) {
           if (cancelled()) return;
           setDotX(0);
@@ -262,12 +262,12 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
           await wait(200);
         }
 
-        // ─── Thinking phase ───
+        // 鈹€鈹€鈹€ Thinking phase 鈹€鈹€鈹€
         setShowThinking(true);
         await wait(1000);
         setShowThinking(false);
 
-        // ─── Streaming phase: dot goes right→left, each arrival outputs an SSE line ───
+        // 鈹€鈹€鈹€ Streaming phase: dot goes right鈫抣eft, each arrival outputs an SSE line 鈹€鈹€鈹€
         for (let i = 0; i < sseTokens.length; i++) {
           if (cancelled()) return;
           setDotX(1);
@@ -283,7 +283,7 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
           await wait(200);
         }
       } catch {
-        // cancelled — silently stop
+        // cancelled 鈥?silently stop
       }
     };
 
@@ -299,7 +299,7 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
       <div className="flex items-center justify-center gap-4">
         {/* Your Machine */}
         <div className="px-5 py-4 rounded-lg border border-[#06b6d4]/30 bg-[#06b6d4]/5 font-mono text-xs text-[#06b6d4] text-center min-w-[120px]">
-          {lang === 'zh' ? '你的机器' : 'Your Machine'}
+          {lang === 'zh' ? '浣犵殑鏈哄櫒' : 'Your Machine'}
         </div>
 
         {/* Dot track */}
@@ -358,10 +358,10 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 6: Token Parsing — raw tokens appear word by word, then rendered version appears */
+/* Step 6: Token Parsing 鈥?raw tokens appear word by word, then rendered version appears */
 function TokenParsingVis({ lang }: { lang: 'en' | 'zh' }) {
   const rawTokens = lang === 'zh'
-    ? ["我会", "搜索", " `TODO`", " 注释", "在", " **src/**", " 中"]
+    ? ['我会', '搜索', ' `TODO`', ' 注释', ' 在', ' **src/**', ' 中']
     : ["I'll", " search", " for", " `TODO`", " comments", " in", " **src/**"];
   const [visibleCount, setVisibleCount] = useState(0);
   const [showRendered, setShowRendered] = useState(false);
@@ -390,7 +390,7 @@ function TokenParsingVis({ lang }: { lang: 'en' | 'zh' }) {
   );
   const renderedZh = (
     <span className="text-[#e8e4df] text-sm">
-      我会搜索{' '}
+      鎴戜細鎼滅储{' '}
       <code className="px-1.5 py-0.5 rounded bg-[#2a2520] text-[#d4a853] text-[0.85em] font-mono border border-[#3a3530]">TODO</code>
       {' '}注释在 <strong>src/</strong> 中
     </span>
@@ -441,7 +441,7 @@ function TokenParsingVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 7: Tool Detection — green flash → gold border + detected label → permission check */
+/* Step 7: Tool Detection 鈥?green flash 鈫?gold border + detected label 鈫?permission check */
 function ToolDetectionVis({ lang }: { lang: 'en' | 'zh' }) {
   // Phase 0: text + tool_use with green border flash
   // Phase 1: gold border + "Tool call detected: bash"
@@ -478,7 +478,7 @@ function ToolDetectionVis({ lang }: { lang: 'en' | 'zh' }) {
           transition={{ duration: 0.3 }}
           className="font-mono text-sm text-gray-500 space-y-1"
         >
-          <div>{lang === 'zh' ? "我来搜索 TODO 注释..." : "I'll search for TODO comments..."}</div>
+          <div>{lang === 'zh' ? "鎴戞潵鎼滅储 TODO 娉ㄩ噴..." : "I'll search for TODO comments..."}</div>
           <div>{lang === 'zh' ? '让我使用 bash 工具来查找。' : 'Let me use the bash tool to find them.'}</div>
         </motion.div>
 
@@ -530,7 +530,7 @@ function ToolDetectionVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 11: Await Next Input — terminal prompt with blinking cursor */
+/* Step 11: Await Next Input 鈥?terminal prompt with blinking cursor */
 function AwaitInputVis({ lang }: { lang: 'en' | 'zh' }) {
   return (
     <div className="rounded-xl border border-gray-700/40 bg-[#0d0d1a] min-h-[200px] flex flex-col items-center justify-center p-5 gap-4">
@@ -546,7 +546,7 @@ function AwaitInputVis({ lang }: { lang: 'en' | 'zh' }) {
             className="inline-block w-[7px] h-[14px] align-middle"
             style={{ backgroundColor: '#d4a853' }}
             animate={{ opacity: [1, 0] }}
-            transition={{ duration: 0.8, repeat: Infinity, ease: 'steps(2)' }}
+            transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
           />
         </div>
       </div>
@@ -564,19 +564,19 @@ function AwaitInputVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 9: Response Rendering — markdown output line by line */
-/* Step 10: Post-Sampling Hooks — three cards appear one by one */
+/* Step 9: Response Rendering 鈥?markdown output line by line */
+/* Step 10: Post-Sampling Hooks 鈥?three cards appear one by one */
 function PostSamplingHooksVis({ lang }: { lang: 'en' | 'zh' }) {
   const cards = lang === 'zh'
     ? [
-        { icon: '📦', name: 'Auto-compact', desc: '上下文在限制内 — 跳过', active: false },
-        { icon: '🧠', name: 'Memory', desc: '提取: TODO 追踪模式', active: true },
-        { icon: '💭', name: 'Dream mode', desc: '未启用 — 跳过', active: false },
+        { icon: '📦', name: 'Auto-compact', desc: '上下文在限制内，跳过', active: false },
+        { icon: '🧠', name: 'Memory', desc: '提取：TODO 追踪模式', active: true },
+        { icon: '💤', name: 'Dream mode', desc: '未启用，跳过', active: false },
       ]
     : [
-        { icon: '📦', name: 'Auto-compact', desc: 'Context within limits — skipped', active: false },
+        { icon: '📦', name: 'Auto-compact', desc: 'Context within limits - skipped', active: false },
         { icon: '🧠', name: 'Memory', desc: 'Extracted: TODO tracking pattern', active: true },
-        { icon: '💭', name: 'Dream mode', desc: 'Not enabled — skipped', active: false },
+        { icon: '💤', name: 'Dream mode', desc: 'Not enabled - skipped', active: false },
       ];
 
   return (
@@ -621,18 +621,18 @@ function PostSamplingHooksVis({ lang }: { lang: 'en' | 'zh' }) {
 function ResponseRenderVis({ lang }: { lang: 'en' | 'zh' }) {
   const lines: { type: 'h1' | 'p' | 'li'; content: React.ReactNode }[] = lang === 'zh'
     ? [
-        { type: 'h1', content: <span className="text-[#d4a853] font-bold text-base">TODO 摘要</span> },
+        { type: 'h1', content: <span className="text-[#d4a853] font-bold text-base">TODO 鎽樿</span> },
         { type: 'p', content: <span>在代码库中找到 <strong className="text-gray-300">16 条</strong> TODO 注释：</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> — 添加重试逻辑</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> — 验证输入</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/context.ts:15</code> — 缓存系统提示词</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> - 添加重试逻辑</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> - 验证输入</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/context.ts:15</code> - 缓存系统提示词</span> },
       ]
     : [
         { type: 'h1', content: <span className="text-[#d4a853] font-bold text-base">TODO Summary</span> },
         { type: 'p', content: <span>Found <strong className="text-gray-300">16 TODO comments</strong> across the codebase:</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> — Add retry logic</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> — Validate input</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/context.ts:15</code> — Cache system prompt</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> - Add retry logic</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> - Validate input</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/context.ts:15</code> - Cache system prompt</span> },
       ];
 
   return (
@@ -655,7 +655,7 @@ function ResponseRenderVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 8: Tool Execution Loop — command → results → loop back */
+/* Step 8: Tool Execution Loop 鈥?command 鈫?results 鈫?loop back */
 function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: number }) {
   const phase = trips < 5 ? 0 : trips < 10 ? 1 : 2;
 
@@ -679,7 +679,7 @@ function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: numbe
           grep -r "TODO" src/
         </div>
 
-        {/* Results — phase 1+ */}
+        {/* Results 鈥?phase 1+ */}
         <AnimatePresence>
           {phase >= 1 && (
             <motion.div
@@ -726,7 +726,7 @@ function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: numbe
               transition={{ duration: 0.3 }}
               className="text-center text-sm pt-2 flex items-center justify-center gap-2"
             >
-              <span style={{ color: ACCENT }}>↻ Loop back to API</span>
+              <span style={{ color: ACCENT }}>{'->'} Loop back to API</span>
               <span
                 className="px-2 py-0.5 rounded text-[11px] font-mono border"
                 style={{ borderColor: `${ACCENT}40`, color: ACCENT, backgroundColor: `${ACCENT}15` }}
@@ -741,9 +741,9 @@ function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: numbe
   );
 }
 
-/* ════════════════════════════════════════════════
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
    Pipeline Navigation (circles + connecting line)
-   ════════════════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
 
 function PipelineNav({
   current,
@@ -763,7 +763,7 @@ function PipelineNav({
 
   const showArc = current === 8 && loopTrips > 0;
 
-  // Compute arc path from step 8 circle → step 5 circle (semicircle below)
+  // Compute arc path from step 8 circle 鈫?step 5 circle (semicircle below)
   useLayoutEffect(() => {
     if (!showArc) { setArcPath(''); setDotPos(null); return; }
     const wrapper = wrapperRef.current;
@@ -838,7 +838,7 @@ function PipelineNav({
         </div>
       </div>
 
-      {/* Arc overlay: dashed path + animated dot from step 8 → step 5 */}
+      {/* Arc overlay: dashed path + animated dot from step 8 鈫?step 5 */}
       {showArc && arcPath && (
         <svg
           className="absolute top-0 left-0 w-full pointer-events-none"
@@ -870,9 +870,9 @@ function PipelineNav({
   );
 }
 
-/* ════════════════════════════════════════════════
+/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
    Main Component
-   ════════════════════════════════════════════════ */
+   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
 
 export default function AgentLoop() {
   const { lang, t } = useI18n();
@@ -880,7 +880,7 @@ export default function AgentLoop() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState<number>(1);
 
-  /* ── Step 8 loop trip counter ── */
+  /* 鈹€鈹€ Step 8 loop trip counter 鈹€鈹€ */
   const [loopTrips, setLoopTrips] = useState(0);
   const loopTripsRef = useRef(0);
   const loopRunIdRef = useRef(0);
@@ -899,22 +899,22 @@ export default function AgentLoop() {
     return () => { loopRunIdRef.current++; clearInterval(interval); };
   }, [currentStep]);
 
-  /* ── Per-step minimum dwell time (ms at 1x speed) ── */
+  /* 鈹€鈹€ Per-step minimum dwell time (ms at 1x speed) 鈹€鈹€ */
   const STEP_DWELL: Record<number, number> = {
     1: 2500,
-    2: 5000,   // 3 phases × 1.2s + reading
+    2: 5000,   // 3 phases 脳 1.2s + reading
     3: 3500,   // history + new message spring
     4: 3500,   // 4 elements converge
-    5: 10000,  // sending 3× + thinking + streaming 6×
+    5: 10000,  // sending 3脳 + thinking + streaming 6脳
     6: 4000,   // tokens + rendered
-    7: 4500,   // green flash → gold → permission
+    7: 4500,   // green flash 鈫?gold 鈫?permission
     8: 3000,   // extra dwell after loopTrips gate passes
-    9: 3500,   // 5 lines × 350ms + reading
-    10: 3500,  // 3 cards × 500ms + reading
+    9: 3500,   // 5 lines 脳 350ms + reading
+    10: 3500,  // 3 cards 脳 500ms + reading
     11: 3500,  // terminal prompt + reading
   };
 
-  /* ── Playback: single useEffect drives auto-advance ── */
+  /* 鈹€鈹€ Playback: single useEffect drives auto-advance 鈹€鈹€ */
   useEffect(() => {
     if (!isPlaying) return;
     if (currentStep >= TOTAL_STEPS) { setIsPlaying(false); return; }
@@ -930,7 +930,7 @@ export default function AgentLoop() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, isPlaying, speed, loopTrips]);
 
-  /* ── Manual controls ── */
+  /* 鈹€鈹€ Manual controls 鈹€鈹€ */
   const nextStep = useCallback(() => {
     setCurrentStep(prev => (prev < TOTAL_STEPS ? prev + 1 : prev));
   }, []);
@@ -952,7 +952,7 @@ export default function AgentLoop() {
 
   const step = agentLoopSteps[currentStep - 1];
 
-  /* ── Pick visualization for current step ── */
+  /* 鈹€鈹€ Pick visualization for current step 鈹€鈹€ */
   const visualization = useMemo(() => {
     switch (currentStep) {
       case 2: return <MessageCreationVis lang={lang} />;
@@ -1045,7 +1045,7 @@ export default function AgentLoop() {
             </motion.div>
           </AnimatePresence>
 
-          {/* ── Controls ── */}
+          {/* 鈹€鈹€ Controls 鈹€鈹€ */}
           <div className="flex items-center justify-between px-5 sm:px-6 pb-5 pt-0">
             <div className="flex items-center gap-1.5">
               <button
@@ -1113,3 +1113,5 @@ export default function AgentLoop() {
     </section>
   );
 }
+
+

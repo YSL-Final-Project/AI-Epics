@@ -1,7 +1,11 @@
-import { motion, useReducedMotion } from 'framer-motion';
-import {
-  BarChart, Bar, LineChart, Line, ScatterChart, Scatter,
-  XAxis, YAxis, Tooltip, ResponsiveContainer, ZAxis
+﻿import { motion, useReducedMotion } from 'framer-motion';
+import {  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
 } from 'recharts';
 import salaryData from '../../data/developer_salary.json';
 import type { DeveloperSalaryData } from '../../types';
@@ -12,17 +16,20 @@ import InsightCallout from './InsightCallout';
 
 const data = salaryData as DeveloperSalaryData;
 
-const TIER_COLORS = ['#64748b', '#f59e0b', '#06b6d4', '#10b981'];
+const ROLE_LABELS = ['Junior Dev', 'Mid-level Dev', 'Senior Dev', 'Architect', 'Tech Lead'];
+const SKILL_COLORS = ['#fb7185', '#8b5cf6', '#06b6d4', '#f59e0b'];
 
 function MinimalTooltip({ active, payload, label, formatter }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-slate-900/90 dark:bg-white/10 backdrop-blur-xl rounded-xl px-4 py-3 shadow-2xl border border-white/5">
-      <p className="font-mono text-[10px] text-white/40 mb-1 tracking-wider">{label}</p>
-      {payload.map((p: any, i: number) => (
-        <p key={i} className="text-sm font-bold text-white tabular-nums flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: p.color || p.fill }} />
-          {p.name}: {formatter ? formatter(p.value) : p.value}
+    <div className="rounded-xl border border-white/10 bg-slate-900/90 px-4 py-3 shadow-2xl backdrop-blur-xl dark:bg-white/10">
+      {label !== undefined && label !== null && (
+        <p className="mb-1 font-mono text-[10px] tracking-wider text-white/40">{label}</p>
+      )}
+      {payload.map((entry: any, index: number) => (
+        <p key={index} className="flex items-center gap-2 text-sm font-bold text-white tabular-nums">
+          <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: entry.color || entry.fill }} />
+          {entry.name}: {formatter ? formatter(entry.value) : entry.value}
         </p>
       ))}
     </div>
@@ -33,330 +40,430 @@ export default function SalaryTab() {
   const { theme } = useTheme();
   const { t } = useI18n();
   const prefersReduced = useReducedMotion();
-  const axisColor = theme === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.12)';
   const isDark = theme === 'dark';
+  const axisColor = isDark ? 'rgba(255,255,255,0.32)' : 'rgba(15,23,42,0.45)';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.08)';
   const sal = t.dataExplorer.salary;
 
-  // Hero stat: average premium
-  const avgWithAI = data.salaryComparison.reduce((a, b) => a + b.withAI, 0) / data.salaryComparison.length;
-  const avgWithout = data.salaryComparison.reduce((a, b) => a + b.withoutAI, 0) / data.salaryComparison.length;
-  const premium = Math.round(((avgWithAI - avgWithout) / avgWithout) * 100);
+  const avgWithAI = data.salaryComparison.reduce((sum, item) => sum + item.withAI, 0) / data.salaryComparison.length;
+  const avgWithoutAI = data.salaryComparison.reduce((sum, item) => sum + item.withoutAI, 0) / data.salaryComparison.length;
+  const premium = Math.round(((avgWithAI - avgWithoutAI) / avgWithoutAI) * 100);
+  const peakJobs = Math.max(...data.jobTrends.map((item) => item.positions));
+  const latestJobs = data.jobTrends[data.jobTrends.length - 1]?.positions ?? 0;
+  const jobsDecline = Math.round(((peakJobs - latestJobs) / peakJobs) * 100);
+  const latestPremium = data.premiumTrend[data.premiumTrend.length - 1]?.premium ?? 0;
 
-  const EMERALD = isDark ? '#34d399' : '#059669';
-  const EMERALD_DIM = isDark ? 'rgba(52,211,153,0.12)' : 'rgba(5,150,105,0.06)';
-  const barColorWith = isDark ? '#34d399' : '#059669';
-  const barColorWithout = isDark ? 'rgba(255,255,255,0.12)' : '#cbd5e1';
+  const emerald = isDark ? '#34d399' : '#059669';
+  const amber = '#f59e0b';
+  const cyan = isDark ? '#22d3ee' : '#0891b2';
+  const slateFill = isDark ? 'rgba(255,255,255,0.12)' : '#cbd5e1';
+
+  const comparisonRows = data.salaryComparison.map((item, index) => {
+    const gap = item.withAI - item.withoutAI;
+    const gapPercent = Math.round((gap / item.withoutAI) * 100);
+    return {
+      ...item,
+      label: ROLE_LABELS[index] ?? `Level ${index + 1}`,
+      gap,
+      gapPercent,
+    };
+  });
+
+  const ladderStages = [
+    data.proficiencyVsSalary[0],
+    data.proficiencyVsSalary[3],
+    data.proficiencyVsSalary[6],
+    data.proficiencyVsSalary[data.proficiencyVsSalary.length - 1],
+  ];
 
   return (
-    <div className="space-y-6">
-      {/* ═══ Hero — salary premium ═══ */}
-      <div className="text-center py-10">
-        <LineReveal className="mb-2">
-          <span className="font-mono text-[10px] tracking-[0.4em] text-slate-400/50 dark:text-white/15 uppercase">
+    <div className="space-y-8">
+      <div className="rounded-[2rem] border px-6 py-8 sm:px-8" style={{
+        background: isDark
+          ? 'linear-gradient(145deg, rgba(5,150,105,0.16), rgba(15,23,42,0.75) 55%, rgba(245,158,11,0.10))'
+          : 'linear-gradient(145deg, rgba(16,185,129,0.09), rgba(255,255,255,0.96) 55%, rgba(245,158,11,0.10))',
+        borderColor: isDark ? 'rgba(52,211,153,0.18)' : 'rgba(5,150,105,0.12)',
+      }}>
+        <LineReveal className="mb-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.42em] text-slate-500/70 dark:text-white/20">
             {sal.aiSkillPremium}
           </span>
         </LineReveal>
-        <LineReveal delay={0.1}>
-          <span
-            className="text-[clamp(3.5rem,10vw,6rem)] font-black tracking-tight tabular-nums leading-none bg-clip-text text-transparent"
-            style={{
-              backgroundImage: isDark
-                ? 'linear-gradient(135deg, #fff 20%, #34d399 60%, #059669 100%)'
-                : 'linear-gradient(135deg, #0f172a 20%, #059669 100%)',
-            }}
-          >
-            +{premium}%
-          </span>
-        </LineReveal>
-        <LineReveal delay={0.2} className="mt-3">
-          <span className="font-mono text-[10px] tracking-[0.3em] text-slate-400/40 dark:text-white/10 uppercase">
-            {sal.higherSalary}
-          </span>
-        </LineReveal>
+        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div>
+            <LineReveal delay={0.06}>
+              <h2 className="text-[clamp(3.2rem,10vw,5.8rem)] font-black leading-none tracking-tight text-slate-950 dark:text-white">
+                +{premium}%
+              </h2>
+            </LineReveal>
+            <LineReveal delay={0.12} className="mt-3 max-w-2xl">
+              <p className="text-sm leading-6 text-slate-600 dark:text-white/58">
+                {sal.higherSalary}
+              </p>
+            </LineReveal>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border p-4" style={{
+              backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.72)',
+              borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.06)',
+            }}>
+              <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500 dark:text-white/28">{sal.jobs}</div>
+              <div className="mt-3 text-3xl font-black tabular-nums" style={{ color: amber }}>-{jobsDecline}%</div>
+              <p className="mt-1 text-xs text-slate-500 dark:text-white/40">from peak hiring</p>
+            </div>
+            <div className="rounded-2xl border p-4" style={{
+              backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.72)',
+              borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.06)',
+            }}>
+              <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500 dark:text-white/28">{sal.premiumGrowth}</div>
+              <div className="mt-3 text-3xl font-black tabular-nums" style={{ color: emerald }}>+{latestPremium}%</div>
+              <p className="mt-1 text-xs text-slate-500 dark:text-white/40">latest measured premium</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ═══ Section 1: Salary Comparison — accent card ═══ */}
       <motion.div
-        initial={prefersReduced ? false : { opacity: 0, y: 20 }}
+        initial={prefersReduced ? false : { opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-        className="rounded-2xl p-6 border-l-2"
+        transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+        className="rounded-[1.75rem] border p-6"
         style={{
-          backgroundColor: EMERALD_DIM,
-          borderLeftColor: EMERALD,
+          backgroundColor: isDark ? 'rgba(15,23,42,0.66)' : 'rgba(255,255,255,0.88)',
+          borderColor: isDark ? 'rgba(52,211,153,0.14)' : 'rgba(5,150,105,0.10)',
         }}
       >
-        <div className="flex items-baseline gap-3 mb-5">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">
-            <span style={{ color: EMERALD }} className="font-mono text-xs mr-2">01</span>
+        <div className="mb-6 flex items-baseline gap-3">
+          <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white/88">
+            <span className="mr-2 font-mono text-xs" style={{ color: emerald }}>01</span>
             {sal.comparison}
           </h3>
-          <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-          {/* Legend inline */}
-          <div className="flex gap-4">
-            {[
-              { name: sal.withAI, color: barColorWith },
-              { name: sal.withoutAI, color: barColorWithout },
-            ].map(item => (
-              <div key={item.name} className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                <span className="font-mono text-[10px] text-slate-400 dark:text-white/20 tracking-wide">{item.name}</span>
-              </div>
-            ))}
-          </div>
+          <div className="h-px flex-1 bg-slate-200/60 dark:bg-white/[0.05]" />
         </div>
 
-        <div className="overflow-x-auto rounded-xl bg-white/50 dark:bg-black/20 p-3">
-          <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={data.salaryComparison} barGap={2}>
-              <XAxis dataKey="category" tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} width={40} tickFormatter={(v: number) => `$${v / 1000}k`} />
-              <Tooltip content={<MinimalTooltip formatter={(v: number) => `$${v.toLocaleString()}`} />} />
-              <Bar dataKey="withAI" fill={barColorWith} fillOpacity={isDark ? 0.7 : 0.8} radius={[4, 4, 0, 0]} name={sal.withAI} />
-              <Bar dataKey="withoutAI" fill={barColorWithout} radius={[4, 4, 0, 0]} name={sal.withoutAI} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </motion.div>
-
-      {/* ═══ Section 2 & 3: Jobs + Scatter — side by side ═══ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Job Trends — accent border card */}
-        <motion.div
-          initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-          className="rounded-2xl p-5 border"
-          style={{
-            backgroundColor: isDark ? 'rgba(52,211,153,0.04)' : 'rgba(5,150,105,0.02)',
-            borderColor: isDark ? 'rgba(52,211,153,0.12)' : 'rgba(5,150,105,0.1)',
-          }}
-        >
-          <div className="flex items-baseline gap-3 mb-5">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">
-              <span style={{ color: EMERALD }} className="font-mono text-xs mr-2">02</span>
-              {sal.jobs}
-            </h3>
-            <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-            {/* Inline latest stat */}
-            <span className="font-mono text-xs tabular-nums" style={{ color: EMERALD }}>
-              {(data.jobTrends[data.jobTrends.length - 1]?.positions / 1000).toFixed(0)}k
-            </span>
-          </div>
-          <div className="overflow-x-auto rounded-xl bg-white/50 dark:bg-black/20 p-3">
-            <ResponsiveContainer width="100%" height={240}>
-              <LineChart data={data.jobTrends}>
-                <XAxis dataKey="year" tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} width={35} tickFormatter={(v: number) => `${v / 1000}k`} />
-                <Tooltip content={<MinimalTooltip formatter={(v: number) => v.toLocaleString()} />} />
-                <Line type="monotone" dataKey="positions" stroke={EMERALD} strokeWidth={2.5} dot={false} name="Positions" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </motion.div>
-
-        {/* Scatter — accent border card */}
-        <motion.div
-          initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.32, 0.72, 0, 1] }}
-          className="rounded-2xl p-5 border"
-          style={{
-            backgroundColor: isDark ? 'rgba(52,211,153,0.04)' : 'rgba(5,150,105,0.02)',
-            borderColor: isDark ? 'rgba(52,211,153,0.12)' : 'rgba(5,150,105,0.1)',
-          }}
-        >
-          <div className="flex items-baseline gap-3 mb-5">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">
-              <span style={{ color: EMERALD }} className="font-mono text-xs mr-2">03</span>
-              {sal.correlation}
-            </h3>
-            <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-          </div>
-          <div className="overflow-x-auto rounded-xl bg-white/50 dark:bg-black/20 p-3">
-            <ResponsiveContainer width="100%" height={240}>
-              <ScatterChart>
-                <XAxis type="number" dataKey="proficiency" tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} domain={[0, 100]} name="Proficiency" />
-                <YAxis type="number" dataKey="salary" tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v: number) => `$${v / 1000}k`} name="Salary" />
-                <ZAxis range={[40, 40]} />
-                <Tooltip content={({ active, payload }: any) => {
-                  if (!active || !payload?.length) return null;
-                  return (
-                    <div className="bg-slate-900/90 dark:bg-white/10 backdrop-blur-xl rounded-xl px-4 py-3 shadow-2xl border border-white/5">
-                      <p className="text-sm font-bold text-white tabular-nums">${payload[1]?.value?.toLocaleString()}</p>
-                      <p className="font-mono text-[10px] text-white/40">{payload[0]?.value}% proficiency</p>
-                    </div>
-                  );
-                }} />
-                <Scatter data={data.proficiencyVsSalary} fill={EMERALD} fillOpacity={0.7} />
-              </ScatterChart>
-            </ResponsiveContainer>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* ═══ Section 4: Premium Growth Trend — line chart ═══ */}
-      <motion.div
-        initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-        className="rounded-2xl p-6 border"
-        style={{
-          backgroundColor: isDark ? 'rgba(245,158,11,0.05)' : 'rgba(245,158,11,0.03)',
-          borderColor: isDark ? 'rgba(245,158,11,0.15)' : 'rgba(245,158,11,0.12)',
-        }}
-      >
-        <div className="flex items-baseline gap-3 mb-5">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">
-            <span style={{ color: '#f59e0b' }} className="font-mono text-xs mr-2">04</span>
-            {sal.premiumGrowth}
-          </h3>
-          <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-          <span className="font-mono text-xs tabular-nums" style={{ color: '#f59e0b' }}>
-            +{data.premiumTrend[data.premiumTrend.length - 1]?.premium}%
-          </span>
-        </div>
-        {/* Premium stat cards per year */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          {data.premiumTrend.map((pt, i) => (
-            <motion.div
-              key={pt.year}
-              initial={prefersReduced ? false : { opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-              className="rounded-xl p-4 bg-white/50 dark:bg-black/20 text-center"
-            >
-              <div className="font-mono text-[10px] text-slate-400/50 dark:text-white/15 mb-2">{pt.year}</div>
-              <div className="text-2xl font-black tabular-nums" style={{ color: '#f59e0b' }}>+{pt.premium}%</div>
-            </motion.div>
-          ))}
-        </div>
-        <p className="font-mono text-[9px] text-slate-400/30 dark:text-white/8 text-center">{sal.premiumSource}</p>
-      </motion.div>
-
-      {/* Insight Callout */}
-      <InsightCallout text={sal.insightText} accent="amber" />
-
-      {/* ═══ Section 5: Hot AI Skills ═══ */}
-      <motion.div
-        initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-      >
-        <div className="flex items-baseline gap-3 mb-8">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">
-            <span style={{ color: EMERALD }} className="font-mono text-xs mr-2">05</span>
-            {sal.hotSkills}
-          </h3>
-          <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {data.hotSkills.map((skill, i) => {
-            const colors = ['#f43f5e', '#8b5cf6', '#06b6d4', '#f59e0b'];
-            const color = colors[i % colors.length];
-            const skillName = (sal.skillNames as Record<string, string>)[skill.skill] ?? skill.skill;
+        <div className="space-y-4">
+          {comparisonRows.map((row, index) => {
+            const maxSalary = Math.max(...comparisonRows.map((item) => item.withAI));
+            const withoutWidth = (row.withoutAI / maxSalary) * 100;
+            const withWidth = (row.withAI / maxSalary) * 100;
             return (
               <motion.div
-                key={skill.skill}
+                key={row.label}
                 initial={prefersReduced ? false : { opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-                className="rounded-xl p-5 border-l-2"
+                transition={{ duration: 0.45, delay: index * 0.06, ease: [0.32, 0.72, 0, 1] }}
+                className="rounded-2xl border p-4"
                 style={{
-                  backgroundColor: isDark ? `${color}08` : `${color}04`,
-                  borderLeftColor: color,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(248,250,252,0.92)',
+                  borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)',
                 }}
               >
-                <div className="text-sm font-bold mb-3" style={{ color: isDark ? `${color}cc` : color }}>
-                  {skillName}
+                <div className="mb-3 flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-sm font-semibold text-slate-900 dark:text-white/84">{row.label}</div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-slate-500 dark:text-white/24">salary repricing</div>
+                  </div>
+                  <div className="rounded-full px-3 py-1 font-mono text-[10px] font-bold" style={{
+                    backgroundColor: isDark ? 'rgba(52,211,153,0.12)' : 'rgba(5,150,105,0.10)',
+                    color: emerald,
+                  }}>
+                    +{row.gapPercent}%
+                  </div>
                 </div>
-                {skill.demandGrowth && (
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="font-mono text-[10px] text-slate-400 dark:text-white/20">{sal.demandGrowth}</span>
-                    <span className="text-lg font-black tabular-nums" style={{ color }}>+{skill.demandGrowth}%</span>
+
+                <div className="space-y-3">
+                  <div>
+                    <div className="mb-1 flex items-center justify-between text-xs text-slate-500 dark:text-white/42">
+                      <span>{sal.withoutAI}</span>
+                      <span className="font-mono tabular-nums">${row.withoutAI.toLocaleString()}</span>
+                    </div>
+                    <div className="h-3 rounded-full bg-slate-200/70 dark:bg-white/8">
+                      <div className="h-3 rounded-full" style={{ width: `${withoutWidth}%`, backgroundColor: slateFill }} />
+                    </div>
                   </div>
-                )}
-                {skill.avgSalary && (
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="font-mono text-[10px] text-slate-400 dark:text-white/20">{sal.avgSalaryLabel}</span>
-                    <span className="text-lg font-black tabular-nums" style={{ color }}>${(skill.avgSalary / 1000).toFixed(0)}K</span>
+                  <div>
+                    <div className="mb-1 flex items-center justify-between text-xs text-slate-500 dark:text-white/42">
+                      <span>{sal.withAI}</span>
+                      <span className="font-mono tabular-nums">${row.withAI.toLocaleString()}</span>
+                    </div>
+                    <div className="h-3 rounded-full bg-slate-200/70 dark:bg-white/8">
+                      <div className="h-3 rounded-full" style={{ width: `${withWidth}%`, backgroundColor: emerald }} />
+                    </div>
                   </div>
-                )}
-                {skill.premiumRange && (
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-mono text-[10px] text-slate-400 dark:text-white/20">{sal.premiumRangeLabel}</span>
-                    <span className="text-lg font-black tabular-nums" style={{ color }}>{skill.premiumRange}</span>
-                  </div>
-                )}
+                </div>
               </motion.div>
             );
           })}
         </div>
       </motion.div>
 
-      {/* ═══ Section 6: AI Skill Tier Progression — featured cards ═══ */}
-      <motion.div
-        initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-      >
-        <div className="flex items-baseline gap-3 mb-8">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">
-            <span style={{ color: EMERALD }} className="font-mono text-xs mr-2">06</span>
-            {sal.tierProgression}
-          </h3>
-          <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
-        </div>
+      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+          className="rounded-[1.75rem] border p-6"
+          style={{
+            backgroundColor: isDark ? 'rgba(15,23,42,0.62)' : 'rgba(255,255,255,0.88)',
+            borderColor: isDark ? 'rgba(245,158,11,0.16)' : 'rgba(245,158,11,0.14)',
+          }}
+        >
+          <div className="mb-5 flex items-baseline gap-3">
+            <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white/88">
+              <span className="mr-2 font-mono text-xs" style={{ color: amber }}>02</span>
+              {sal.jobs}
+            </h3>
+            <div className="h-px flex-1 bg-slate-200/60 dark:bg-white/[0.05]" />
+            <span className="font-mono text-xs tabular-nums" style={{ color: amber }}>${(latestJobs / 1000).toFixed(0)}k</span>
+          </div>
+          <div className="mb-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl p-4" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(248,250,252,0.9)' }}>
+              <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500 dark:text-white/24">peak</div>
+              <div className="mt-2 text-2xl font-black tabular-nums text-slate-900 dark:text-white">{(peakJobs / 1000).toFixed(0)}k</div>
+            </div>
+            <div className="rounded-2xl p-4" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(248,250,252,0.9)' }}>
+              <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500 dark:text-white/24">2025</div>
+              <div className="mt-2 text-2xl font-black tabular-nums text-slate-900 dark:text-white">{(latestJobs / 1000).toFixed(0)}k</div>
+            </div>
+            <div className="rounded-2xl p-4" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(248,250,252,0.9)' }}>
+              <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500 dark:text-white/24">drop</div>
+              <div className="mt-2 text-2xl font-black tabular-nums" style={{ color: amber }}>-{jobsDecline}%</div>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-white/60 p-3 dark:bg-black/20">
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={data.jobTrends}>
+                <CartesianGrid stroke={gridColor} vertical={false} />
+                <XAxis dataKey="year" tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} width={42} tickFormatter={(value: number) => `${Math.round(value / 1000)}k`} />
+                <Tooltip content={<MinimalTooltip formatter={(value: number) => value.toLocaleString()} />} />
+                <Line type="monotone" dataKey="positions" stroke={amber} strokeWidth={3} dot={{ r: 3, fill: amber }} name="Positions" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {(sal.tiers as { label: string; salary: string; premium: string }[]).map((item, i) => {
-            const color = TIER_COLORS[i];
-            return (
-              <motion.div
-                key={i}
-                initial={prefersReduced ? false : { opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-                className="relative rounded-2xl p-5 text-center border-l-2"
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55, delay: 0.08, ease: [0.32, 0.72, 0, 1] }}
+          className="rounded-[1.75rem] border p-6"
+          style={{
+            backgroundColor: isDark ? 'rgba(15,23,42,0.62)' : 'rgba(255,255,255,0.88)',
+            borderColor: isDark ? 'rgba(52,211,153,0.16)' : 'rgba(5,150,105,0.12)',
+          }}
+        >
+          <div className="mb-5 flex items-baseline gap-3">
+            <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white/88">
+              <span className="mr-2 font-mono text-xs" style={{ color: emerald }}>03</span>
+              {sal.premiumGrowth}
+            </h3>
+            <div className="h-px flex-1 bg-slate-200/60 dark:bg-white/[0.05]" />
+            <span className="font-mono text-xs tabular-nums" style={{ color: emerald }}>+{latestPremium}%</span>
+          </div>
+          <div className="space-y-4">
+            {data.premiumTrend.map((point, index) => {
+              const previous = index === 0 ? 0 : data.premiumTrend[index - 1].premium;
+              const delta = point.premium - previous;
+              return (
+                <motion.div
+                  key={point.year}
+                  initial={prefersReduced ? false : { opacity: 0, x: 18 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.45, delay: index * 0.08, ease: [0.32, 0.72, 0, 1] }}
+                  className="rounded-2xl border p-4"
+                  style={{
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(248,250,252,0.9)',
+                    borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)',
+                  }}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500 dark:text-white/24">{point.year}</div>
+                      <div className="mt-2 text-3xl font-black tabular-nums" style={{ color: emerald }}>+{point.premium}%</div>
+                    </div>
+                    <div className="rounded-full px-3 py-1 font-mono text-[10px] font-bold" style={{
+                      backgroundColor: isDark ? 'rgba(52,211,153,0.12)' : 'rgba(5,150,105,0.10)',
+                      color: emerald,
+                    }}>
+                      {index === 0 ? 'baseline' : `+${delta} pts`}
+                    </div>
+                  </div>
+                  <div className="mt-4 h-2 rounded-full bg-slate-200/70 dark:bg-white/8">
+                    <div className="h-2 rounded-full" style={{ width: `${Math.min(point.premium, 100)}%`, backgroundColor: emerald }} />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+          <p className="mt-4 text-center font-mono text-[9px] text-slate-400 dark:text-white/18">{sal.premiumSource}</p>
+        </motion.div>
+      </div>
+
+      <InsightCallout text={sal.insightText} accent="amber" />
+
+      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+          className="rounded-[1.75rem] border p-6"
+          style={{
+            backgroundColor: isDark ? 'rgba(15,23,42,0.66)' : 'rgba(255,255,255,0.88)',
+            borderColor: isDark ? 'rgba(34,211,238,0.16)' : 'rgba(8,145,178,0.12)',
+          }}
+        >
+          <div className="mb-5 flex items-baseline gap-3">
+            <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white/88">
+              <span className="mr-2 font-mono text-xs" style={{ color: cyan }}>04</span>
+              {sal.correlation}
+            </h3>
+            <div className="h-px flex-1 bg-slate-200/60 dark:bg-white/[0.05]" />
+          </div>
+          <div className="rounded-2xl bg-white/60 p-3 dark:bg-black/20">
+            <ResponsiveContainer width="100%" height={280}>
+              <LineChart data={data.proficiencyVsSalary}>
+                <CartesianGrid stroke={gridColor} vertical={false} />
+                <XAxis type="number" dataKey="proficiency" domain={[0, 100]} tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(value: number) => `${value}%`} />
+                <YAxis tick={{ fill: axisColor, fontSize: 10 }} tickLine={false} axisLine={false} width={44} tickFormatter={(value: number) => `$${Math.round(value / 1000)}k`} />
+                <Tooltip content={<MinimalTooltip formatter={(value: number) => `$${value.toLocaleString()}`} />} />
+                <Line type="monotone" dataKey="salary" stroke={cyan} strokeWidth={3} dot={{ r: 3, fill: cyan }} name="Salary" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {ladderStages.map((stage, index) => (
+              <div
+                key={`${stage.proficiency}-${stage.salary}`}
+                className="rounded-2xl border p-4"
                 style={{
-                  backgroundColor: isDark ? `${color}10` : `${color}08`,
-                  borderLeftColor: color,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(248,250,252,0.9)',
+                  borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)',
                 }}
               >
-                {/* Arrow connector */}
-                {i > 0 && (
-                  <span className="hidden lg:block absolute -left-4 top-1/2 -translate-y-1/2 text-base font-bold" style={{ color: `${color}60` }}>→</span>
-                )}
-                <div className="font-mono text-[10px] tracking-[0.3em] uppercase mb-3" style={{ color: `${color}90` }}>
-                  {sal.tier} {i + 1}
-                </div>
-                <div className="text-sm font-medium mb-3" style={{ color: isDark ? `${color}dd` : color }}>
-                  {item.label}
-                </div>
-                <div className="text-2xl font-black tabular-nums" style={{ color }}>
-                  {item.salary}
-                </div>
-                {item.premium && (
-                  <div
-                    className="mt-3 inline-block px-3 py-1 rounded-full text-[10px] font-mono font-bold"
-                    style={{
-                      backgroundColor: isDark ? `${color}20` : `${color}15`,
-                      color,
-                    }}
-                  >
-                    {item.premium}
+                <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500 dark:text-white/24">stage {index + 1}</div>
+                <div className="mt-2 text-2xl font-black tabular-nums text-slate-950 dark:text-white">${Math.round(stage.salary / 1000)}k</div>
+                <div className="mt-1 text-xs text-slate-500 dark:text-white/40">{stage.proficiency}% proficiency</div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55, delay: 0.08, ease: [0.32, 0.72, 0, 1] }}
+          className="rounded-[1.75rem] border p-6"
+          style={{
+            backgroundColor: isDark ? 'rgba(15,23,42,0.66)' : 'rgba(255,255,255,0.88)',
+            borderColor: isDark ? 'rgba(100,116,139,0.18)' : 'rgba(100,116,139,0.12)',
+          }}
+        >
+          <div className="mb-6 flex items-baseline gap-3">
+            <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white/88">
+              <span className="mr-2 font-mono text-xs text-slate-500">05</span>
+              {sal.tierProgression}
+            </h3>
+            <div className="h-px flex-1 bg-slate-200/60 dark:bg-white/[0.05]" />
+          </div>
+          <div className="space-y-4">
+            {(sal.tiers as { label: string; salary: string; premium: string }[]).map((tier, index) => {
+              const color = ['#64748b', '#f59e0b', '#06b6d4', '#10b981'][index];
+              return (
+                <motion.div
+                  key={`${tier.label}-${tier.salary}`}
+                  initial={prefersReduced ? false : { opacity: 0, x: 18 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.45, delay: index * 0.06, ease: [0.32, 0.72, 0, 1] }}
+                  className="rounded-2xl border p-4"
+                  style={{
+                    backgroundColor: isDark ? `${color}12` : `${color}08`,
+                    borderColor: isDark ? `${color}33` : `${color}26`,
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="font-mono text-[10px] uppercase tracking-[0.25em]" style={{ color }}>{sal.tier} {index + 1}</div>
+                      <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white/84">{tier.label}</div>
+                    </div>
+                    {tier.premium && (
+                      <div className="rounded-full px-3 py-1 font-mono text-[10px] font-bold" style={{
+                        backgroundColor: isDark ? `${color}26` : `${color}18`,
+                        color,
+                      }}>
+                        {tier.premium}
+                      </div>
+                    )}
                   </div>
-                )}
+                  <div className="mt-4 text-3xl font-black tabular-nums" style={{ color }}>{tier.salary}</div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
+
+      <motion.div
+        initial={prefersReduced ? false : { opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+      >
+        <div className="mb-6 flex items-baseline gap-3">
+          <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white/88">
+            <span className="mr-2 font-mono text-xs" style={{ color: emerald }}>06</span>
+            {sal.hotSkills}
+          </h3>
+          <div className="h-px flex-1 bg-slate-200/60 dark:bg-white/[0.05]" />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {data.hotSkills.map((skill, index) => {
+            const color = SKILL_COLORS[index % SKILL_COLORS.length];
+            const skillName = (sal.skillNames as Record<string, string>)[skill.skill] ?? skill.skill;
+            return (
+              <motion.div
+                key={skill.skill}
+                initial={prefersReduced ? false : { opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.06, ease: [0.32, 0.72, 0, 1] }}
+                className="rounded-[1.5rem] border p-5"
+                style={{
+                  backgroundColor: isDark ? `${color}10` : `${color}08`,
+                  borderColor: isDark ? `${color}30` : `${color}22`,
+                }}
+              >
+                <div className="font-mono text-[10px] uppercase tracking-[0.28em]" style={{ color }}>signal {index + 1}</div>
+                <div className="mt-3 text-base font-bold text-slate-900 dark:text-white/88">{skillName}</div>
+                <div className="mt-5 space-y-3">
+                  {skill.demandGrowth !== undefined && (
+                    <div>
+                      <div className="text-[11px] text-slate-500 dark:text-white/40">{sal.demandGrowth}</div>
+                      <div className="text-2xl font-black tabular-nums" style={{ color }}>+{skill.demandGrowth}%</div>
+                    </div>
+                  )}
+                  {skill.avgSalary !== undefined && (
+                    <div>
+                      <div className="text-[11px] text-slate-500 dark:text-white/40">{sal.avgSalaryLabel}</div>
+                      <div className="text-2xl font-black tabular-nums" style={{ color }}>${Math.round(skill.avgSalary / 1000)}K</div>
+                    </div>
+                  )}
+                  {skill.premiumRange && (
+                    <div>
+                      <div className="text-[11px] text-slate-500 dark:text-white/40">{sal.premiumRangeLabel}</div>
+                      <div className="text-2xl font-black tabular-nums" style={{ color }}>{skill.premiumRange}</div>
+                    </div>
+                  )}
+                </div>
               </motion.div>
             );
           })}
@@ -365,3 +472,5 @@ export default function SalaryTab() {
     </div>
   );
 }
+
+
