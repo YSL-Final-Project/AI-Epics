@@ -3,10 +3,12 @@ export interface TimelineEvent {
   id: number;
   date: string;
   title: string;
+  titleEn?: string;
   description: string;
+  descriptionEn?: string;
   category: 'tool_release' | 'company' | 'open_source' | 'policy';
   impactScore: number;
-  relatedLinks: { label: string; url: string }[];
+  relatedLinks: { label: string; labelEn?: string; url: string }[];
   imageUrl?: string;
 }
 
@@ -181,7 +183,9 @@ export interface CodeSnippet {
 export interface QuizQuestion {
   id: number;
   question: string;
+  questionEn?: string;
   options: string[];
+  optionsEn?: string[];
   mockResults: number[];
 }
 
@@ -191,6 +195,7 @@ export interface ToolRecommendation {
   experienceLevel: string;
   tool: string;
   reason: string;
+  reasonEn?: string;
 }
 
 // Page preview card

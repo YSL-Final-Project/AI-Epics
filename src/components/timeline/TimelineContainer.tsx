@@ -4,8 +4,10 @@ import timelineData from '../../data/timeline_events.json';
 import type { TimelineEvent as TimelineEventType } from '../../types';
 import TimelineFilter from './TimelineFilter';
 import TimelineEvent from './TimelineEvent';
+import { useI18n } from '../../i18n';
 
 export default function TimelineContainer() {
+  const { t } = useI18n();
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -22,9 +24,12 @@ export default function TimelineContainer() {
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
       const matchesCategory = activeCategory === 'all' || event.category === activeCategory;
-      const matchesSearch = searchQuery === '' ||
-        event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const q = searchQuery.toLowerCase();
+      const matchesSearch = q === '' ||
+        event.title.toLowerCase().includes(q) ||
+        event.description.toLowerCase().includes(q) ||
+        (event.titleEn?.toLowerCase().includes(q) ?? false) ||
+        (event.descriptionEn?.toLowerCase().includes(q) ?? false);
       return matchesCategory && matchesSearch;
     });
   }, [events, activeCategory, searchQuery]);
@@ -69,7 +74,7 @@ export default function TimelineContainer() {
             animate={{ opacity: 1 }}
             className="text-center py-32"
           >
-            <p className="text-sm text-slate-400 dark:text-white/20 font-light">没有找到匹配的事件</p>
+            <p className="text-sm text-slate-400 dark:text-white/20 font-light">{t.timeline.noResults}</p>
           </motion.div>
         )}
       </div>

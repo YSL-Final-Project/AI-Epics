@@ -268,6 +268,8 @@ function ModelColumn({
   onVote: () => void;
   colIndex: number;
 }) {
+  const { lang } = useI18n();
+  const localAnswer = lang === 'en' && model.answerEn ? model.answerEn : model.answer;
   const speedMultiplier = 1;
   const [displayedChars, setDisplayedChars] = useState(0);
   const [started, setStarted] = useState(false);
@@ -299,8 +301,8 @@ function ModelColumn({
     const tick = () => {
       accRef.current += model.speed * speedMultiplier;
       const newChars = Math.floor(accRef.current);
-      if (newChars >= model.answer.length) {
-        setDisplayedChars(model.answer.length);
+      if (newChars >= localAnswer.length) {
+        setDisplayedChars(localAnswer.length);
         setDone(true);
         onDone();
         return;
@@ -311,7 +313,7 @@ function ModelColumn({
     rafRef.current = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(rafRef.current);
-  }, [started, playing, model.speed, model.answer.length, speedMultiplier, onDone]);
+  }, [started, playing, model.speed, localAnswer.length, speedMultiplier, onDone]);
 
   useEffect(() => {
     if (bodyRef.current) {
@@ -319,7 +321,7 @@ function ModelColumn({
     }
   }, [displayedChars]);
 
-  const visibleText = model.answer.slice(0, displayedChars);
+  const visibleText = localAnswer.slice(0, displayedChars);
   const tokensPerSec = Math.round(model.speed * speedMultiplier * 60);
 
   return (
@@ -386,7 +388,7 @@ function ModelColumn({
       {/* Footer */}
       <div className="flex items-center justify-between px-4 py-2 border-t border-black/[0.06] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.03] shrink-0">
         <span className="text-[10px] font-mono text-black/30 dark:text-white/30">
-          {displayedChars} / {model.answer.length} {statusLabels.charsLabel}
+          {displayedChars} / {localAnswer.length} {statusLabels.charsLabel}
         </span>
         <span className="text-[10px] font-mono tabular-nums" style={{ color: model.color, opacity: 0.7 }}>
           {started ? `~${tokensPerSec} tok/s` : '—'}
@@ -644,7 +646,7 @@ export default function LLMArena() {
                     boxShadow: isSelected ? `0 0 12px ${model.color}30` : 'none',
                   }}
                 >
-                  {isSelected ? '✓ Voted' : 'Vote'}
+                  {isSelected ? tc.voted : tc.vote}
                 </button>
               );
             })}

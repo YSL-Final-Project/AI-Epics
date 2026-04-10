@@ -2,18 +2,21 @@ import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import recommendationsData from '../../data/tool_recommendations.json';
 import type { ToolRecommendation } from '../../types';
+import { useI18n } from '../../i18n';
 
 const recommendations = recommendationsData as ToolRecommendation[];
-
 const languages = ['Python', 'JavaScript', 'TypeScript', 'Java', 'Go', 'Rust'];
-const experienceLevels = [
-  { key: 'beginner', label: '初级' },
-  { key: 'intermediate', label: '中级' },
-  { key: 'advanced', label: '高级' },
-];
 
 export default function ToolRecommender() {
+  const { t, lang } = useI18n();
+  const tr = t.interactive.recommend;
   const prefersReduced = useReducedMotion();
+
+  const experienceLevels = [
+    { key: 'beginner',     label: tr.expBeginner },
+    { key: 'intermediate', label: tr.expIntermediate },
+    { key: 'advanced',     label: tr.expAdvanced },
+  ];
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedExperience, setSelectedExperience] = useState('');
 
@@ -33,7 +36,7 @@ export default function ToolRecommender() {
             transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
             className="font-mono text-[10px] tracking-[0.3em] text-slate-400/60 dark:text-white/20 uppercase mb-4"
           >
-            Language
+            {tr.languageLabel}
           </motion.p>
           <div className="grid grid-cols-3 gap-2">
             {languages.map((lang, i) => (
@@ -76,7 +79,7 @@ export default function ToolRecommender() {
             transition={{ duration: 0.5, delay: 0.1, ease: [0.32, 0.72, 0, 1] }}
             className="font-mono text-[10px] tracking-[0.3em] text-slate-400/60 dark:text-white/20 uppercase mb-4"
           >
-            Experience
+            {tr.experienceLabel}
           </motion.p>
           <div className="flex gap-2">
             {experienceLevels.map((exp, i) => (
@@ -136,7 +139,7 @@ export default function ToolRecommender() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="text-sm text-slate-500 dark:text-white/30 max-w-md mx-auto font-light"
             >
-              {recommendation.reason}
+              {lang === 'en' && recommendation.reasonEn ? recommendation.reasonEn : recommendation.reason}
             </motion.p>
           </motion.div>
         )}
