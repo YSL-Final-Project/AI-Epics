@@ -368,11 +368,11 @@ const zh = {
     title: '创意实验室',
     badge: 'Interactive',
     sections: {
-      timeMachine: { title: 'AI Time Machine', subtitle: '穿越 AI 编程进化史' },
-      dna:         { title: 'Developer DNA',   subtitle: '测测你的开发者基因' },
-      quiz:        { title: 'Code Quiz',        subtitle: 'AI 写的还是人写的？' },
-      vote:        { title: 'Predict',          subtitle: '预测 AI 编程的未来' },
-      recommend:   { title: 'Recommend',        subtitle: '找到最适合你的 AI 工具' },
+      timeMachine: { title: 'AI 时光机', subtitle: '穿越 AI 编程进化史' },
+      dna:         { title: '开发者 DNA', subtitle: '测测你的开发者基因' },
+      quiz:        { title: '代码测验',   subtitle: 'AI 写的还是人写的？' },
+      vote:        { title: '未来预测',   subtitle: '预测 AI 编程的未来' },
+      recommend:   { title: '工具推荐',   subtitle: '找到最适合你的 AI 工具' },
     },
     quiz: {
       accuracy: 'Accuracy',
