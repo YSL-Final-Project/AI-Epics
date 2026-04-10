@@ -1,11 +1,11 @@
-﻿import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import arenaQuestions from '../../data/arena_questions';
 import type { ArenaModel } from '../../data/arena_questions';
 import { useI18n } from '../../i18n';
 import LineReveal from '../animations/LineReveal';
 
-// 鈹€鈹€ Simple Markdown-ish renderer 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ── Simple Markdown-ish renderer ────────────────────────────────────────────
 
 function renderMarkdown(text: string) {
   const lines = text.split('\n');
@@ -104,7 +104,7 @@ function renderMarkdown(text: string) {
   return elements;
 }
 
-// 鈹€鈹€ Typing Indicator 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ── Typing Indicator ────────────────────────────────────────────────────────
 
 function TypingDots({ color }: { color: string }) {
   return (
@@ -122,7 +122,7 @@ function TypingDots({ color }: { color: string }) {
   );
 }
 
-// 鈹€鈹€ Judging Animation 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ── Judging Animation ───────────────────────────────────────────────────────
 
 function JudgingAnimation({ models, onComplete }: { models: ArenaModel[]; onComplete: () => void }) {
   const [phase, setPhase] = useState<'pulse' | 'check'>('pulse');
@@ -166,7 +166,7 @@ function JudgingAnimation({ models, onComplete }: { models: ArenaModel[]; onComp
   );
 }
 
-// 鈹€鈹€ Quality Metrics Bar (speed auto-computed, rest data-driven) 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ── Quality Metrics Bar (speed auto-computed, rest data-driven) ──────────────
 
 function QualityMetrics({
   models,
@@ -245,7 +245,7 @@ function QualityMetrics({
   );
 }
 
-// 鈹€鈹€ Single Model Chat Column 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ── Single Model Chat Column ────────────────────────────────────────────────
 
 type ArenaPhase = 'idle' | 'streaming' | 'judging' | 'voted';
 
@@ -372,7 +372,7 @@ function ModelColumn({
             )}
           </div>
         ) : (
-          /* Idle state 鈥?show placeholder */
+          /* Idle state —?show placeholder */
           phase === 'idle' ? (
             <div className="h-full flex items-center justify-center">
               <span className="text-[11px] text-black/25 dark:text-white/20 font-mono">···</span>
@@ -413,9 +413,9 @@ function ModelColumn({
   );
 }
 
-// 鈹€鈹€ Main LLMArena 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ── Main LLMArena ───────────────────────────────────────────────────────────
 
-// No localStorage persistence 鈥?voting is per-session only
+// No localStorage persistence —?voting is per-session only
 
 export default function LLMArena() {
   const { t, lang } = useI18n();
@@ -428,7 +428,7 @@ export default function LLMArena() {
   const judgingDoneRef = useRef(false);
   const question = arenaQuestions[activeQ];
 
-  // Reset vote when switching questions (no persistence 鈥?fresh choice each time)
+  // Reset vote when switching questions (no persistence —?fresh choice each time)
   useEffect(() => {
     setUserVote(null);
   }, [question.id]);
@@ -437,7 +437,7 @@ export default function LLMArena() {
     setDoneCount(c => c + 1);
   }, []);
 
-  // Phase transitions: streaming 鈫?judging 鈫?voted
+  // Phase transitions: streaming →?judging →?voted
   useEffect(() => {
     if (doneCount >= 3 && phase === 'streaming') {
       setPhase('judging');
@@ -616,7 +616,7 @@ export default function LLMArena() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Vote buttons 鈥?one per column, below the grid */}
+      {/* Vote buttons —?one per column, below the grid */}
       <AnimatePresence>
         {phase === 'voted' && (
           <motion.div

@@ -1,4 +1,4 @@
-﻿import { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
+import { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../../i18n';
 import agentLoopSteps from '../../data/agent_loop_steps';
@@ -7,7 +7,7 @@ const TOTAL_STEPS = agentLoopSteps.length;
 const SPEEDS = [0.5, 1, 2] as const;
 const ACCENT = '#d4a853';
 
-/* 鈹€鈹€ Render text with |code| badges 鈹€鈹€ */
+/* ── Render text with |code| badges ── */
 function RichText({ text, className }: { text: string; className?: string }) {
   const parts = text.split(/\|([^|]+)\|/);
   return (
@@ -25,9 +25,9 @@ function RichText({ text, className }: { text: string; className?: string }) {
   );
 }
 
-/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
+/* ════════════════════════
    Step-specific visualizations
-   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
+   ════════════════════════ */
 
 function TerminalVis({ lines, color = '#10b981' }: { lines: string[]; color?: string }) {
   return (
@@ -249,7 +249,7 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
 
     const run = async () => {
       try {
-        // 鈹€鈹€鈹€ Sending phase: dot goes left鈫抮ight 3 times 鈹€鈹€鈹€
+        // ─── Sending phase: dot goes left→right 3 times ───
         for (let i = 0; i < 3; i++) {
           if (cancelled()) return;
           setDotX(0);
@@ -263,12 +263,12 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
           await wait(200);
         }
 
-        // 鈹€鈹€鈹€ Thinking phase 鈹€鈹€鈹€
+        // ─── Thinking phase ───
         setShowThinking(true);
         await wait(1000);
         setShowThinking(false);
 
-        // 鈹€鈹€鈹€ Streaming phase: dot goes right鈫抣eft, each arrival outputs an SSE line 鈹€鈹€鈹€
+        // ─── Streaming phase: dot goes right→left, each arrival outputs an SSE line ───
         for (let i = 0; i < sseTokens.length; i++) {
           if (cancelled()) return;
           setDotX(1);
@@ -284,7 +284,7 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
           await wait(200);
         }
       } catch {
-        // cancelled 鈥?silently stop
+        // cancelled —?silently stop
       }
     };
 
@@ -359,7 +359,7 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 6: Token Parsing 鈥?raw tokens appear word by word, then rendered version appears */
+/* Step 6: Token Parsing —?raw tokens appear word by word, then rendered version appears */
 function TokenParsingVis({ lang }: { lang: 'en' | 'zh' }) {
   const rawTokens = lang === 'zh'
     ? ['我会', '搜索', ' `TODO`', ' 注释', ' 在', ' **src/**', ' 中']
@@ -391,7 +391,7 @@ function TokenParsingVis({ lang }: { lang: 'en' | 'zh' }) {
   );
   const renderedZh = (
     <span className="text-[#e8e4df] text-sm">
-      鎴戜細鎼滅储{' '}
+      我会搜索{' '}
       <code className="px-1.5 py-0.5 rounded bg-[#2a2520] text-[#d4a853] text-[0.85em] font-mono border border-[#3a3530]">TODO</code>
       {' '}注释在 <strong>src/</strong> 中
     </span>
@@ -565,8 +565,8 @@ function AwaitInputVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 9: Response Rendering 鈥?markdown output line by line */
-/* Step 10: Post-Sampling Hooks 鈥?three cards appear one by one */
+/* Step 9: Response Rendering —?markdown output line by line */
+/* Step 10: Post-Sampling Hooks —?three cards appear one by one */
 function PostSamplingHooksVis({ lang }: { lang: 'en' | 'zh' }) {
   const cards = lang === 'zh'
     ? [
@@ -622,7 +622,7 @@ function PostSamplingHooksVis({ lang }: { lang: 'en' | 'zh' }) {
 function ResponseRenderVis({ lang }: { lang: 'en' | 'zh' }) {
   const lines: { type: 'h1' | 'p' | 'li'; content: React.ReactNode }[] = lang === 'zh'
     ? [
-        { type: 'h1', content: <span className="text-[#d4a853] font-bold text-base">TODO 鎽樿</span> },
+        { type: 'h1', content: <span className="text-[#d4a853] font-bold text-base">TODO 摘要</span> },
         { type: 'p', content: <span>在代码库中找到 <strong className="text-gray-300">16 条</strong> TODO 注释：</span> },
         { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> - 添加重试逻辑</span> },
         { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> - 验证输入</span> },
@@ -680,7 +680,7 @@ function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: numbe
           grep -r "TODO" src/
         </div>
 
-        {/* Results 鈥?phase 1+ */}
+        {/* Results —?phase 1+ */}
         <AnimatePresence>
           {phase >= 1 && (
             <motion.div
@@ -742,9 +742,9 @@ function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: numbe
   );
 }
 
-/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
+/* ════════════════════════
    Pipeline Navigation (circles + connecting line)
-   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
+   ════════════════════════ */
 
 function PipelineNav({
   current,
@@ -764,7 +764,7 @@ function PipelineNav({
 
   const showArc = current === 8 && loopTrips > 0;
 
-  // Compute arc path from step 8 circle 鈫?step 5 circle (semicircle below)
+  // Compute arc path from step 8 circle →?step 5 circle (semicircle below)
   useLayoutEffect(() => {
     if (!showArc) { setArcPath(''); setDotPos(null); return; }
     const wrapper = wrapperRef.current;
@@ -839,7 +839,7 @@ function PipelineNav({
         </div>
       </div>
 
-      {/* Arc overlay: dashed path + animated dot from step 8 鈫?step 5 */}
+      {/* Arc overlay: dashed path + animated dot from step 8 →?step 5 */}
       {showArc && arcPath && (
         <svg
           className="absolute top-0 left-0 w-full pointer-events-none"
@@ -871,9 +871,9 @@ function PipelineNav({
   );
 }
 
-/* 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲
+/* ════════════════════════
    Main Component
-   鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲 */
+   ════════════════════════ */
 
 export default function AgentLoop() {
   const { lang, t } = useI18n();
@@ -881,7 +881,7 @@ export default function AgentLoop() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState<number>(1);
 
-  /* 鈹€鈹€ Step 8 loop trip counter 鈹€鈹€ */
+  /* ── Step 8 loop trip counter ── */
   const [loopTrips, setLoopTrips] = useState(0);
   const loopTripsRef = useRef(0);
   const loopRunIdRef = useRef(0);
@@ -900,7 +900,7 @@ export default function AgentLoop() {
     return () => { loopRunIdRef.current++; clearInterval(interval); };
   }, [currentStep]);
 
-  /* 鈹€鈹€ Per-step minimum dwell time (ms at 1x speed) 鈹€鈹€ */
+  /* ── Per-step minimum dwell time (ms at 1x speed) ── */
   const STEP_DWELL: Record<number, number> = {
     1: 2500,
     2: 5000,   // 3 phases 脳 1.2s + reading
@@ -908,14 +908,14 @@ export default function AgentLoop() {
     4: 3500,   // 4 elements converge
     5: 10000,  // sending 3脳 + thinking + streaming 6脳
     6: 4000,   // tokens + rendered
-    7: 4500,   // green flash 鈫?gold 鈫?permission
+    7: 4500,   // green flash →?gold →?permission
     8: 3000,   // extra dwell after loopTrips gate passes
     9: 3500,   // 5 lines 脳 350ms + reading
     10: 3500,  // 3 cards 脳 500ms + reading
     11: 3500,  // terminal prompt + reading
   };
 
-  /* 鈹€鈹€ Playback: single useEffect drives auto-advance 鈹€鈹€ */
+  /* ── Playback: single useEffect drives auto-advance ── */
   useEffect(() => {
     if (!isPlaying) return;
     if (currentStep >= TOTAL_STEPS) { setIsPlaying(false); return; }
@@ -931,7 +931,7 @@ export default function AgentLoop() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, isPlaying, speed, loopTrips]);
 
-  /* 鈹€鈹€ Manual controls 鈹€鈹€ */
+  /* ── Manual controls ── */
   const nextStep = useCallback(() => {
     setCurrentStep(prev => (prev < TOTAL_STEPS ? prev + 1 : prev));
   }, []);
@@ -953,7 +953,7 @@ export default function AgentLoop() {
 
   const step = agentLoopSteps[currentStep - 1];
 
-  /* 鈹€鈹€ Pick visualization for current step 鈹€鈹€ */
+  /* ── Pick visualization for current step ── */
   const visualization = useMemo(() => {
     switch (currentStep) {
       case 2: return <MessageCreationVis lang={lang} />;
@@ -1046,7 +1046,7 @@ export default function AgentLoop() {
             </motion.div>
           </AnimatePresence>
 
-          {/* 鈹€鈹€ Controls 鈹€鈹€ */}
+          {/* ── Controls ── */}
           <div className="flex items-center justify-between px-5 sm:px-6 pb-5 pt-0">
             <div className="flex items-center gap-1.5">
               <button
