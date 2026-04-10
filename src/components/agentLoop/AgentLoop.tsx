@@ -125,19 +125,20 @@ function MessageCreationVis({ lang }: { lang: 'en' | 'zh' }) {
 
 /* Step 3: Chat history with animated new message */
 function HistoryAppendVis({ lang }: { lang: 'en' | 'zh' }) {
+  const { t } = useI18n();
+  const copy = t.agentLoop.visuals;
   const history = lang === 'zh'
     ? [
-        { role: 'user', text: '鎼缓椤圭洰缁撴瀯' },
-        { role: 'assistant', text: '鎴戞潵鍒涘缓鐩綍甯冨眬...' },
-        { role: 'user', text: '现在添加数据库模型' },
+        { role: 'user', text: copy.historySetupUser },
+        { role: 'assistant', text: copy.historySetupAssistant },
+        { role: 'user', text: copy.historyDatabaseUser },
       ]
     : [
-        { role: 'user', text: 'Set up the project structure' },
-        { role: 'assistant', text: "I'll create the directory layout..." },
-        { role: 'user', text: 'Now add the database models' },
+        { role: 'user', text: copy.historySetupUser },
+        { role: 'assistant', text: copy.historySetupAssistant },
+        { role: 'user', text: copy.historyDatabaseUser },
       ];
-  const newMsg = lang === 'zh' ? '查找所有 TODO 注释...' : 'Find all TODO comments...';
-
+  const newMsg = copy.historyNewMessage;
   return (
     <div className="rounded-xl p-4 font-mono text-sm border border-gray-700/40 bg-[#0d0d1a] min-h-[180px] flex flex-col justify-center space-y-2 px-6">
       {history.map((msg, i) => (
@@ -167,7 +168,7 @@ function HistoryAppendVis({ lang }: { lang: 'en' | 'zh' }) {
           className="ml-2 text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded"
           style={{ color: ACCENT, backgroundColor: `${ACCENT}20` }}
         >
-          NEW
+          {copy.newBadge}
         </span>
       </motion.div>
     </div>
@@ -222,7 +223,7 @@ function SystemAssemblyVis() {
   );
 }
 
-/* Step 5: API Streaming 鈥?dot teleports between machines, SSE lines appear */
+/* Step 5: API Streaming — dot teleports between machines, SSE lines appear */
 function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
   const [lines, setLines] = useState<string[]>([]);
   const [dotVisible, setDotVisible] = useState(false);
@@ -299,7 +300,7 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
       <div className="flex items-center justify-center gap-4">
         {/* Your Machine */}
         <div className="px-5 py-4 rounded-lg border border-[#06b6d4]/30 bg-[#06b6d4]/5 font-mono text-xs text-[#06b6d4] text-center min-w-[120px]">
-          {lang === 'zh' ? '浣犵殑鏈哄櫒' : 'Your Machine'}
+          {lang === 'zh' ? '你的机器' : 'Your Machine'}
         </div>
 
         {/* Dot track */}
@@ -441,7 +442,7 @@ function TokenParsingVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 7: Tool Detection 鈥?green flash 鈫?gold border + detected label 鈫?permission check */
+/* Step 7: Tool Detection — green flash → gold border + detected label → permission check */
 function ToolDetectionVis({ lang }: { lang: 'en' | 'zh' }) {
   // Phase 0: text + tool_use with green border flash
   // Phase 1: gold border + "Tool call detected: bash"
@@ -478,7 +479,7 @@ function ToolDetectionVis({ lang }: { lang: 'en' | 'zh' }) {
           transition={{ duration: 0.3 }}
           className="font-mono text-sm text-gray-500 space-y-1"
         >
-          <div>{lang === 'zh' ? "鎴戞潵鎼滅储 TODO 娉ㄩ噴..." : "I'll search for TODO comments..."}</div>
+          <div>{lang === 'zh' ? "我来搜索 TODO 注释..." : "I'll search for TODO comments..."}</div>
           <div>{lang === 'zh' ? '让我使用 bash 工具来查找。' : 'Let me use the bash tool to find them.'}</div>
         </motion.div>
 
@@ -530,7 +531,7 @@ function ToolDetectionVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 11: Await Next Input 鈥?terminal prompt with blinking cursor */
+/* Step 11: Await Next Input — terminal prompt with blinking cursor */
 function AwaitInputVis({ lang }: { lang: 'en' | 'zh' }) {
   return (
     <div className="rounded-xl border border-gray-700/40 bg-[#0d0d1a] min-h-[200px] flex flex-col items-center justify-center p-5 gap-4">
@@ -655,7 +656,7 @@ function ResponseRenderVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 8: Tool Execution Loop 鈥?command 鈫?results 鈫?loop back */
+/* Step 8: Tool Execution Loop — command → results → loop back */
 function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: number }) {
   const phase = trips < 5 ? 0 : trips < 10 ? 1 : 2;
 
@@ -1113,5 +1114,7 @@ export default function AgentLoop() {
     </section>
   );
 }
+
+
 
 

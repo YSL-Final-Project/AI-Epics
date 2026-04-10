@@ -654,6 +654,13 @@ const zh = {
     previousStep: '上一步',
     nextStep: '下一步',
     speed: '速度',
+    visuals: {
+      historySetupUser: '搭建项目结构',
+      historySetupAssistant: '我来创建目录布局...',
+      historyDatabaseUser: '现在添加数据库模型',
+      historyNewMessage: '查找所有 TODO 注释...',
+      newBadge: 'NEW',
+    },
   },
 
   // ── DevHistoryPage ──

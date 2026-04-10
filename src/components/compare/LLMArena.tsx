@@ -375,7 +375,7 @@ function ModelColumn({
           /* Idle state 鈥?show placeholder */
           phase === 'idle' ? (
             <div className="h-full flex items-center justify-center">
-              <span className="text-[11px] text-black/25 dark:text-white/20 font-mono">路路路</span>
+              <span className="text-[11px] text-black/25 dark:text-white/20 font-mono">···</span>
             </div>
           ) : null
         )}
@@ -641,7 +641,7 @@ export default function LLMArena() {
                     boxShadow: isSelected ? `0 0 12px ${model.color}30` : 'none',
                   }}
                 >
-                  {isSelected ? 'Voted' : 'Vote'}
+                  {isSelected ? tc.voted : tc.vote}
                 </button>
               );
             })}
@@ -677,5 +677,9 @@ export default function LLMArena() {
     </div>
   );
 }
+
+
+
+
 
 
