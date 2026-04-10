@@ -43,8 +43,8 @@ export default function StatsDashboard() {
       whileInView="show"
       viewport={{ once: true, margin: '-80px' }}
     >
-      {stats.map((stat) => (
-        <motion.div key={stat.label} variants={prefersReduced ? undefined : item}>
+      {stats.map((stat, i) => (
+        <motion.div key={i} variants={prefersReduced ? undefined : item}>
           <StatCard {...stat} />
         </motion.div>
       ))}
