@@ -25,9 +25,9 @@ function RichText({ text, className }: { text: string; className?: string }) {
   );
 }
 
-/* ════════════════════════════════════════════════
+/* ════════════════════════
    Step-specific visualizations
-   ════════════════════════════════════════════════ */
+   ════════════════════════ */
 
 function TerminalVis({ lines, color = '#10b981' }: { lines: string[]; color?: string }) {
   return (
@@ -59,7 +59,7 @@ function TerminalVis({ lines, color = '#10b981' }: { lines: string[]; color?: st
 function MessageCreationVis({ lang }: { lang: 'en' | 'zh' }) {
   const [phase, setPhase] = useState(0);
   const inputText = lang === 'zh'
-    ? '"查找 src/ 中所有 TODO 注释并创建摘要"'
+    ? '查找 src/ 中所有 TODO 注释并创建摘要'
     : '"Find all TODO comments in src/ and create a summary"';
 
   useEffect(() => {
@@ -125,19 +125,20 @@ function MessageCreationVis({ lang }: { lang: 'en' | 'zh' }) {
 
 /* Step 3: Chat history with animated new message */
 function HistoryAppendVis({ lang }: { lang: 'en' | 'zh' }) {
+  const { t } = useI18n();
+  const copy = t.agentLoop.visuals;
   const history = lang === 'zh'
     ? [
-        { role: 'user', text: '搭建项目结构' },
-        { role: 'assistant', text: '我来创建目录布局...' },
-        { role: 'user', text: '现在添加数据库模型' },
+        { role: 'user', text: copy.historySetupUser },
+        { role: 'assistant', text: copy.historySetupAssistant },
+        { role: 'user', text: copy.historyDatabaseUser },
       ]
     : [
-        { role: 'user', text: 'Set up the project structure' },
-        { role: 'assistant', text: "I'll create the directory layout..." },
-        { role: 'user', text: 'Now add the database models' },
+        { role: 'user', text: copy.historySetupUser },
+        { role: 'assistant', text: copy.historySetupAssistant },
+        { role: 'user', text: copy.historyDatabaseUser },
       ];
-  const newMsg = lang === 'zh' ? '查找所有 TODO 注释...' : 'Find all TODO comments...';
-
+  const newMsg = copy.historyNewMessage;
   return (
     <div className="rounded-xl p-4 font-mono text-sm border border-gray-700/40 bg-[#0d0d1a] min-h-[180px] flex flex-col justify-center space-y-2 px-6">
       {history.map((msg, i) => (
@@ -167,7 +168,7 @@ function HistoryAppendVis({ lang }: { lang: 'en' | 'zh' }) {
           className="ml-2 text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded"
           style={{ color: ACCENT, backgroundColor: `${ACCENT}20` }}
         >
-          NEW
+          {copy.newBadge}
         </span>
       </motion.div>
     </div>
@@ -283,7 +284,7 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
           await wait(200);
         }
       } catch {
-        // cancelled — silently stop
+        // cancelled —?silently stop
       }
     };
 
@@ -358,10 +359,10 @@ function ApiStreamingVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 6: Token Parsing — raw tokens appear word by word, then rendered version appears */
+/* Step 6: Token Parsing —?raw tokens appear word by word, then rendered version appears */
 function TokenParsingVis({ lang }: { lang: 'en' | 'zh' }) {
   const rawTokens = lang === 'zh'
-    ? ["我会", "搜索", " `TODO`", " 注释", "在", " **src/**", " 中"]
+    ? ['我会', '搜索', ' `TODO`', ' 注释', ' 在', ' **src/**', ' 中']
     : ["I'll", " search", " for", " `TODO`", " comments", " in", " **src/**"];
   const [visibleCount, setVisibleCount] = useState(0);
   const [showRendered, setShowRendered] = useState(false);
@@ -546,7 +547,7 @@ function AwaitInputVis({ lang }: { lang: 'en' | 'zh' }) {
             className="inline-block w-[7px] h-[14px] align-middle"
             style={{ backgroundColor: '#d4a853' }}
             animate={{ opacity: [1, 0] }}
-            transition={{ duration: 0.8, repeat: Infinity, ease: 'steps(2)' }}
+            transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
           />
         </div>
       </div>
@@ -564,19 +565,19 @@ function AwaitInputVis({ lang }: { lang: 'en' | 'zh' }) {
   );
 }
 
-/* Step 9: Response Rendering — markdown output line by line */
-/* Step 10: Post-Sampling Hooks — three cards appear one by one */
+/* Step 9: Response Rendering —?markdown output line by line */
+/* Step 10: Post-Sampling Hooks —?three cards appear one by one */
 function PostSamplingHooksVis({ lang }: { lang: 'en' | 'zh' }) {
   const cards = lang === 'zh'
     ? [
-        { icon: '📦', name: 'Auto-compact', desc: '上下文在限制内 — 跳过', active: false },
-        { icon: '🧠', name: 'Memory', desc: '提取: TODO 追踪模式', active: true },
-        { icon: '💭', name: 'Dream mode', desc: '未启用 — 跳过', active: false },
+        { icon: '📦', name: 'Auto-compact', desc: '上下文在限制内，跳过', active: false },
+        { icon: '🧠', name: 'Memory', desc: '提取：TODO 追踪模式', active: true },
+        { icon: '💤', name: 'Dream mode', desc: '未启用，跳过', active: false },
       ]
     : [
-        { icon: '📦', name: 'Auto-compact', desc: 'Context within limits — skipped', active: false },
+        { icon: '📦', name: 'Auto-compact', desc: 'Context within limits - skipped', active: false },
         { icon: '🧠', name: 'Memory', desc: 'Extracted: TODO tracking pattern', active: true },
-        { icon: '💭', name: 'Dream mode', desc: 'Not enabled — skipped', active: false },
+        { icon: '💤', name: 'Dream mode', desc: 'Not enabled - skipped', active: false },
       ];
 
   return (
@@ -621,18 +622,18 @@ function PostSamplingHooksVis({ lang }: { lang: 'en' | 'zh' }) {
 function ResponseRenderVis({ lang }: { lang: 'en' | 'zh' }) {
   const lines: { type: 'h1' | 'p' | 'li'; content: React.ReactNode }[] = lang === 'zh'
     ? [
-        { type: 'h1', content: <span className="text-[#d4a853] font-bold text-base">TODO 摘要</span> },
+        { type: 'h1', content: <span className="text-[#d4a853] font-bold text-base">TODO 摘要</span> },
         { type: 'p', content: <span>在代码库中找到 <strong className="text-gray-300">16 条</strong> TODO 注释：</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> — 添加重试逻辑</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> — 验证输入</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/context.ts:15</code> — 缓存系统提示词</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> - 添加重试逻辑</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> - 验证输入</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/context.ts:15</code> - 缓存系统提示词</span> },
       ]
     : [
         { type: 'h1', content: <span className="text-[#d4a853] font-bold text-base">TODO Summary</span> },
         { type: 'p', content: <span>Found <strong className="text-gray-300">16 TODO comments</strong> across the codebase:</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> — Add retry logic</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> — Validate input</span> },
-        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/context.ts:15</code> — Cache system prompt</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/query.ts:42</code> - Add retry logic</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/tools.ts:108</code> - Validate input</span> },
+        { type: 'li', content: <span><code className="px-1 py-0.5 rounded bg-[#2a2520] text-[#06b6d4] text-[0.85em] border border-[#3a3530]">src/context.ts:15</code> - Cache system prompt</span> },
       ];
 
   return (
@@ -679,7 +680,7 @@ function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: numbe
           grep -r "TODO" src/
         </div>
 
-        {/* Results — phase 1+ */}
+        {/* Results —?phase 1+ */}
         <AnimatePresence>
           {phase >= 1 && (
             <motion.div
@@ -726,7 +727,7 @@ function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: numbe
               transition={{ duration: 0.3 }}
               className="text-center text-sm pt-2 flex items-center justify-center gap-2"
             >
-              <span style={{ color: ACCENT }}>↻ Loop back to API</span>
+              <span style={{ color: ACCENT }}>{'->'} Loop back to API</span>
               <span
                 className="px-2 py-0.5 rounded text-[11px] font-mono border"
                 style={{ borderColor: `${ACCENT}40`, color: ACCENT, backgroundColor: `${ACCENT}15` }}
@@ -741,9 +742,9 @@ function ToolExecutionLoopVis({ lang, trips }: { lang: 'en' | 'zh'; trips: numbe
   );
 }
 
-/* ════════════════════════════════════════════════
+/* ════════════════════════
    Pipeline Navigation (circles + connecting line)
-   ════════════════════════════════════════════════ */
+   ════════════════════════ */
 
 function PipelineNav({
   current,
@@ -763,7 +764,7 @@ function PipelineNav({
 
   const showArc = current === 8 && loopTrips > 0;
 
-  // Compute arc path from step 8 circle → step 5 circle (semicircle below)
+  // Compute arc path from step 8 circle →?step 5 circle (semicircle below)
   useLayoutEffect(() => {
     if (!showArc) { setArcPath(''); setDotPos(null); return; }
     const wrapper = wrapperRef.current;
@@ -838,7 +839,7 @@ function PipelineNav({
         </div>
       </div>
 
-      {/* Arc overlay: dashed path + animated dot from step 8 → step 5 */}
+      {/* Arc overlay: dashed path + animated dot from step 8 →?step 5 */}
       {showArc && arcPath && (
         <svg
           className="absolute top-0 left-0 w-full pointer-events-none"
@@ -870,9 +871,9 @@ function PipelineNav({
   );
 }
 
-/* ════════════════════════════════════════════════
+/* ════════════════════════
    Main Component
-   ════════════════════════════════════════════════ */
+   ════════════════════════ */
 
 export default function AgentLoop() {
   const { lang, t } = useI18n();
@@ -902,15 +903,15 @@ export default function AgentLoop() {
   /* ── Per-step minimum dwell time (ms at 1x speed) ── */
   const STEP_DWELL: Record<number, number> = {
     1: 2500,
-    2: 5000,   // 3 phases × 1.2s + reading
+    2: 5000,   // 3 phases 脳 1.2s + reading
     3: 3500,   // history + new message spring
     4: 3500,   // 4 elements converge
-    5: 10000,  // sending 3× + thinking + streaming 6×
+    5: 10000,  // sending 3脳 + thinking + streaming 6脳
     6: 4000,   // tokens + rendered
-    7: 4500,   // green flash → gold → permission
+    7: 4500,   // green flash →?gold →?permission
     8: 3000,   // extra dwell after loopTrips gate passes
-    9: 3500,   // 5 lines × 350ms + reading
-    10: 3500,  // 3 cards × 500ms + reading
+    9: 3500,   // 5 lines 脳 350ms + reading
+    10: 3500,  // 3 cards 脳 500ms + reading
     11: 3500,  // terminal prompt + reading
   };
 
@@ -1113,3 +1114,7 @@ export default function AgentLoop() {
     </section>
   );
 }
+
+
+
+

@@ -645,6 +645,13 @@ const en: Translations = {
     previousStep: 'Previous step',
     nextStep: 'Next step',
     speed: 'speed',
+    visuals: {
+      historySetupUser: 'Set up the project structure',
+      historySetupAssistant: "I'll create the directory layout...",
+      historyDatabaseUser: 'Now add the database models',
+      historyNewMessage: 'Find all TODO comments...',
+      newBadge: 'NEW',
+    },
   },
 
   // ── DevHistoryPage ──

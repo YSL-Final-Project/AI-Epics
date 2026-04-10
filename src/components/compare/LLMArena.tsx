@@ -256,7 +256,6 @@ function ModelColumn({
   statusLabels,
   phase,
   isVoted,
-  onVote,
   colIndex,
 }: {
   model: ArenaModel;
@@ -265,11 +264,8 @@ function ModelColumn({
   statusLabels: { done: string; typing: string; wait: string; charsLabel: string };
   phase: ArenaPhase;
   isVoted: boolean;
-  onVote: () => void;
   colIndex: number;
 }) {
-  const { lang } = useI18n();
-  const localAnswer = lang === 'en' && model.answerEn ? model.answerEn : model.answer;
   const speedMultiplier = 1;
   const [displayedChars, setDisplayedChars] = useState(0);
   const [started, setStarted] = useState(false);
@@ -301,8 +297,8 @@ function ModelColumn({
     const tick = () => {
       accRef.current += model.speed * speedMultiplier;
       const newChars = Math.floor(accRef.current);
-      if (newChars >= localAnswer.length) {
-        setDisplayedChars(localAnswer.length);
+      if (newChars >= model.answer.length) {
+        setDisplayedChars(model.answer.length);
         setDone(true);
         onDone();
         return;
@@ -313,7 +309,7 @@ function ModelColumn({
     rafRef.current = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(rafRef.current);
-  }, [started, playing, model.speed, localAnswer.length, speedMultiplier, onDone]);
+  }, [started, playing, model.speed, model.answer.length, speedMultiplier, onDone]);
 
   useEffect(() => {
     if (bodyRef.current) {
@@ -321,7 +317,7 @@ function ModelColumn({
     }
   }, [displayedChars]);
 
-  const visibleText = localAnswer.slice(0, displayedChars);
+  const visibleText = model.answer.slice(0, displayedChars);
   const tokensPerSec = Math.round(model.speed * speedMultiplier * 60);
 
   return (
@@ -376,7 +372,7 @@ function ModelColumn({
             )}
           </div>
         ) : (
-          /* Idle state — show placeholder */
+          /* Idle state —?show placeholder */
           phase === 'idle' ? (
             <div className="h-full flex items-center justify-center">
               <span className="text-[11px] text-black/25 dark:text-white/20 font-mono">···</span>
@@ -388,10 +384,10 @@ function ModelColumn({
       {/* Footer */}
       <div className="flex items-center justify-between px-4 py-2 border-t border-black/[0.06] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.03] shrink-0">
         <span className="text-[10px] font-mono text-black/30 dark:text-white/30">
-          {displayedChars} / {localAnswer.length} {statusLabels.charsLabel}
+          {displayedChars} / {model.answer.length} {statusLabels.charsLabel}
         </span>
         <span className="text-[10px] font-mono tabular-nums" style={{ color: model.color, opacity: 0.7 }}>
-          {started ? `~${tokensPerSec} tok/s` : '—'}
+          {started ? `~${tokensPerSec} tok/s` : '-'}
         </span>
       </div>
 
@@ -419,7 +415,7 @@ function ModelColumn({
 
 // ── Main LLMArena ───────────────────────────────────────────────────────────
 
-// No localStorage persistence — voting is per-session only
+// No localStorage persistence —?voting is per-session only
 
 export default function LLMArena() {
   const { t, lang } = useI18n();
@@ -432,7 +428,7 @@ export default function LLMArena() {
   const judgingDoneRef = useRef(false);
   const question = arenaQuestions[activeQ];
 
-  // Reset vote when switching questions (no persistence — fresh choice each time)
+  // Reset vote when switching questions (no persistence —?fresh choice each time)
   useEffect(() => {
     setUserVote(null);
   }, [question.id]);
@@ -441,7 +437,7 @@ export default function LLMArena() {
     setDoneCount(c => c + 1);
   }, []);
 
-  // Phase transitions: streaming → judging → voted
+  // Phase transitions: streaming →?judging →?voted
   useEffect(() => {
     if (doneCount >= 3 && phase === 'streaming') {
       setPhase('judging');
@@ -614,14 +610,13 @@ export default function LLMArena() {
               statusLabels={{ done: tc.statusDone, typing: tc.statusTyping, wait: tc.statusWait, charsLabel: tc.charsLabel }}
               phase={phase}
               isVoted={userVote === i}
-              onVote={() => handleVote(i)}
               colIndex={i}
             />
           ))}
         </motion.div>
       </AnimatePresence>
 
-      {/* Vote buttons — one per column, below the grid */}
+      {/* Vote buttons —?one per column, below the grid */}
       <AnimatePresence>
         {phase === 'voted' && (
           <motion.div
@@ -682,3 +677,9 @@ export default function LLMArena() {
     </div>
   );
 }
+
+
+
+
+
+
