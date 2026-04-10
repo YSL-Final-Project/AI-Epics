@@ -4,6 +4,7 @@ export interface ArenaModel {
   color: string;
   avatar: string;
   answer: string;
+  answerEn?: string;
   speed: number;   // chars per tick (higher = faster)
   delay: number;   // ms before typing starts
 }
@@ -52,6 +53,25 @@ def quicksort(arr):
 **空间复杂度：** O(n)
 
 选择中间元素作为 pivot 可以降低最坏情况出现的概率。如果需要原地排序以节省内存，可以使用 Lomuto 或 Hoare 分区方案。`,
+        answerEn: `Here's a clean and efficient quicksort implementation:
+
+\`\`\`python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+
+    return quicksort(left) + middle + quicksort(right)
+\`\`\`
+
+**Time complexity:** Average O(n log n), worst case O(n²)
+**Space complexity:** O(n)
+
+Choosing the middle element as the pivot reduces the probability of worst-case behavior. If you need in-place sorting to save memory, consider using the Lomuto or Hoare partition scheme.`,
       },
       {
         name: 'GPT-4o',
@@ -94,6 +114,40 @@ print(quicksort([3, 6, 8, 10, 1, 2, 1]))
 \`\`\`
 
 这个实现使用了 Hoare 分区方案，比 Lomuto 方案平均减少约 3 倍的交换操作。`,
+        answerEn: `Here's a Python quicksort implementation:
+
+\`\`\`python
+def quicksort(arr):
+    """In-place quicksort (Hoare partition)"""
+    def partition(low, high):
+        pivot = arr[(low + high) // 2]
+        i, j = low - 1, high + 1
+        while True:
+            i += 1
+            while arr[i] < pivot:
+                i += 1
+            j -= 1
+            while arr[j] > pivot:
+                j -= 1
+            if i >= j:
+                return j
+            arr[i], arr[j] = arr[j], arr[i]
+
+    def sort(low, high):
+        if low < high:
+            p = partition(low, high)
+            sort(low, p)
+            sort(p + 1, high)
+
+    sort(0, len(arr) - 1)
+    return arr
+
+# Example
+print(quicksort([3, 6, 8, 10, 1, 2, 1]))
+# Output: [1, 1, 2, 3, 6, 8, 10]
+\`\`\`
+
+This implementation uses the Hoare partition scheme, which performs roughly 3× fewer swaps on average compared to Lomuto.`,
       },
       {
         name: 'Gemini Pro',
@@ -130,6 +184,34 @@ print(sorted_data)  # [3, 9, 10, 27, 38, 43, 82]
 - 随机 pivot 使平均性能更稳定
 - 列表推导式让代码更 Pythonic
 - 平均时间复杂度 O(n log n)`,
+        answerEn: `Quicksort is one of the most widely used sorting algorithms. Here's a Python implementation:
+
+\`\`\`python
+import random
+
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    # Random pivot selection to avoid worst case
+    pivot = random.choice(arr)
+
+    less = [x for x in arr if x < pivot]
+    equal = [x for x in arr if x == pivot]
+    greater = [x for x in arr if x > pivot]
+
+    return quicksort(less) + equal + quicksort(greater)
+
+# Usage example
+data = [38, 27, 43, 3, 9, 82, 10]
+sorted_data = quicksort(data)
+print(sorted_data)  # [3, 9, 10, 27, 38, 43, 82]
+\`\`\`
+
+**Key points:**
+- Random pivot selection provides more consistent average performance
+- List comprehensions make the code more Pythonic
+- Average time complexity O(n log n)`,
       },
     ],
   },
@@ -186,6 +268,45 @@ function UserSearch() {
 \`\`\`
 
 关键点：\`useEffect\` 的 cleanup 函数会在下次执行前清除定时器，实现防抖。`,
+        answerEn: `**React Hooks** are a feature introduced in React 16.8 that let you use state and side effects in function components.
+
+Core Hooks:
+- \`useState\` — state management
+- \`useEffect\` — side effects (data fetching, DOM manipulation)
+- \`useRef\` — persistent references
+
+Practical example — a user list with debounced search:
+
+\`\`\`tsx
+function UserSearch() {
+  const [query, setQuery] = useState('');
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!query.trim()) return;
+
+    setLoading(true);
+    const timer = setTimeout(async () => {
+      const res = await fetch(\`/api/users?q=\${query}\`);
+      const data = await res.json();
+      setUsers(data);
+      setLoading(false);
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  return (
+    <div>
+      <input value={query} onChange={e => setQuery(e.target.value)} />
+      {loading ? <p>Searching...</p> : users.map(u => <p key={u.id}>{u.name}</p>)}
+    </div>
+  );
+}
+\`\`\`
+
+Key insight: the \`useEffect\` cleanup function cancels the timer before the next run, implementing debounce.`,
       },
       {
         name: 'GPT-4o',
@@ -229,6 +350,41 @@ function App() {
 \`\`\`
 
 自定义 Hook 以 \`use\` 开头，可以在多个组件中复用。`,
+        answerEn: `## Introduction to React Hooks
+
+Hooks let you use React's full feature set without writing class components. They solve three problems:
+
+1. **Reusing stateful logic** → Custom Hooks
+2. **Complex components** → Split effects by concern
+3. **Class \`this\` confusion** → Function components are more intuitive
+
+### Practical Example: Dark Mode Toggle
+
+\`\`\`tsx
+// Custom Hook
+function useDarkMode() {
+  const [dark, setDark] = useState(() =>
+    localStorage.getItem('theme') === 'dark'
+  );
+
+  useEffect(() => {
+    document.body.classList.toggle('dark', dark);
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }, [dark]);
+
+  return [dark, setDark] as const;
+}
+
+// Usage
+function App() {
+  const [dark, setDark] = useDarkMode();
+  return <button onClick={() => setDark(!dark)}>
+    {dark ? '☀️' : '🌙'}
+  </button>;
+}
+\`\`\`
+
+Custom Hooks start with \`use\` and can be shared across multiple components.`,
       },
       {
         name: 'Gemini Pro',
@@ -271,6 +427,40 @@ function Counter() {
 \`\`\`
 
 **规则：** Hooks 只能在组件顶层调用，不能在条件/循环中使用。`,
+        answerEn: `**React Hooks** are React's core API for managing state and lifecycle in function components.
+
+| Hook | Purpose |
+|------|---------|
+| useState | Component-level state |
+| useEffect | Side effect management |
+| useContext | Cross-component data sharing |
+| useMemo | Computed value caching |
+| useCallback | Function memoization |
+
+### Counter + Document Title Sync
+
+\`\`\`tsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  // Update page title whenever count changes
+  useEffect(() => {
+    document.title = \`Clicked \${count} times\`;
+
+    return () => {
+      document.title = 'React App'; // cleanup
+    };
+  }, [count]);
+
+  return (
+    <button onClick={() => setCount(c => c + 1)}>
+      Count: {count}
+    </button>
+  );
+}
+\`\`\`
+
+**Rules:** Hooks must be called at the top level of a component — never inside conditions or loops.`,
       },
     ],
   },
@@ -322,6 +512,40 @@ ON orders(created_at, total DESC);
 4. 如果数据量大，考虑**分区表**按月分区 created_at
 
 优化后预计查询时间从 2.3s → 50ms。`,
+        answerEn: `Analyzing your slow query, here are the optimization recommendations:
+
+**Original query issues:**
+\`\`\`sql
+SELECT * FROM orders o
+JOIN users u ON o.user_id = u.id
+WHERE o.created_at > '2024-01-01'
+ORDER BY o.total DESC
+LIMIT 100;
+\`\`\`
+
+**Optimized:**
+\`\`\`sql
+SELECT o.id, o.total, o.created_at,
+       u.name, u.email
+FROM orders o
+JOIN users u ON o.user_id = u.id
+WHERE o.created_at > '2024-01-01'
+ORDER BY o.total DESC
+LIMIT 100;
+\`\`\`
+
+**Key optimizations:**
+
+1. **Avoid SELECT *** — only fetch needed columns, reduces I/O
+2. **Add a composite index:**
+\`\`\`sql
+CREATE INDEX idx_orders_date_total
+ON orders(created_at, total DESC);
+\`\`\`
+3. **Ensure JOIN columns are indexed** — user_id should have a foreign key index
+4. For large datasets, consider **partitioning** orders by month on created_at
+
+Estimated improvement: query time from 2.3s → 50ms.`,
       },
       {
         name: 'GPT-4o',
@@ -369,6 +593,45 @@ LIMIT 100;
 | 扫描行数 | 5M | 12K |
 | 排序 | 磁盘 | 索引 |
 | 耗时 | 2.3s | 35ms |`,
+        answerEn: `Let me help you analyze and optimize. Start by checking the execution plan:
+
+\`\`\`sql
+EXPLAIN ANALYZE
+SELECT * FROM orders o
+JOIN users u ON o.user_id = u.id
+WHERE o.created_at > '2024-01-01'
+ORDER BY o.total DESC LIMIT 100;
+\`\`\`
+
+**Issues found:**
+- Full table scan on orders (Seq Scan)
+- Sort on disk (external merge sort)
+- Nested loop join without index
+
+**Optimization plan:**
+
+\`\`\`sql
+-- 1. Covering index (most impactful)
+CREATE INDEX idx_orders_covering
+ON orders(created_at, total DESC)
+INCLUDE (user_id);
+
+-- 2. Optimized query
+SELECT o.id, o.total, o.created_at,
+       u.name, u.email
+FROM orders o
+INNER JOIN users u ON o.user_id = u.id
+WHERE o.created_at >= '2024-01-01'
+ORDER BY o.total DESC
+LIMIT 100;
+\`\`\`
+
+**Performance comparison:**
+| Metric | Before | After |
+|--------|--------|-------|
+| Rows scanned | 5M | 12K |
+| Sort | Disk | Index |
+| Duration | 2.3s | 35ms |`,
       },
       {
         name: 'Gemini Pro',
@@ -413,6 +676,42 @@ LIMIT 100;
 - 定期 ANALYZE TABLE 更新统计信息
 - 考虑 created_at 的时间分区
 - 对于热点查询，可使用 Redis 缓存结果`,
+        answerEn: `The core of SQL optimization is **reducing rows scanned** and **avoiding file sorts**.
+
+**Your query has these issues:**
+
+1. \`SELECT *\` reads all columns
+2. Missing appropriate indexes
+3. ORDER BY triggers filesort
+
+**Recommended index strategy:**
+
+\`\`\`sql
+-- Optimal index
+ALTER TABLE orders
+ADD INDEX idx_created_total (created_at, total);
+
+-- Ensure foreign key index
+ALTER TABLE orders
+ADD INDEX idx_user_id (user_id);
+\`\`\`
+
+**Rewritten query:**
+
+\`\`\`sql
+SELECT o.id, o.total, o.created_at,
+       u.name, u.email
+FROM orders o
+INNER JOIN users u USING (user_id)
+WHERE o.created_at >= '2024-01-01'
+ORDER BY o.total DESC
+LIMIT 100;
+\`\`\`
+
+**Additional tips:**
+- Run ANALYZE TABLE periodically to update statistics
+- Consider time-based partitioning on created_at
+- For hot queries, cache results with Redis`,
       },
     ],
   },

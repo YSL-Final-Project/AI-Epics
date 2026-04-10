@@ -72,6 +72,17 @@ const zh = {
   timeline: {
     title: '进化之路',
     subtitle: 'AI 编程革命的 25 个瞬间',
+    searchPlaceholder: '搜索...',
+    noResults: '没有找到匹配的事件',
+    catAll: '全部',
+    catLabels: {
+      tool_release: '工具',
+      company: '公司',
+      open_source: '开源',
+      policy: '政策',
+    },
+    impact: 'IMPACT',
+    close: 'Close ×',
   },
 
   // ── DataExplorerPage ──
@@ -347,16 +358,59 @@ const zh = {
       changeVote: '重新选择',
       voteThank: '好眼光！你选择了',
       voteEncourage: '和很多开发者想法一致',
+      vote: '投票',
+      voted: '✓ 已投票',
     },
   },
 
   // ── InteractivePage ──
   interactive: {
     title: '创意实验室',
+    badge: 'Interactive',
+    sections: {
+      timeMachine: { title: 'AI 时光机', subtitle: '穿越 AI 编程进化史' },
+      dna:         { title: '开发者 DNA', subtitle: '测测你的开发者基因' },
+      quiz:        { title: '代码测验',   subtitle: 'AI 写的还是人写的？' },
+      vote:        { title: '未来预测',   subtitle: '预测 AI 编程的未来' },
+      recommend:   { title: '工具推荐',   subtitle: '找到最适合你的 AI 工具' },
+    },
+    quiz: {
+      accuracy: 'Accuracy',
+      human: '人类',
+      ai: 'AI',
+      feedbackCorrect: '✓ 答对了',
+      feedbackWrong: '✗ 答错了',
+      writtenBy: '作者：',
+      restart: '重新开始',
+      next: '下一题 →',
+      results: '查看结果 →',
+      correct: '答对',
+    },
+    vote: {
+      votes: '票',
+    },
+    recommend: {
+      languageLabel: 'Language',
+      experienceLabel: 'Experience',
+      expBeginner: '初级',
+      expIntermediate: '中级',
+      expAdvanced: '高级',
+    },
+    timeMachine: {
+      instruction: '拖动时间轴，穿越 AI 编程的进化史',
+      aiPower: 'AI Power',
+      playing: '自动播放中 · 点击暂停',
+      paused: '已暂停 · 点击继续',
+    },
+    dna: {
+      yourDna: '你的开发者 DNA',
+      restart: '重新测试',
+    },
   },
 
   // ── AboutPage ──
   about: {
+    badge: 'About',
     title: '关于项目',
     background: '项目背景',
     backgroundP1: '自 2022 年底 ChatGPT 发布以来，AI 编程工具经历了爆发式增长。GitHub Copilot 用户突破百万，Cursor 异军突起挑战传统 IDE，Stack Overflow 流量断崖式下滑——软件开发行业正在经历一场前所未有的变革。',
@@ -368,6 +422,21 @@ const zh = {
     dataCleaningDesc: '标准化处理，消除异常值，确保可比性',
     visualization: '可视化',
     visualizationDesc: 'Recharts + 自定义动画，匹配最优图表形式',
+    contact: {
+      thankYou: '感谢你的反馈！',
+      replyNote: '我们会尽快查看并回复。',
+      sendAnother: '发送另一条',
+      labelName: '姓名',
+      labelEmail: '邮箱',
+      labelMessage: '留言',
+      submit: '提交反馈',
+    },
+    dataSourceCategories: {
+      industryReports: '行业报告',
+      indices: '指数与排名',
+      traffic: '流量与市场数据',
+      official: '官方数据',
+    },
     contactUs: '联系我们',
     teamMembers: '团队成员',
     dataSources: '数据来源',

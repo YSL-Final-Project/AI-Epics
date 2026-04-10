@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { useI18n } from '../../i18n';
 
 interface TimelineFilterProps {
   searchQuery: string;
@@ -7,21 +8,22 @@ interface TimelineFilterProps {
   onCategoryChange: (category: string) => void;
 }
 
-const categories = [
-  { key: 'all', label: '全部' },
-  { key: 'tool_release', label: '工具' },
-  { key: 'company', label: '公司' },
-  { key: 'open_source', label: '开源' },
-  { key: 'policy', label: '政策' },
-];
-
 export default function TimelineFilter({
   searchQuery,
   onSearchChange,
   activeCategory,
   onCategoryChange,
 }: TimelineFilterProps) {
+  const { t } = useI18n();
   const prefersReduced = useReducedMotion();
+
+  const categories = [
+    { key: 'all', label: t.timeline.catAll },
+    { key: 'tool_release', label: t.timeline.catLabels.tool_release },
+    { key: 'company', label: t.timeline.catLabels.company },
+    { key: 'open_source', label: t.timeline.catLabels.open_source },
+    { key: 'policy', label: t.timeline.catLabels.policy },
+  ];
 
   return (
     <motion.div
@@ -35,7 +37,7 @@ export default function TimelineFilter({
       <div className="relative w-full sm:w-72 group">
         <input
           type="text"
-          placeholder="搜索..."
+          placeholder={t.timeline.searchPlaceholder}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="w-full px-0 py-2 bg-transparent border-0 border-b border-slate-200/60 dark:border-white/[0.08] text-black dark:text-white placeholder-black/70 dark:placeholder-white/70 focus:outline-none focus:border-slate-400 dark:focus:border-white/25 transition-colors text-sm font-light tracking-wide"

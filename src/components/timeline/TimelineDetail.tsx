@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import type { TimelineEvent } from '../../types';
+import { useI18n } from '../../i18n';
 
 interface TimelineDetailProps {
   event: TimelineEvent;
@@ -7,16 +8,16 @@ interface TimelineDetailProps {
 }
 
 export default function TimelineDetail({ event, onClose }: TimelineDetailProps) {
+  const { t, lang } = useI18n();
   const prefersReduced = useReducedMotion();
 
   const r = 36;
   const circumference = 2 * Math.PI * r;
   const filled = (event.impactScore / 10) * circumference;
 
-  // Truncate description to ~60 chars
-  const shortDesc = event.description.length > 80
-    ? event.description.slice(0, 80) + '…'
-    : event.description;
+  // Truncate description to ~80 chars
+  const fullDesc = lang === 'en' && event.descriptionEn ? event.descriptionEn : event.description;
+  const shortDesc = fullDesc.length > 80 ? fullDesc.slice(0, 80) + '…' : fullDesc;
 
   return (
     <motion.div
@@ -48,7 +49,7 @@ export default function TimelineDetail({ event, onClose }: TimelineDetailProps) 
                   {event.impactScore}
                 </span>
                 <span className="font-mono text-[7px] tracking-[0.2em] text-slate-400/50 dark:text-white/15 uppercase mt-0.5">
-                  Impact
+                  {t.timeline.impact}
                 </span>
               </div>
             </div>
@@ -81,7 +82,7 @@ export default function TimelineDetail({ event, onClose }: TimelineDetailProps) 
                     className="group/link inline-flex items-center gap-1.5 text-[11px] font-mono tracking-wide px-3 py-1.5 rounded-full border border-slate-200/50 dark:border-white/[0.06] text-slate-500 dark:text-white/30 hover:text-slate-800 dark:hover:text-white/60 hover:border-slate-400 dark:hover:border-white/15 transition-all duration-300 hover:scale-105 active:scale-95"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {link.label}
+                    {lang === 'en' && link.labelEn ? link.labelEn : link.label}
                     <svg className="w-3 h-3 opacity-40 group-hover/link:opacity-80 transition-all duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M17 7H7M17 7v10" />
                     </svg>
@@ -103,7 +104,7 @@ export default function TimelineDetail({ event, onClose }: TimelineDetailProps) 
             onClick={(e) => { e.stopPropagation(); onClose(); }}
             className="font-mono text-[9px] tracking-[0.3em] text-slate-400/50 dark:text-white/15 uppercase hover:text-slate-600 dark:hover:text-white/40 transition-all duration-300 hover:tracking-[0.4em]"
           >
-            Close ×
+            {t.timeline.close}
           </button>
         </motion.div>
       </div>

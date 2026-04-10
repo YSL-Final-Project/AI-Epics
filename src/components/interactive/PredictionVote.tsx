@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import questionsData from '../../data/quiz_questions.json';
 import type { QuizQuestion } from '../../types';
+import { useI18n } from '../../i18n';
 
 const questions = questionsData as QuizQuestion[];
 
 export default function PredictionVote() {
+  const { t, lang } = useI18n();
   const prefersReduced = useReducedMotion();
   const [votes, setVotes] = useState<Record<number, number>>(() => {
     try {
@@ -49,7 +51,7 @@ export default function PredictionVote() {
                 transition={{ delay: qi * 0.08 + 0.1, duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
                 className="text-base font-bold text-slate-900 dark:text-white/90"
               >
-                {q.question}
+                {lang === 'en' && q.questionEn ? q.questionEn : q.question}
               </motion.h4>
             </div>
 
@@ -61,7 +63,7 @@ export default function PredictionVote() {
                   className="grid grid-cols-1 sm:grid-cols-2 gap-2"
                   exit={{ opacity: 0, transition: { duration: 0.2 } }}
                 >
-                  {q.options.map((opt, i) => (
+                  {(lang === 'en' && q.optionsEn ? q.optionsEn : q.options).map((opt, i) => (
                     <motion.button
                       key={i}
                       initial={prefersReduced ? false : { opacity: 0, x: -15 }}
@@ -86,7 +88,7 @@ export default function PredictionVote() {
                   transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
                   className="space-y-3"
                 >
-                  {q.options.map((opt, i) => {
+                  {(lang === 'en' && q.optionsEn ? q.optionsEn : q.options).map((opt, i) => {
                     const rawCount = q.mockResults[i] + (userChoice === i ? 1 : 0);
                     const pct = totalVotes > 0 ? (rawCount / totalVotes) * 100 : 0;
                     const isChosen = userChoice === i;
@@ -132,7 +134,7 @@ export default function PredictionVote() {
                     transition={{ delay: 0.6 }}
                     className="font-mono text-[9px] text-slate-400/50 dark:text-white/15 tracking-wider uppercase pt-2"
                   >
-                    {totalVotes} votes
+                    {totalVotes} {t.interactive.vote.votes}
                   </motion.p>
                 </motion.div>
               )}

@@ -1,21 +1,15 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import type { TimelineEvent as TimelineEventType } from '../../types';
 import LineReveal from '../animations/LineReveal';
+import { useI18n } from '../../i18n';
 
 interface TimelineEventProps {
   event: TimelineEventType;
   index: number;
 }
 
-const categoryLabel: Record<string, string> = {
-  tool_release: 'Tool',
-  company: 'Industry',
-  open_source: 'Open Source',
-  policy: 'Policy',
-};
-
-
 export default function TimelineEvent({ event, index }: TimelineEventProps) {
+  const { t, lang } = useI18n();
   const prefersReduced = useReducedMotion();
 
   // Format date: "2021-06-29" → "Jun"
@@ -65,7 +59,7 @@ export default function TimelineEvent({ event, index }: TimelineEventProps) {
                 <div className="w-px h-3 bg-slate-200 dark:bg-white/[0.06]" />
                 <LineReveal delay={baseDelay + 0.15}>
                   <span className="font-mono text-[9px] tracking-[0.2em] text-slate-400/60 dark:text-white/15 uppercase">
-                    {categoryLabel[event.category] || event.category}
+                    {t.timeline.catLabels[event.category] || event.category}
                   </span>
                 </LineReveal>
               </div>
@@ -75,14 +69,14 @@ export default function TimelineEvent({ event, index }: TimelineEventProps) {
             {/* Title */}
             <LineReveal delay={baseDelay + 0.2}>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white/90 leading-snug tracking-tight">
-                {event.title}
+                {lang === 'en' && event.titleEn ? event.titleEn : event.title}
               </h3>
             </LineReveal>
 
             {/* Description — directly visible */}
             <LineReveal delay={baseDelay + 0.28} className="mt-3">
               <p className="text-sm text-slate-500 dark:text-white/30 leading-relaxed font-light">
-                {event.description}
+                {lang === 'en' && event.descriptionEn ? event.descriptionEn : event.description}
               </p>
             </LineReveal>
 
@@ -104,7 +98,7 @@ export default function TimelineEvent({ event, index }: TimelineEventProps) {
                       rel="noopener noreferrer"
                       className="group/link inline-flex items-center gap-1.5 text-[11px] font-mono tracking-wide px-3 py-1.5 rounded-full border border-slate-200/50 dark:border-white/[0.06] text-slate-500 dark:text-white/30 hover:text-slate-800 dark:hover:text-white/60 hover:border-slate-400 dark:hover:border-white/15 transition-all duration-300 hover:scale-105 active:scale-95"
                     >
-                      {link.label}
+                      {lang === 'en' && link.labelEn ? link.labelEn : link.label}
                       <svg className="w-3 h-3 opacity-40 group-hover/link:opacity-80 transition-all duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M17 7H7M17 7v10" />
                       </svg>
