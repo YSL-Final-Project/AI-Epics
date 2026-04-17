@@ -1,5 +1,5 @@
-﻿import { useState, useEffect, useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+﻿import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   LineChart, Line,
   XAxis, YAxis, Tooltip, ResponsiveContainer
@@ -10,10 +10,73 @@ import { useTheme } from '../../context/ThemeContext';
 import { useI18n } from '../../i18n';
 import LineReveal from '../../components/animations/LineReveal';
 import InsightCallout from './InsightCallout';
+import NextChapterCard from './NextChapterCard';
 
 const data = codeGenData as CodeGenData;
 
 const INDUSTRY_COLORS = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#3b82f6', '#f43f5e', '#64748b'];
+
+const INDUSTRY_SNIPPETS: Record<string, { lang: string; code: string }> = {
+  'Web Frontend': {
+    lang: 'tsx',
+    code: `const Button = ({ variant = 'primary', ...rest }) => (
+  <button
+    className={\`rounded-lg px-4 py-2 \${variants[variant]}\`}
+    {...rest}
+  />
+);`,
+  },
+  'Mobile': {
+    lang: 'tsx',
+    code: `export const FeedScreen = () => (
+  <SafeAreaView className="flex-1">
+    <FlatList data={items} renderItem={renderRow} />
+  </SafeAreaView>
+);`,
+  },
+  'Data Science': {
+    lang: 'python',
+    code: `df = pd.read_csv('events.csv')
+weekly = (df.assign(week=df.ts.dt.to_period('W'))
+            .groupby('week')['value'].sum())
+weekly.plot()`,
+  },
+  'DevOps/Cloud': {
+    lang: 'hcl',
+    code: `resource "aws_instance" "web" {
+  ami           = var.ami_id
+  instance_type = "t3.micro"
+  tags = { Name = "web-\${terraform.workspace}" }
+}`,
+  },
+  'Embedded/IoT': {
+    lang: 'c',
+    code: `void loop() {
+  int raw = analogRead(SENSOR_PIN);
+  float temp = (raw * 5.0 / 1024.0 - 0.5) * 100.0;
+  publish_mqtt("temp", temp);
+  delay(2000);
+}`,
+  },
+  'Game Dev': {
+    lang: 'csharp',
+    code: `void Update() {
+  if (Input.GetKey(KeyCode.W))
+    transform.Translate(Vector3.forward * speed * Time.deltaTime);
+}`,
+  },
+  'Enterprise Backend': {
+    lang: 'java',
+    code: `@RestController
+@RequestMapping("/users")
+public class UserController {
+  @GetMapping("/{id}")
+  public User get(@PathVariable Long id) {
+    return service.findById(id).orElseThrow();
+  }
+}`,
+  },
+};
 const FUNNEL_COLORS = ['#6366f1', '#8b5cf6', '#06b6d4', '#10b981'];
 const QUALITY_COLORS = ['#ef4444', '#f97316', '#f59e0b', '#10b981'];
 
@@ -54,17 +117,11 @@ export default function CodeGenTab() {
   const qualityLabel = (key: string) => (c.qualityMetrics as Record<string, string>)[key] ?? key;
 
   const [animated, setAnimated] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [expandedIndustry, setExpandedIndustry] = useState<string | null>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setAnimated(true);
-      },
-      { threshold: 0.3 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    const timer = setTimeout(() => setAnimated(true), 250);
+    return () => clearTimeout(timer);
   }, []);
 
   const sortedIndustries = [...data.industryComparison].sort((a, b) => b.percentage - a.percentage);
@@ -95,7 +152,7 @@ export default function CodeGenTab() {
     : 'The productivity dividend is real, but so is the quality tax. More generation also means more churn, more defects, and more maintenance pressure.';
 
   return (
-    <div className="space-y-16" ref={ref}>
+    <div className="space-y-16">
       <div className="rounded-[2rem] border p-8 md:p-10"
         style={{
           background: isDark
@@ -211,32 +268,90 @@ export default function CodeGenTab() {
             style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(255,255,255,0.76)', borderColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.06)' }}
           >
             <div className="space-y-5">
-              {sortedIndustries.map((item, i) => (
-                <motion.div
-                  key={item.industry}
-                  initial={prefersReduced ? false : { opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-                >
-                  <div className="flex items-baseline justify-between mb-2 gap-3">
-                    <span className="text-sm text-slate-600 dark:text-white/38">{industryLabel(item.industry)}</span>
-                    <span className="text-xl font-black tabular-nums" style={{ color: INDUSTRY_COLORS[i % INDUSTRY_COLORS.length] }}>
-                      {item.percentage}%
-                    </span>
-                  </div>
-                  <div className="h-2 bg-slate-200/50 dark:bg-white/[0.03] rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{ backgroundColor: INDUSTRY_COLORS[i % INDUSTRY_COLORS.length], opacity: isDark ? 0.56 : 0.68 }}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${(item.percentage / 60) * 100}%` }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.18 + i * 0.08, duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                    />
-                  </div>
-                </motion.div>
-              ))}
+              {sortedIndustries.map((item, i) => {
+                const color = INDUSTRY_COLORS[i % INDUSTRY_COLORS.length];
+                const snippet = INDUSTRY_SNIPPETS[item.industry];
+                const isOpen = expandedIndustry === item.industry;
+                return (
+                  <motion.div
+                    key={item.industry}
+                    initial={prefersReduced ? false : { opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.06, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setExpandedIndustry(isOpen ? null : item.industry)}
+                      className="w-full text-left group"
+                      aria-expanded={isOpen}
+                    >
+                      <div className="flex items-baseline justify-between mb-2 gap-3">
+                        <span className="flex items-center gap-2 text-sm text-slate-600 dark:text-white/38 group-hover:text-slate-900 dark:group-hover:text-white/75 transition-colors">
+                          <motion.span
+                            animate={{ rotate: isOpen ? 90 : 0 }}
+                            transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
+                            className="inline-block text-[10px] opacity-60"
+                            style={{ color }}
+                          >
+                            ▶
+                          </motion.span>
+                          {industryLabel(item.industry)}
+                        </span>
+                        <span className="text-xl font-black tabular-nums" style={{ color }}>
+                          {item.percentage}%
+                        </span>
+                      </div>
+                      <div className="h-2 bg-slate-200/50 dark:bg-white/[0.03] rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ backgroundColor: color, opacity: isDark ? 0.56 : 0.68 }}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${(item.percentage / 60) * 100}%` }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.18 + i * 0.08, duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
+                        />
+                      </div>
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {isOpen && snippet && (
+                        <motion.div
+                          key="snippet"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.32, ease: [0.32, 0.72, 0, 1] }}
+                          className="overflow-hidden"
+                        >
+                          <div
+                            className="mt-3 rounded-xl border overflow-hidden"
+                            style={{
+                              backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(15,23,42,0.95)',
+                              borderColor: `${color}33`,
+                            }}
+                          >
+                            <div
+                              className="flex items-center justify-between px-3 py-1.5 border-b"
+                              style={{ borderColor: `${color}22`, backgroundColor: `${color}14` }}
+                            >
+                              <span className="font-mono text-[9px] tracking-[0.22em] uppercase" style={{ color }}>
+                                {snippet.lang}
+                              </span>
+                              <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/30">
+                                {lang === 'zh' ? '典型生成模式' : 'typical generated pattern'}
+                              </span>
+                            </div>
+                            <pre className="p-3 text-[11.5px] leading-[1.55] font-mono text-white/75 overflow-x-auto">
+                              {snippet.code}
+                            </pre>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
 
@@ -365,9 +480,23 @@ export default function CodeGenTab() {
         </div>
       </motion.div>
 
-      <InsightCallout text={c.insightText} accent="violet" />
-
-      <SectionDivider />
+      <motion.div
+        initial={prefersReduced ? false : { opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+        className="relative py-10"
+      >
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="font-mono text-[10px] tracking-[0.42em] uppercase mb-4 text-violet-500 dark:text-violet-300/70">
+            {lang === 'zh' ? '转场' : 'Interlude'}
+          </div>
+          <p className="text-xl md:text-2xl font-light leading-relaxed text-slate-700 dark:text-white/62 italic">
+            {c.transitionCopy}
+          </p>
+          <div className="mt-6 mx-auto w-12 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
+        </div>
+      </motion.div>
 
       <motion.div
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
@@ -376,13 +505,13 @@ export default function CodeGenTab() {
         transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
         className="rounded-[2rem] border p-6 md:p-7"
         style={{
-          backgroundColor: isDark ? 'rgba(16,185,129,0.05)' : 'rgba(16,185,129,0.03)',
-          borderColor: isDark ? 'rgba(16,185,129,0.14)' : 'rgba(16,185,129,0.10)',
+          backgroundColor: isDark ? 'rgba(139,92,246,0.05)' : 'rgba(139,92,246,0.03)',
+          borderColor: isDark ? 'rgba(139,92,246,0.14)' : 'rgba(139,92,246,0.10)',
         }}
       >
         <div className="flex items-baseline gap-3 mb-6">
           <h3 className="text-lg font-bold text-slate-900 dark:text-white/80 tracking-tight">
-            <span style={{ color: '#10b981' }} className="font-mono text-xs mr-2">03</span>
+            <span style={{ color: '#8b5cf6' }} className="font-mono text-xs mr-2">03</span>
             {c.productivity}
           </h3>
           <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
@@ -418,7 +547,7 @@ export default function CodeGenTab() {
         <p className="font-mono text-[9px] text-slate-400/30 dark:text-white/10">{c.productivitySource}</p>
       </motion.div>
 
-      <SectionDivider />
+      <InsightCallout text={c.insightText} accent="violet" />
 
       <motion.div
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
@@ -497,6 +626,8 @@ export default function CodeGenTab() {
           </div>
         </div>
       </motion.div>
+
+      <NextChapterCard current="codegen" />
     </div>
   );
 }

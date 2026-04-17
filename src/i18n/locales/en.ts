@@ -93,6 +93,22 @@ const en: Translations = {
       stackoverflow: 'Stack Overflow',
       codegen: 'Code Gen',
       salary: 'Salary',
+      you: 'You',
+    },
+    tabKickers: {
+      adoption: { tag: 'Usage', subtitle: 'Who uses it, and how' },
+      stackoverflow: { tag: 'Ecosystem', subtitle: 'What it displaced' },
+      codegen: { tag: 'Output', subtitle: 'What it produces' },
+      salary: { tag: 'Market', subtitle: 'How it reprices work' },
+      you: { tag: 'Reflection', subtitle: 'The data, turned on you' },
+    },
+    nav: {
+      keyboardHint1: 'Switch chapter',
+      keyboardHint2: 'Jump directly',
+      continue: 'Continue reading',
+      nextChapter: 'Next chapter',
+      backToStart: 'Back to start',
+      chapterOf: 'of',
     },
     // ── AdoptionTab ──
     adoption: {
@@ -136,6 +152,15 @@ const en: Translations = {
         'Test Generation': 'Test Generation',
         'Code Review': 'Code Review',
       },
+      chapterDots: {
+        growth: 'Growth',
+        frequency: 'Frequency',
+        useCases: 'Use Cases',
+        sentiment: 'Sentiment',
+        frustrations: 'Frustrations',
+        beforeAfter: 'Before / After',
+      },
+      dragHint: 'Drag to compare',
     },
     // ── StackOverflowTab ──
     stackoverflow: {
@@ -199,11 +224,13 @@ const en: Translations = {
         'Shipped to Production': 'Shipped to Production',
       },
       byLanguage: 'By Language',
+      transitionCopy: 'Expansion is only half the story. The real test is whether the output is worth trusting.',
     },
     // ── SalaryTab ──
     salary: {
       aiSkillPremium: 'AI Skill Premium',
       higherSalary: 'Higher Salary with AI Tools Proficiency',
+      heroTension: 'Roles are shrinking. Salaries for those who know the tools are not.',
       comparison: 'Comparison',
       withAI: 'With AI',
       withoutAI: 'Without AI',
@@ -230,6 +257,30 @@ const en: Translations = {
         { label: 'AI-Native Workflow', salary: '$175K', premium: '+169%' },
       ],
       tier: 'Tier',
+      chapterDots: {
+        comparison: 'Comparison',
+        jobs: 'Jobs',
+        premium: 'Premium',
+        correlation: 'Proficiency',
+        tier: 'Tiers',
+        skills: 'Skills',
+      },
+    },
+    // ── YouTab ──
+    you: {
+      heroKicker: 'The Reader Chapter',
+      heroTitle: 'Four chapters of data. This one is about you.',
+      heroCopy: 'Numbers tell you what other people do. How much you trust them, whether you can tell the difference yourself, and what you think comes next — only you can answer those.',
+      trustTitle: 'The Trust Test',
+      trustKicker: 'Can you tell AI code from human code?',
+      trustIntro: 'Chapter 1 says 92% of developers now use AI. Chapter 3 says AI-generated code still carries roughly 4× the issue rate of human code, and "almost right" output frustrates more than half of them. So — can you actually tell which is which?',
+      verdictTitle: "Reader's Verdict",
+      verdictKicker: "You have read the data. Now it's your turn to answer.",
+      verdictIntro: 'Every answer is stored and added to the aggregate. What you see below is not only your call — it is the call of everyone who made it this far.',
+      chapterDots: {
+        trust: 'Trust Test',
+        verdict: 'Verdict',
+      },
     },
   },
 

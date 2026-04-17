@@ -10,6 +10,9 @@ import { useTheme } from '../../context/ThemeContext';
 import { useI18n } from '../../i18n';
 import LineReveal from '../../components/animations/LineReveal';
 import InsightCallout from './InsightCallout';
+import NextChapterCard from './NextChapterCard';
+import ChapterDots from '../ChapterDots';
+import WorkflowCompareSlider from './WorkflowCompareSlider';
 
 const data = adoptionData as AIAdoptionData;
 
@@ -95,7 +98,7 @@ function SentimentTooltip({ active, payload, label }: any) {
 
 export default function AdoptionTab() {
   const { theme } = useTheme();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const prefersReduced = useReducedMotion();
   const axisColor = theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.15)';
   const isDark = theme === 'dark';
@@ -105,6 +108,22 @@ export default function AdoptionTab() {
   const totalUsers = latest ? (latest.chatgpt + latest.copilot + latest.cursor + latest.claudeCode) : 0;
   const useCaseTotal = data.useCases.reduce((sum, item) => sum + item.value, 0);
   const latestSentiment = data.sentimentTrend[data.sentimentTrend.length - 1];
+  const dailyUsage = data.usageFrequency[0]?.percentage ?? 0;
+  const topCase = [...data.useCases].sort((p, q) => q.value - p.value)[0];
+  const topCasePct = topCase ? Math.round((topCase.value / useCaseTotal) * 100) : 0;
+
+  const heroCopy = lang === 'zh'
+    ? '2025 年，AI 编程工具已不再是尝鲜品，而是每天都在用的生产工具。四大平台合计用户超过千万级别，使用场景横跨生成、调试、解释、审查。'
+    : 'By 2025, AI coding tools are no longer experimental — they are daily production tools. Four platforms now account for over 17 million monthly users across generation, debugging, explanation and review.';
+
+  const chapters = [
+    { id: 'adoption-growth', label: a.chapterDots.growth },
+    { id: 'adoption-frequency', label: a.chapterDots.frequency },
+    { id: 'adoption-cases', label: a.chapterDots.useCases },
+    { id: 'adoption-sentiment', label: a.chapterDots.sentiment },
+    { id: 'adoption-frustrations', label: a.chapterDots.frustrations },
+    { id: 'adoption-beforeafter', label: a.chapterDots.beforeAfter },
+  ];
 
   const heroRef = useRef<HTMLDivElement>(null);
   const [heroVisible, setHeroVisible] = useState(false);
@@ -126,32 +145,103 @@ export default function AdoptionTab() {
 
   return (
     <div className="space-y-16">
-      <div className="text-center py-8" ref={heroRef}>
-        <LineReveal className="mb-2">
-          <span className="font-mono text-[10px] tracking-[0.4em] text-slate-400/50 dark:text-white/15 uppercase">
-            {a.totalUsers}
-          </span>
-        </LineReveal>
-        <LineReveal delay={0.1}>
-          <span
-            className="text-[clamp(3.5rem,10vw,6rem)] font-black tracking-tight tabular-nums leading-none bg-clip-text text-transparent"
-            style={{
-              backgroundImage: isDark
-                ? 'linear-gradient(135deg, #fff 30%, #06b6d4 100%)'
-                : 'linear-gradient(135deg, #0f172a 30%, #0891b2 100%)',
-            }}
-          >
-            {animatedTotal.toFixed(1)}M
-          </span>
-        </LineReveal>
-        <LineReveal delay={0.2} className="mt-3">
-          <span className="font-mono text-[10px] tracking-[0.3em] text-slate-400/40 dark:text-white/10 uppercase">
-            {a.platforms}
-          </span>
-        </LineReveal>
+      <ChapterDots chapters={chapters} accentColor="#06b6d4" />
+
+      <div
+        ref={heroRef}
+        className="relative overflow-hidden rounded-[2rem] border p-8 md:p-12"
+        style={{
+          background: isDark
+            ? 'linear-gradient(140deg, rgba(6,182,212,0.14) 0%, rgba(8,145,178,0.05) 40%, rgba(15,23,42,0) 100%)'
+            : 'linear-gradient(140deg, rgba(6,182,212,0.10) 0%, rgba(6,182,212,0.03) 45%, rgba(255,255,255,0.6) 100%)',
+          borderColor: isDark ? 'rgba(6,182,212,0.16)' : 'rgba(6,182,212,0.10)',
+        }}
+      >
+        <div
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
+          }}
+        />
+
+        <div className="relative grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+          <div>
+            <LineReveal className="mb-3">
+              <span className="font-mono text-[10px] tracking-[0.45em] text-slate-400/55 dark:text-white/18 uppercase">
+                {a.totalUsers}
+              </span>
+            </LineReveal>
+            <LineReveal delay={0.08}>
+              <div
+                className="text-[clamp(4rem,12vw,7rem)] font-black tracking-tight leading-none tabular-nums bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: isDark
+                    ? 'linear-gradient(135deg, #ffffff 8%, #22d3ee 55%, #0891b2 100%)'
+                    : 'linear-gradient(135deg, #0f172a 0%, #0e7490 100%)',
+                }}
+              >
+                {animatedTotal.toFixed(1)}M
+              </div>
+            </LineReveal>
+            <LineReveal delay={0.14} className="mt-3">
+              <span className="font-mono text-[10px] tracking-[0.3em] text-slate-400/50 dark:text-white/20 uppercase">
+                {a.platforms}
+              </span>
+            </LineReveal>
+            <p className="mt-5 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-white/40">
+              {heroCopy}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              {
+                label: lang === 'zh' ? '每日多次' : 'Daily Active',
+                value: `${dailyUsage}%`,
+                sub: lang === 'zh' ? '活跃开发者' : 'of developers',
+              },
+              {
+                label: lang === 'zh' ? '采用率' : 'Adoption',
+                value: `${latestSentiment?.adoption ?? 0}%`,
+                sub: lang === 'zh' ? '正式或试用' : 'using or trialing',
+              },
+              {
+                label: lang === 'zh' ? '主要场景' : 'Top Use Case',
+                value: `${topCasePct}%`,
+                sub: topCase ? (a.cases as Record<string, string>)[topCase.name] ?? topCase.name : '',
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={item.label}
+                initial={prefersReduced ? false : { opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.14 + index * 0.08, duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+                className="rounded-3xl border px-5 py-5"
+                style={{
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.72)',
+                  borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(15,23,42,0.06)',
+                }}
+              >
+                <div className="font-mono text-[10px] tracking-[0.28em] uppercase text-slate-400 dark:text-white/22 mb-3">
+                  {item.label}
+                </div>
+                <div className="text-3xl font-black tabular-nums text-slate-900 dark:text-white/85">
+                  {item.value}
+                </div>
+                <div className="mt-2 text-xs text-slate-500 dark:text-white/28 leading-5">
+                  {item.sub}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <motion.div
+        id="adoption-growth"
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -227,6 +317,7 @@ export default function AdoptionTab() {
       <SectionDivider />
 
       <motion.div
+        id="adoption-frequency"
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -278,6 +369,7 @@ export default function AdoptionTab() {
       <SectionDivider />
 
       <motion.div
+        id="adoption-cases"
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -343,11 +435,10 @@ export default function AdoptionTab() {
         </div>
       </motion.div>
 
-      <InsightCallout text={a.insightText} accent="cyan" />
-
       <SectionDivider />
 
       <motion.div
+        id="adoption-sentiment"
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -417,6 +508,7 @@ export default function AdoptionTab() {
       <SectionDivider />
 
       <motion.div
+        id="adoption-frustrations"
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -472,9 +564,10 @@ export default function AdoptionTab() {
         </div>
       </motion.div>
 
-      <SectionDivider />
+      <InsightCallout text={a.insightText} accent="cyan" />
 
       <motion.div
+        id="adoption-beforeafter"
         initial={prefersReduced ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -490,99 +583,24 @@ export default function AdoptionTab() {
           <div className="flex-1 h-px bg-slate-200/40 dark:bg-white/[0.04]" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <motion.div
-            initial={prefersReduced ? false : { opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-            className="rounded-2xl p-6 border"
-            style={{
-              backgroundColor: isDark ? 'rgba(255,255,255,0.01)' : 'rgba(100,116,139,0.04)',
-              borderColor: isDark ? 'rgba(244,63,94,0.12)' : 'rgba(100,116,139,0.15)',
-            }}
-          >
-            <div
-              className="font-mono text-[10px] tracking-[0.3em] uppercase mb-5"
-              style={{ color: isDark ? 'rgba(244,63,94,0.4)' : 'rgba(100,116,139,0.5)' }}
-            >
-              {a.workflow2021}
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {(a.steps2021 as string[]).map((step: string, i: number) => (
-                <motion.div
-                  key={step}
-                  initial={prefersReduced ? false : { opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-                  className="flex items-center gap-2"
-                >
-                  <span
-                    className="px-3 py-1.5 rounded-full text-xs font-medium border"
-                    style={{
-                      backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(100,116,139,0.06)',
-                      borderColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(100,116,139,0.12)',
-                      color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(100,116,139,0.7)',
-                    }}
-                  >
-                    {step}
-                  </span>
-                  {i < (a.steps2021 as string[]).length - 1 && (
-                    <span style={{ color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(100,116,139,0.25)' }} className="text-xs">{'->'}</span>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={prefersReduced ? false : { opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
-            className="rounded-2xl p-6 border"
-            style={{
-              backgroundColor: isDark ? 'rgba(6,182,212,0.03)' : 'rgba(6,182,212,0.03)',
-              borderColor: isDark ? 'rgba(6,182,212,0.2)' : 'rgba(6,182,212,0.25)',
-              boxShadow: isDark ? '0 0 30px rgba(6,182,212,0.06)' : '0 0 30px rgba(6,182,212,0.05)',
-            }}
-          >
-            <div
-              className="font-mono text-[10px] tracking-[0.3em] uppercase mb-5"
-              style={{ color: isDark ? 'rgba(6,182,212,0.5)' : 'rgba(6,182,212,0.7)' }}
-            >
-              {a.workflow2025}
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {(a.steps2025 as string[]).map((step: string, i: number) => (
-                <motion.div
-                  key={step}
-                  initial={prefersReduced ? false : { opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.15 + i * 0.1, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-                  className="flex items-center gap-2"
-                >
-                  <span
-                    className="px-3 py-1.5 rounded-full text-xs font-medium border"
-                    style={{
-                      backgroundColor: isDark ? 'rgba(6,182,212,0.08)' : 'rgba(6,182,212,0.08)',
-                      borderColor: isDark ? 'rgba(6,182,212,0.15)' : 'rgba(6,182,212,0.2)',
-                      color: isDark ? 'rgba(6,182,212,0.7)' : 'rgba(6,182,212,0.85)',
-                    }}
-                  >
-                    {step}
-                  </span>
-                  {i < (a.steps2025 as string[]).length - 1 && (
-                    <span style={{ color: isDark ? 'rgba(6,182,212,0.25)' : 'rgba(6,182,212,0.4)' }} className="text-xs">{'->'}</span>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+        >
+          <WorkflowCompareSlider
+            label2021={a.workflow2021}
+            label2025={a.workflow2025}
+            steps2021={a.steps2021 as string[]}
+            steps2025={a.steps2025 as string[]}
+            dragHint={a.dragHint}
+            isDark={isDark}
+          />
+        </motion.div>
       </motion.div>
+
+      <NextChapterCard current="adoption" />
     </div>
   );
 }
