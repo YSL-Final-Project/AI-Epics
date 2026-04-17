@@ -24,6 +24,10 @@ const ToolEvolutionPage = lazy(() => import('./pages/ToolEvolutionPage'));
 function AppLayout() {
   const location = useLocation();
   const isStory = location.pathname === '/story';
+  // Insight page uses its own cursor-reactive canvas background; hide the
+  // globally-stacked mesh-gradient / grid-overlay / scanline there so the
+  // two don't muddy each other.
+  const isInsight = location.pathname === '/data';
 
   // Story page renders standalone — no navbar, footer, or overlays
   if (isStory) {
@@ -36,9 +40,9 @@ function AppLayout() {
 
   return (
     <div className="noise-overlay min-h-screen bg-slate-50 dark:bg-[#0a0a1a] text-slate-900 dark:text-slate-100 transition-colors duration-500">
-      <div className="mesh-gradient" />
-      <div className="grid-overlay" />
-      <div className="scanline" />
+      {!isInsight && <div className="mesh-gradient" />}
+      {!isInsight && <div className="grid-overlay" />}
+      {!isInsight && <div className="scanline" />}
       <ScrollProgress />
       <CursorFollower />
       <WelcomeToast />

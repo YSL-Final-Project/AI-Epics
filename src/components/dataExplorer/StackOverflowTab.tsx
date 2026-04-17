@@ -11,6 +11,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useI18n } from '../../i18n';
 import LineReveal from '../../components/animations/LineReveal';
 import InsightCallout from './InsightCallout';
+import NextChapterCard from './NextChapterCard';
 
 const traffic = trafficData as SOTrafficPoint[];
 const survey = surveyData as SOSurveyData;
@@ -107,6 +108,12 @@ export default function StackOverflowTab() {
 
   const hardestHit = languageStats.reduce((worst, item) => (item.drop > worst.drop ? item : worst), languageStats[0]);
   const avgLanguageDrop = Math.round(languageStats.reduce((sum, item) => sum + item.drop, 0) / languageStats.length);
+
+  // Click-to-feature: the left "Hardest Hit" card becomes interactive.
+  // Default selection is the actual hardest-hit language.
+  const [featuredLangKey, setFeaturedLangKey] = useState<string>(hardestHit.language);
+  const featured = languageStats.find((l) => l.language === featuredLangKey) ?? hardestHit;
+  const isHardestHit = featured.language === hardestHit.language;
 
   const ROSE = isDark ? '#fb7185' : '#e11d48';
   const ROSE_SOFT = isDark ? 'rgba(251,113,133,0.18)' : 'rgba(225,29,72,0.10)';
@@ -389,11 +396,34 @@ export default function StackOverflowTab() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-              <div className="rounded-2xl border px-4 py-4" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(248,250,252,0.9)', borderColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.06)' }}>
-                <div className="font-mono text-[10px] tracking-[0.24em] uppercase text-slate-400 dark:text-white/22 mb-2">{lang === 'zh' ? '跌幅最大' : 'Hardest Hit'}</div>
-                <div className="text-xl font-black" style={{ color: hardestHit.color }}>{hardestHit.language}</div>
-                <div className="mt-1 text-sm font-mono tabular-nums text-slate-500 dark:text-white/30">-{hardestHit.drop}%</div>
-              </div>
+              <motion.div
+                key={featured.language}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                className="rounded-2xl border px-4 py-4"
+                style={{
+                  backgroundColor: isDark ? `${featured.color}0c` : `${featured.color}08`,
+                  borderColor: isDark ? `${featured.color}40` : `${featured.color}30`,
+                  boxShadow: `0 0 24px ${featured.color}14`,
+                }}
+              >
+                <div className="flex items-baseline justify-between mb-2 gap-2">
+                  <span className="font-mono text-[10px] tracking-[0.24em] uppercase text-slate-400 dark:text-white/22">
+                    {isHardestHit
+                      ? (lang === 'zh' ? '跌幅最大' : 'Hardest Hit')
+                      : (lang === 'zh' ? '已选语言' : 'Featured')}
+                  </span>
+                  <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-slate-400/50 dark:text-white/18">
+                    {lang === 'zh' ? '点下方选择' : 'click below'}
+                  </span>
+                </div>
+                <div className="text-xl font-black" style={{ color: featured.color }}>{featured.language}</div>
+                <div className="mt-1 flex items-baseline gap-2">
+                  <span className="text-sm font-mono tabular-nums text-slate-500 dark:text-white/30">-{featured.drop}%</span>
+                  <span className="font-mono text-[9px] text-slate-400/50 dark:text-white/15 tabular-nums">{featured.peak} → {featured.current}</span>
+                </div>
+              </motion.div>
               <div className="rounded-2xl border px-4 py-4" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(248,250,252,0.9)', borderColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.06)' }}>
                 <div className="font-mono text-[10px] tracking-[0.24em] uppercase text-slate-400 dark:text-white/22 mb-2">{lang === 'zh' ? '仍最稳定' : 'Most Resilient'}</div>
                 <div className="text-xl font-black" style={{ color: languageStats[5].color }}>{languageStats[5].language}</div>
@@ -402,35 +432,48 @@ export default function StackOverflowTab() {
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              {languageStats.map((entry, index) => (
-                <motion.div
-                  key={entry.language}
-                  initial={prefersReduced ? false : { opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05, duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
-                  className="rounded-2xl border p-4"
-                  style={{ backgroundColor: isDark ? `${entry.color}08` : `${entry.color}06`, borderColor: isDark ? `${entry.color}18` : `${entry.color}12` }}
-                >
-                  <div className="flex items-baseline justify-between mb-1 gap-2">
-                    <span className="text-xs font-bold" style={{ color: isDark ? `${entry.color}cc` : entry.color }}>{entry.language}</span>
-                    <span className="font-mono text-[10px] font-bold tabular-nums" style={{ color: ROSE }}>-{entry.drop}%</span>
-                  </div>
-                  <div className="font-mono text-[9px] text-slate-400/50 dark:text-white/15 mb-2">{entry.peak} {'->'} {entry.current}</div>
-                  <ResponsiveContainer width="100%" height={64}>
-                    <AreaChart data={entry.years} margin={{ top: 2, right: 2, bottom: 0, left: 2 }}>
-                      <defs>
-                        <linearGradient id={`so-lang-${index}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={entry.color} stopOpacity={isDark ? 0.45 : 0.32} />
-                          <stop offset="100%" stopColor={entry.color} stopOpacity={0.02} />
-                        </linearGradient>
-                      </defs>
-                      <YAxis hide domain={[0, 100]} />
-                      <Area type="monotone" dataKey="activity" stroke={entry.color} strokeWidth={2} fill={`url(#so-lang-${index})`} dot={false} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </motion.div>
-              ))}
+              {languageStats.map((entry, index) => {
+                const isFeatured = entry.language === featured.language;
+                return (
+                  <motion.button
+                    type="button"
+                    key={entry.language}
+                    onClick={() => setFeaturedLangKey(entry.language)}
+                    initial={prefersReduced ? false : { opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.05, duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+                    whileHover={prefersReduced ? undefined : { y: -2 }}
+                    className="rounded-2xl border p-4 text-left transition-[border-color,box-shadow] duration-200"
+                    style={{
+                      backgroundColor: isDark ? `${entry.color}08` : `${entry.color}06`,
+                      borderColor: isFeatured
+                        ? (isDark ? `${entry.color}80` : `${entry.color}80`)
+                        : (isDark ? `${entry.color}18` : `${entry.color}12`),
+                      boxShadow: isFeatured ? `0 0 18px ${entry.color}35` : undefined,
+                    }}
+                    aria-pressed={isFeatured}
+                  >
+                    <div className="flex items-baseline justify-between mb-1 gap-2">
+                      <span className="text-xs font-bold" style={{ color: isDark ? `${entry.color}cc` : entry.color }}>{entry.language}</span>
+                      <span className="font-mono text-[10px] font-bold tabular-nums" style={{ color: ROSE }}>-{entry.drop}%</span>
+                    </div>
+                    <div className="font-mono text-[9px] text-slate-400/50 dark:text-white/15 mb-2">{entry.peak} {'->'} {entry.current}</div>
+                    <ResponsiveContainer width="100%" height={64}>
+                      <AreaChart data={entry.years} margin={{ top: 2, right: 2, bottom: 0, left: 2 }}>
+                        <defs>
+                          <linearGradient id={`so-lang-${index}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor={entry.color} stopOpacity={isDark ? 0.45 : 0.32} />
+                            <stop offset="100%" stopColor={entry.color} stopOpacity={0.02} />
+                          </linearGradient>
+                        </defs>
+                        <YAxis hide domain={[0, 100]} />
+                        <Area type="monotone" dataKey="activity" stroke={entry.color} strokeWidth={2} fill={`url(#so-lang-${index})`} dot={false} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </motion.button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -582,6 +625,8 @@ export default function StackOverflowTab() {
           </div>
         </div>
       </motion.div>
+
+      <NextChapterCard current="stackoverflow" />
     </div>
   );
 }

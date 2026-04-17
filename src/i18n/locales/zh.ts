@@ -93,6 +93,22 @@ const zh = {
       stackoverflow: 'Stack Overflow',
       codegen: '代码生成',
       salary: '薪资分析',
+      you: '你',
+    },
+    tabKickers: {
+      adoption: { tag: '使用', subtitle: '谁在用，怎么用' },
+      stackoverflow: { tag: '生态', subtitle: '它取代了什么' },
+      codegen: { tag: '产物', subtitle: '它生产了什么' },
+      salary: { tag: '市场', subtitle: '它如何重定价工作' },
+      you: { tag: '参与', subtitle: '数据，回到你身上' },
+    },
+    nav: {
+      keyboardHint1: '切换章节',
+      keyboardHint2: '快速跳转',
+      continue: '继续阅读',
+      nextChapter: '下一章',
+      backToStart: '回到开篇',
+      chapterOf: '章 / 共',
     },
     // ── AdoptionTab ──
     adoption: {
@@ -136,6 +152,15 @@ const zh = {
         'Test Generation': '测试生成',
         'Code Review': '代码审查',
       },
+      chapterDots: {
+        growth: '增长',
+        frequency: '频率',
+        useCases: '场景',
+        sentiment: '情绪',
+        frustrations: '困扰',
+        beforeAfter: '前后',
+      },
+      dragHint: '拖动对比',
     },
     // ── StackOverflowTab ──
     stackoverflow: {
@@ -199,11 +224,13 @@ const zh = {
         'Shipped to Production': '已上线生产',
       },
       byLanguage: '按语言',
+      transitionCopy: '扩张只是故事的一半。真正的考验是 — 生成出来的代码，是否值得信任。',
     },
     // ── SalaryTab ──
     salary: {
       aiSkillPremium: 'AI 技能溢价',
       higherSalary: '掌握 AI 工具后的薪资涨幅',
+      heroTension: '岗位在收缩，但会用 AI 的人，薪水反而在涨。',
       comparison: '薪资对比',
       withAI: '使用 AI',
       withoutAI: '不使用 AI',
@@ -230,6 +257,30 @@ const zh = {
         { label: 'AI 原生工作流', salary: '$175K', premium: '+169%' },
       ],
       tier: '等级',
+      chapterDots: {
+        comparison: '对比',
+        jobs: '岗位',
+        premium: '溢价',
+        correlation: '熟练度',
+        tier: '层级',
+        skills: '技能',
+      },
+    },
+    // ── YouTab ──
+    you: {
+      heroKicker: '读者的章节',
+      heroTitle: '前四章是数据。这一章，是你。',
+      heroCopy: '数字可以告诉你别人怎么做。但你信多少、你自己能不能分辨、你对未来的判断——这些只有你能回答。',
+      trustTitle: '信任测试',
+      trustKicker: '你能分辨 AI 和人类写的代码吗？',
+      trustIntro: '第一章说 92% 的开发者在用 AI 工具。第三章说 AI 代码的缺陷率是人类代码的 4 倍，"差不多对"的输出让超过半数的人感到困扰。那问题是——你真的能分辨吗？',
+      verdictTitle: '读者的判断',
+      verdictKicker: '数据读完了，换你开口',
+      verdictIntro: '每个答案都会被存下来，并累加到聚合结果里。你看到的不仅是你的判断，也是所有读到这里的人的判断。',
+      chapterDots: {
+        trust: '信任测试',
+        verdict: '判断',
+      },
     },
   },
 

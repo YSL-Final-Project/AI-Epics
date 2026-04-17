@@ -1,6 +1,8 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import PageTransition from '../components/layout/PageTransition';
 import DataExplorerTabs from '../components/dataExplorer/DataExplorerTabs';
+import LiquidLinesBackground from '../components/LiquidLinesBackground';
+import { insightBgConfig } from '../components/liquidLinesConfig';
 import { useI18n } from '../i18n';
 
 export default function DataExplorerPage() {
@@ -8,8 +10,18 @@ export default function DataExplorerPage() {
   const prefersReduced = useReducedMotion();
 
   return (
+    <>
+      {/*
+        Cursor-reactive liquid-lines background. Rendered as a sibling of
+        PageTransition (not inside it) because PageTransition applies
+        `scale` and `filter` to its child, which would otherwise become
+        the containing block for this `position: fixed` canvas and pin
+        it to the page wrapper instead of the viewport.
+        All visual tuning lives in `src/components/liquidLinesConfig.ts`.
+      */}
+      <LiquidLinesBackground {...insightBgConfig} />
     <PageTransition>
-      <div className="min-h-screen py-16 px-4">
+      <div className="relative z-10 min-h-screen py-16 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Hero — minimal, animated */}
           <div className="text-center mb-14">
@@ -42,5 +54,6 @@ export default function DataExplorerPage() {
         </div>
       </div>
     </PageTransition>
+    </>
   );
 }

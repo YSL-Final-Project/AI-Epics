@@ -11,8 +11,11 @@ import salaryData from '../../data/developer_salary.json';
 import type { DeveloperSalaryData } from '../../types';
 import { useTheme } from '../../context/ThemeContext';
 import { useI18n } from '../../i18n';
+import { useRef, useState } from 'react';
 import LineReveal from '../../components/animations/LineReveal';
 import InsightCallout from './InsightCallout';
+import NextChapterCard from './NextChapterCard';
+import ChapterDots from '../ChapterDots';
 
 const data = salaryData as DeveloperSalaryData;
 
@@ -38,7 +41,7 @@ function MinimalTooltip({ active, payload, label, formatter }: any) {
 
 export default function SalaryTab() {
   const { theme } = useTheme();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const prefersReduced = useReducedMotion();
   const isDark = theme === 'dark';
   const axisColor = isDark ? 'rgba(255,255,255,0.32)' : 'rgba(15,23,42,0.45)';
@@ -58,6 +61,15 @@ export default function SalaryTab() {
   const cyan = isDark ? '#22d3ee' : '#0891b2';
   const slateFill = isDark ? 'rgba(255,255,255,0.12)' : '#cbd5e1';
 
+  const chapters = [
+    { id: 'salary-comparison', label: sal.chapterDots.comparison },
+    { id: 'salary-jobs', label: sal.chapterDots.jobs },
+    { id: 'salary-premium', label: sal.chapterDots.premium },
+    { id: 'salary-correlation', label: sal.chapterDots.correlation },
+    { id: 'salary-tier', label: sal.chapterDots.tier },
+    { id: 'salary-skills', label: sal.chapterDots.skills },
+  ];
+
   const comparisonRows = data.salaryComparison.map((item, index) => {
     const gap = item.withAI - item.withoutAI;
     const gapPercent = Math.round((gap / item.withoutAI) * 100);
@@ -76,8 +88,34 @@ export default function SalaryTab() {
     data.proficiencyVsSalary[data.proficiencyVsSalary.length - 1],
   ];
 
+  // Cursor crosshair for §1 Comparison — hover a point, see the $ threshold,
+  // and how many roles reach it with vs without AI.
+  const maxSalary = Math.max(...comparisonRows.map((item) => item.withAI));
+  const crosshairRef = useRef<HTMLDivElement>(null);
+  const [crosshair, setCrosshair] = useState<{ x: number; pct: number; visible: boolean }>({
+    x: 0,
+    pct: 0,
+    visible: false,
+  });
+  const onCrosshairMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!crosshairRef.current) return;
+    const rect = crosshairRef.current.getBoundingClientRect();
+    const paddingX = 16; // card internal p-4 padding, matches inner bar area
+    const inner = rect.width - paddingX * 2;
+    const x = e.clientX - rect.left;
+    const insideX = Math.min(Math.max(x - paddingX, 0), inner);
+    const pct = inner > 0 ? insideX / inner : 0;
+    setCrosshair({ x, pct, visible: true });
+  };
+  const hideCrosshair = () => setCrosshair((c) => ({ ...c, visible: false }));
+  const thresholdDollars = Math.round(crosshair.pct * maxSalary);
+  const reachedWithoutAI = comparisonRows.filter((r) => r.withoutAI >= thresholdDollars).length;
+  const reachedWithAI = comparisonRows.filter((r) => r.withAI >= thresholdDollars).length;
+
   return (
     <div className="space-y-8">
+      <ChapterDots chapters={chapters} accentColor="#10b981" />
+
       <div className="rounded-[2rem] border px-6 py-8 sm:px-8" style={{
         background: isDark
           ? 'linear-gradient(145deg, rgba(5,150,105,0.16), rgba(15,23,42,0.75) 55%, rgba(245,158,11,0.10))'
@@ -92,12 +130,24 @@ export default function SalaryTab() {
         <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
           <div>
             <LineReveal delay={0.06}>
-              <h2 className="text-[clamp(3.2rem,10vw,5.8rem)] font-black leading-none tracking-tight text-slate-950 dark:text-white">
+              <h2
+                className="text-[clamp(3.2rem,10vw,5.8rem)] font-black leading-none tracking-tight bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: isDark
+                    ? 'linear-gradient(135deg, #ffffff 8%, #34d399 55%, #f59e0b 100%)'
+                    : 'linear-gradient(135deg, #0f172a 0%, #059669 60%, #d97706 100%)',
+                }}
+              >
                 +{premium}%
               </h2>
             </LineReveal>
-            <LineReveal delay={0.12} className="mt-3 max-w-2xl">
-              <p className="text-sm leading-6 text-slate-600 dark:text-white/58">
+            <LineReveal delay={0.1} className="mt-5">
+              <p className="text-lg md:text-xl font-semibold leading-snug text-slate-800 dark:text-white/82 max-w-2xl">
+                {sal.heroTension}
+              </p>
+            </LineReveal>
+            <LineReveal delay={0.16} className="mt-3 max-w-2xl">
+              <p className="text-sm leading-6 text-slate-500 dark:text-white/45">
                 {sal.higherSalary}
               </p>
             </LineReveal>
@@ -124,6 +174,7 @@ export default function SalaryTab() {
       </div>
 
       <motion.div
+        id="salary-comparison"
         initial={prefersReduced ? false : { opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -142,9 +193,48 @@ export default function SalaryTab() {
           <div className="h-px flex-1 bg-slate-200/60 dark:bg-white/[0.05]" />
         </div>
 
+        <div
+          ref={crosshairRef}
+          className="relative"
+          onPointerMove={onCrosshairMove}
+          onPointerLeave={hideCrosshair}
+        >
+          {crosshair.visible && (
+            <>
+              <div
+                className="pointer-events-none absolute top-[54px] bottom-2 w-px"
+                style={{
+                  left: crosshair.x,
+                  backgroundImage: `linear-gradient(to bottom, ${emerald}88, ${emerald}22)`,
+                  boxShadow: `0 0 10px ${emerald}55`,
+                }}
+              />
+              <div
+                className="pointer-events-none absolute -top-1 z-10 flex -translate-x-1/2 flex-col items-center gap-1"
+                style={{ left: crosshair.x }}
+              >
+                <div
+                  className="rounded-full px-3 py-1 font-mono text-[10px] font-bold tabular-nums tracking-[0.12em]"
+                  style={{
+                    backgroundColor: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(15,23,42,0.92)',
+                    color: emerald,
+                    boxShadow: `0 6px 18px -4px rgba(0,0,0,0.4), 0 0 0 1px ${emerald}55`,
+                  }}
+                >
+                  ${thresholdDollars.toLocaleString()}
+                </div>
+                <div className="rounded-full border border-white/10 bg-black/80 px-2.5 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] text-white/60">
+                  <span className="text-white/40">{lang === 'zh' ? '无AI' : 'No AI'}</span>
+                  <span className="ml-1 text-white tabular-nums">{reachedWithoutAI}</span>
+                  <span className="mx-1 text-white/25">·</span>
+                  <span className="text-white/40">{lang === 'zh' ? '有AI' : 'AI'}</span>
+                  <span className="ml-1 tabular-nums" style={{ color: emerald }}>{reachedWithAI}</span>
+                </div>
+              </div>
+            </>
+          )}
         <div className="space-y-4">
           {comparisonRows.map((row, index) => {
-            const maxSalary = Math.max(...comparisonRows.map((item) => item.withAI));
             const withoutWidth = (row.withoutAI / maxSalary) * 100;
             const withWidth = (row.withAI / maxSalary) * 100;
             return (
@@ -197,10 +287,12 @@ export default function SalaryTab() {
             );
           })}
         </div>
+        </div>
       </motion.div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <motion.div
+          id="salary-jobs"
           initial={prefersReduced ? false : { opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -247,6 +339,7 @@ export default function SalaryTab() {
         </motion.div>
 
         <motion.div
+          id="salary-premium"
           initial={prefersReduced ? false : { opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -305,10 +398,9 @@ export default function SalaryTab() {
         </motion.div>
       </div>
 
-      <InsightCallout text={sal.insightText} accent="amber" />
-
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <motion.div
+          id="salary-correlation"
           initial={prefersReduced ? false : { opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -356,6 +448,7 @@ export default function SalaryTab() {
         </motion.div>
 
         <motion.div
+          id="salary-tier"
           initial={prefersReduced ? false : { opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -411,7 +504,10 @@ export default function SalaryTab() {
         </motion.div>
       </div>
 
+      <InsightCallout text={sal.insightText} accent="amber" />
+
       <motion.div
+        id="salary-skills"
         initial={prefersReduced ? false : { opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -469,8 +565,8 @@ export default function SalaryTab() {
           })}
         </div>
       </motion.div>
+
+      <NextChapterCard current="salary" />
     </div>
   );
 }
-
-
