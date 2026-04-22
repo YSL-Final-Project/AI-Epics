@@ -312,7 +312,7 @@ const commits = [
     components: 67,
     pages: 9,
     dataFiles: 13,
-    totalFiles: 105,
+    totalFiles: 113,
     color: '#0ea5e9',
     highlight: true,
   },
@@ -331,7 +331,7 @@ const commits = [
     components: 67,
     pages: 9,
     dataFiles: 13,
-    totalFiles: 105,
+    totalFiles: 113,
     color: '#64748b',
     highlight: false,
   },
@@ -764,7 +764,7 @@ export default function DevHistoryPage() {
               { value: final.lines - initial.lines, suffix: '', label: t.devHistory.stats.linesAdded   },
               { value: final.components,             suffix: '', label: t.devHistory.stats.components   },
               { value: final.totalFiles - initial.totalFiles, suffix: '', label: t.devHistory.stats.filesCreated },
-              { value: commits.length - 1,           suffix: '', label: t.devHistory.stats.commits      },
+              { value: 93,                            suffix: '', label: t.devHistory.stats.commits      },
             ].map(s => (
               <div key={s.label} className="bg-white dark:bg-slate-900/80 py-8 px-4">
                 <StatCounter value={s.value} suffix={s.suffix} label={s.label} />
