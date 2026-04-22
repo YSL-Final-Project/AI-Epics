@@ -441,7 +441,7 @@ const commits = [
     descZh: '5 标签章节叙事：数据探索器重构为电影化旅程——液态流线背景、章节点、5 个深度洞察标签页。',
     tags: ['5-Tab Narrative', 'Liquid Lines', 'Chapter Dots', 'DataViz'],
     milestone: true,
-    lines: 30000,
+    lines: 29970,
     components: 82,
     pages: 10,
     dataFiles: 15,
