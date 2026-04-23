@@ -5,7 +5,6 @@ import AdoptionTab from './AdoptionTab';
 import StackOverflowTab from './StackOverflowTab';
 import CodeGenTab from './CodeGenTab';
 import SalaryTab from './SalaryTab';
-import YouTab from './YouTab';
 import { useI18n } from '../../i18n';
 import { TAB_KEYS, TAB_ACCENTS, isTabKey, type TabKey } from './tabConstants';
 
@@ -90,7 +89,7 @@ export default function DataExplorerTabs() {
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         changeTab(TAB_KEYS[(idx - 1 + TAB_KEYS.length) % TAB_KEYS.length]);
-      } else if (['1', '2', '3', '4', '5'].includes(e.key)) {
+      } else if (['1', '2', '3', '4'].includes(e.key)) {
         const target = TAB_KEYS[parseInt(e.key, 10) - 1];
         if (target) changeTab(target);
       }
@@ -126,7 +125,7 @@ export default function DataExplorerTabs() {
           nothing ever wraps to a second line. */}
       <div ref={mainBarRef} className="mb-12">
         <div
-          className="flex md:grid md:grid-cols-5 gap-2 md:gap-2.5 overflow-x-auto md:overflow-visible pb-2 md:pb-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0"
+          className="flex md:grid md:grid-cols-4 gap-2 md:gap-2.5 overflow-x-auto md:overflow-visible pb-2 md:pb-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0"
           style={{ scrollbarWidth: 'none' }}
         >
           {TAB_KEYS.map((key, i) => {
@@ -193,7 +192,7 @@ export default function DataExplorerTabs() {
           <span className="flex items-center gap-1.5">
             <kbd className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded border border-slate-300/60 dark:border-white/15 text-slate-500 dark:text-white/40 text-[10px]">1</kbd>
             <span>—</span>
-            <kbd className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded border border-slate-300/60 dark:border-white/15 text-slate-500 dark:text-white/40 text-[10px]">5</kbd>
+            <kbd className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded border border-slate-300/60 dark:border-white/15 text-slate-500 dark:text-white/40 text-[10px]">4</kbd>
             <span className="ml-1">{nav.keyboardHint2}</span>
           </span>
         </div>
@@ -263,7 +262,7 @@ export default function DataExplorerTabs() {
                   <span className="font-mono text-[9px] tabular-nums tracking-[0.22em] text-white/40">
                     <span className="text-white/80">{activeIdx + 1}</span>
                     <span className="mx-1">/</span>
-                    <span>5</span>
+                    <span>4</span>
                   </span>
                 </div>
 
@@ -295,7 +294,6 @@ export default function DataExplorerTabs() {
             {activeTab === 'stackoverflow' && <StackOverflowTab />}
             {activeTab === 'codegen' && <CodeGenTab />}
             {activeTab === 'salary' && <SalaryTab />}
-            {activeTab === 'you' && <YouTab />}
           </motion.div>
         </AnimatePresence>
       </div>

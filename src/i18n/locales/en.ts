@@ -93,14 +93,12 @@ const en: Translations = {
       stackoverflow: 'Stack Overflow',
       codegen: 'Code Gen',
       salary: 'Salary',
-      you: 'You',
     },
     tabKickers: {
       adoption: { tag: 'Usage', subtitle: 'Who uses it, and how' },
       stackoverflow: { tag: 'Ecosystem', subtitle: 'What it displaced' },
       codegen: { tag: 'Output', subtitle: 'What it produces' },
       salary: { tag: 'Market', subtitle: 'How it reprices work' },
-      you: { tag: 'Reflection', subtitle: 'The data, turned on you' },
     },
     nav: {
       keyboardHint1: 'Switch chapter',
@@ -264,22 +262,6 @@ const en: Translations = {
         correlation: 'Proficiency',
         tier: 'Tiers',
         skills: 'Skills',
-      },
-    },
-    // ── YouTab ──
-    you: {
-      heroKicker: 'The Reader Chapter',
-      heroTitle: 'Four chapters of data. This one is about you.',
-      heroCopy: 'Numbers tell you what other people do. How much you trust them, whether you can tell the difference yourself, and what you think comes next — only you can answer those.',
-      trustTitle: 'The Trust Test',
-      trustKicker: 'Can you tell AI code from human code?',
-      trustIntro: 'Chapter 1 says 92% of developers now use AI. Chapter 3 says AI-generated code still carries roughly 4× the issue rate of human code, and "almost right" output frustrates more than half of them. So — can you actually tell which is which?',
-      verdictTitle: "Reader's Verdict",
-      verdictKicker: "You have read the data. Now it's your turn to answer.",
-      verdictIntro: 'Every answer is stored and added to the aggregate. What you see below is not only your call — it is the call of everyone who made it this far.',
-      chapterDots: {
-        trust: 'Trust Test',
-        verdict: 'Verdict',
       },
     },
   },
@@ -709,7 +691,7 @@ const en: Translations = {
   devHistory: {
     heroLabel:    'Dev · History · Map',
     heroTitle:    'Development\nHistory',
-    heroSubtitle: '15 commits · 8 days · From a blank template to a full data visualization project',
+    heroSubtitle: '24 milestones · 34 days · From a blank template to a full data visualization project',
     stats: {
       linesAdded:   'Lines Added',
       components:   'Components',
