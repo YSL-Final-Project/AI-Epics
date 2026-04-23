@@ -433,6 +433,20 @@ export default function LLMArena() {
     setUserVote(null);
   }, [question.id]);
 
+  // Reset arena when language switches so animation replays with correct text
+  useEffect(() => {
+    setPlaying(false);
+    setDoneCount(0);
+    setPhase('idle');
+    setUserVote(null);
+  }, [lang]);
+
+  // Pick the right language answer for each model
+  const localizedModels = question.models.map(m => ({
+    ...m,
+    answer: lang === 'en' ? (m.answerEn ?? m.answer) : m.answer,
+  }));
+
   const handleModelDone = useCallback(() => {
     setDoneCount(c => c + 1);
   }, []);
@@ -553,7 +567,7 @@ export default function LLMArena() {
         <AnimatePresence mode="wait">
           {phase === 'judging' && (
             <motion.div key="judging" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <JudgingAnimation models={question.models} onComplete={handleJudgingComplete} />
+              <JudgingAnimation models={localizedModels} onComplete={handleJudgingComplete} />
             </motion.div>
           )}
           {phase === 'voted' && userVote === null && (
@@ -598,12 +612,12 @@ export default function LLMArena() {
       {/* 3-Column Chat Grid */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={question.id}
+          key={`${question.id}-${lang}`}
           className="grid grid-cols-1 md:grid-cols-3 gap-4"
         >
-          {question.models.map((model, i) => (
+          {localizedModels.map((model, i) => (
             <ModelColumn
-              key={`${question.id}-${model.name}`}
+              key={`${question.id}-${model.name}-${lang}`}
               model={model}
               playing={playing}
               onDone={handleModelDone}
@@ -627,7 +641,7 @@ export default function LLMArena() {
             transition={{ duration: 0.3 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3"
           >
-            {question.models.map((model, i) => {
+            {localizedModels.map((model, i) => {
               const isSelected = userVote === i;
               return (
                 <button
@@ -660,7 +674,7 @@ export default function LLMArena() {
             transition={{ duration: 0.5 }}
           >
             <QualityMetrics
-              models={question.models}
+              models={localizedModels}
               scores={question.qualityScores}
               userVote={userVote}
               labels={{

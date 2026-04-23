@@ -7,6 +7,8 @@ import IDEMarketChart from '../components/compare/IDEMarketChart';
 import LineReveal from '../components/animations/LineReveal';
 import CursorSpotlight from '../components/compare/CursorSpotlight';
 import LLMArena from '../components/compare/LLMArena';
+import LiquidLinesBackground from '../components/LiquidLinesBackground';
+import { insightBgConfig } from '../components/liquidLinesConfig';
 import { useI18n } from '../i18n';
 
 export default function ComparePage() {
@@ -14,6 +16,8 @@ export default function ComparePage() {
   const prefersReduced = useReducedMotion();
 
   return (
+    <>
+      <LiquidLinesBackground {...insightBgConfig} />
     <PageTransition>
       <CursorSpotlight />
       <div className="min-h-screen">
@@ -60,5 +64,6 @@ export default function ComparePage() {
         </div>
       </div>
     </PageTransition>
+    </>
   );
 }

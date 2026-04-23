@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import PageTransition from '../components/layout/PageTransition';
 import TimelineContainer from '../components/timeline/TimelineContainer';
+import LiquidLinesBackground from '../components/LiquidLinesBackground';
+import { insightBgConfig } from '../components/liquidLinesConfig';
 import { useI18n } from '../i18n';
 
 export default function TimelinePage() {
@@ -26,8 +28,10 @@ export default function TimelinePage() {
   const yearOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
+    <>
+      <LiquidLinesBackground {...insightBgConfig} />
     <PageTransition>
-      <div className="min-h-screen bg-white dark:bg-[#0a0a0f]">
+      <div className="relative z-10 min-h-screen">
 
         {/* ── Hero Section ── */}
         <div ref={heroRef} className="relative h-[85vh] overflow-hidden">
@@ -156,5 +160,6 @@ export default function TimelinePage() {
         </div>
       </div>
     </PageTransition>
+    </>
   );
 }
