@@ -1,4 +1,4 @@
-export const TAB_KEYS = ['adoption', 'stackoverflow', 'codegen', 'salary', 'you'] as const;
+export const TAB_KEYS = ['adoption', 'stackoverflow', 'codegen', 'salary'] as const;
 export type TabKey = typeof TAB_KEYS[number];
 
 export const TAB_ACCENTS: Record<TabKey, string> = {
@@ -6,7 +6,6 @@ export const TAB_ACCENTS: Record<TabKey, string> = {
   stackoverflow: '#e11d48',
   codegen: '#8b5cf6',
   salary: '#10b981',
-  you: '#f59e0b',
 };
 
 export function isTabKey(k: string): k is TabKey {

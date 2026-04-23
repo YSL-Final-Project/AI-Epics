@@ -93,14 +93,12 @@ const zh = {
       stackoverflow: 'Stack Overflow',
       codegen: '代码生成',
       salary: '薪资分析',
-      you: '你',
     },
     tabKickers: {
       adoption: { tag: '使用', subtitle: '谁在用，怎么用' },
       stackoverflow: { tag: '生态', subtitle: '它取代了什么' },
       codegen: { tag: '产物', subtitle: '它生产了什么' },
       salary: { tag: '市场', subtitle: '它如何重定价工作' },
-      you: { tag: '参与', subtitle: '数据，回到你身上' },
     },
     nav: {
       keyboardHint1: '切换章节',
@@ -264,22 +262,6 @@ const zh = {
         correlation: '熟练度',
         tier: '层级',
         skills: '技能',
-      },
-    },
-    // ── YouTab ──
-    you: {
-      heroKicker: '读者的章节',
-      heroTitle: '前四章是数据。这一章，是你。',
-      heroCopy: '数字可以告诉你别人怎么做。但你信多少、你自己能不能分辨、你对未来的判断——这些只有你能回答。',
-      trustTitle: '信任测试',
-      trustKicker: '你能分辨 AI 和人类写的代码吗？',
-      trustIntro: '第一章说 92% 的开发者在用 AI 工具。第三章说 AI 代码的缺陷率是人类代码的 4 倍，"差不多对"的输出让超过半数的人感到困扰。那问题是——你真的能分辨吗？',
-      verdictTitle: '读者的判断',
-      verdictKicker: '数据读完了，换你开口',
-      verdictIntro: '每个答案都会被存下来，并累加到聚合结果里。你看到的不仅是你的判断，也是所有读到这里的人的判断。',
-      chapterDots: {
-        trust: '信任测试',
-        verdict: '判断',
       },
     },
   },
@@ -718,7 +700,7 @@ const zh = {
   devHistory: {
     heroLabel:    'Dev · History · Map',
     heroTitle:    '开发历史图谱',
-    heroSubtitle: '15 次提交 · 8 天 · 从一个空白模板到完整的数据可视化项目',
+    heroSubtitle: '24 个里程碑 · 34 天 · 从一个空白模板到完整的数据可视化项目',
     stats: {
       linesAdded:   '新增代码行',
       components:   '组件总数',

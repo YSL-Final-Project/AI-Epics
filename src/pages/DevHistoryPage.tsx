@@ -437,9 +437,9 @@ const commits = [
     label: '22',
     title: 'Insight Page',
     titleZh: '洞察页',
-    desc: '5-tab chapter narrative: DataExplorer reimagined as a cinematic journey — Liquid Lines background, chapter dots, 5 deep-dive tabs.',
-    descZh: '5 标签章节叙事：数据探索器重构为电影化旅程——液态流线背景、章节点、5 个深度洞察标签页。',
-    tags: ['5-Tab Narrative', 'Liquid Lines', 'Chapter Dots', 'DataViz'],
+    desc: 'DataExplorer reimagined as a cinematic chapter narrative — Liquid Lines background, chapter dots, deep-dive tabs.',
+    descZh: '数据探索器重构为电影化章节叙事——液态流线背景、章节点、深度洞察标签页。',
+    tags: ['Chapter Narrative', 'Liquid Lines', 'Chapter Dots', 'DataViz'],
     milestone: true,
     lines: 29970,
     components: 82,
@@ -448,6 +448,25 @@ const commits = [
     totalFiles: 123,
     color: '#06b6d4',
     highlight: true,
+  },
+  {
+    hash: '928a806',
+    date: 'Apr 22 · 20:03',
+    dateShort: '4/22',
+    label: '23',
+    title: 'Arena i18n + Liquid Lines',
+    titleZh: '竞技场 i18n + 液态流线',
+    desc: 'LLM Arena answers wired to zh/en; Liquid Lines background extended from Insights to Compare and Timeline pages.',
+    descZh: 'LLM 竞技场答案接入中英双语；液态流线背景从洞察页扩展到对比页和时间轴页。',
+    tags: ['i18n', 'Arena', 'Liquid Lines', 'Timeline'],
+    milestone: false,
+    lines: 29994,
+    components: 82,
+    pages: 10,
+    dataFiles: 15,
+    totalFiles: 123,
+    color: '#fb923c',
+    highlight: false,
   },
 ];
 
@@ -764,7 +783,7 @@ export default function DevHistoryPage() {
               { value: final.lines - initial.lines, suffix: '', label: t.devHistory.stats.linesAdded   },
               { value: final.components,             suffix: '', label: t.devHistory.stats.components   },
               { value: final.totalFiles - initial.totalFiles, suffix: '', label: t.devHistory.stats.filesCreated },
-              { value: 93,                            suffix: '', label: t.devHistory.stats.commits      },
+              { value: 98,                            suffix: '', label: t.devHistory.stats.commits      },
             ].map(s => (
               <div key={s.label} className="bg-white dark:bg-slate-900/80 py-8 px-4">
                 <StatCounter value={s.value} suffix={s.suffix} label={s.label} />
@@ -861,8 +880,8 @@ export default function DevHistoryPage() {
             </p>
             <p className="text-slate-400 dark:text-slate-500 text-sm">
               {isZh
-                ? `${(final.lines - initial.lines).toLocaleString()} 行代码 · ${final.components} 个组件 · ${final.totalFiles} 个文件 · 28 天`
-                : `${(final.lines - initial.lines).toLocaleString()} lines · ${final.components} components · ${final.totalFiles} files · 28 days`
+                ? `${(final.lines - initial.lines).toLocaleString()} 行代码 · ${final.components} 个组件 · ${final.totalFiles} 个文件 · 34 天`
+                : `${(final.lines - initial.lines).toLocaleString()} lines · ${final.components} components · ${final.totalFiles} files · 34 days`
               }
             </p>
           </motion.div>
